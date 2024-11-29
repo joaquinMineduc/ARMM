@@ -42,4 +42,9 @@ column_orden = ['Cod_Sigemet','CR.2','Variable','Nivel','CR', 'CR inf','Tipo',
                 'denominador','Meta periodo','Resultado periodo','Cumplimiento respecto a meta',
                 'Variacion Periodo','Riesgo (Alto - Medio- Bajo) periodo','Tipo Riesgo','Cantidad Riesgo Bajo',
                 'Cantidad Riesgo Medio', 'Cantidad Riesgo Alto','Análisis Resultado periodo',
-                'Nombre medios de verificación','Cumplimiento c/r a meta anual','Análisis DPCG', 'Ordenperiodo','ORDENCR']
+                'Nombre medios de verificación', 'tag_ponderado','Cumplimiento c/r a meta anual','Análisis DPCG', 'Ordenperiodo','ORDENCR']
+
+columns_informe = ['CR','Tipo','Nombre del Indicador', 'Forma de Cálculo',
+                 "Ponderación",'Meta anual','numerador','denominador','Resultado periodo',
+                 'Riesgo (Alto - Medio- Bajo) periodo',"Tipo Riesgo",
+                 'Cumplimiento respecto a meta','Análisis DPCG']

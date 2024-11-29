@@ -23,11 +23,11 @@ def create_dataFrame(location):
     return df
 
 
-def create_an_copy(df, columns, columns_2 = None):
-    df_copy = df[columns].copy()
-    if columns_2 is not None:
-        df_copy2 = df[columns_2].copy()
-        df_copy = pd.concat([df_copy, df_copy2], axis = 1)
+def create_an_copy(df, columns):
+    if isinstance(columns, list):
+        df_copy = df[columns].copy()
+    else:
+        df_copy = df[columns].copy()
     return df_copy
 
 
@@ -42,7 +42,7 @@ def add_clasificator_ponderation(df):
 def add_split_indicador(df, columns, columns_2 = None):
     list_x = []
     list_y = []
-    df_filtrated = create_an_copy(df, columns, columns_2)
+    df_filtrated = create_an_copy(df, columns)
     shape = pd.DataFrame(df_filtrated).shape[1]
     if shape == 1:
         for x in df_filtrated:
@@ -62,7 +62,7 @@ def add_split_meta_periodo(df, columns, columns_2 = None):
     list_period = []
     list_order_period = []
     list_year = []
-    df_filtrated = create_an_copy(df, columns, columns_2)
+    df_filtrated = create_an_copy(df, columns)
     shape = pd.DataFrame(df_filtrated).shape[1]
     if shape == 1:
         for x in df_filtrated:
@@ -87,9 +87,9 @@ def format_periodo(periodo):
 
 
 # Este código 
-def add_classificator_type(df, columns, columns_2 = None):
+def add_classificator_type(df, columns):
     list_type = []
-    df_filtrated = create_an_copy(df, columns, columns_2)
+    df_filtrated = create_an_copy(df, columns)
     shape = pd.DataFrame(df_filtrated).shape[1]
     if shape == 1:
         for t in df_filtrated:
@@ -119,9 +119,9 @@ def classificator_CR_REG(CR):
         return "format error"
     
        
-def add_classificator_CR2(df, columns, columns_2 = None):
+def add_classificator_CR2(df, columns):
     lista_CR2 = []
-    df_filtrated = create_an_copy(df, columns, columns_2)
+    df_filtrated = create_an_copy(df, columns)
     shape = pd.DataFrame(df_filtrated).shape[1]
     if shape == 1:
         for x in df_filtrated:
@@ -263,6 +263,7 @@ def add_risk_as_binary(df, column):
     df.loc[:, 'Cantidad Riesgo Alto'] = count_high
     return df
 
+# Refactorizar 
 def rename_columns(df):
     df.rename(columns={"Observación": "Análisis Resultado periodo", 
                        "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
@@ -302,11 +303,15 @@ def split_formula(df, column):
     df.loc[:,'numerador'] = list_numerator
     df.loc[:,'denominador'] = list_denominator
     return df
+
+def query_ponderation(df):
+    df_informe = df.query("tag_ponderado == 'NO'")
+    return df_informe
     
     
-def add_weighthing(df, column, column_2):
+def add_weighthing(df, column):
     list_weighthing = []
-    df_weighthing = create_an_copy(df, column, column_2)
+    df_weighthing = create_an_copy(df, column)
     for cod, CR in zip(df_weighthing['Cod_Sigemet'], df_weighthing['CR.2']):
         if cod in Group_5:
             list_weighthing.append("5,0%")
@@ -354,6 +359,7 @@ def drop_unless_columns(df):
     list_index = list(df.columns)
     for index in drop_index:
         df.drop(list_index[index], axis = 1, inplace = True)
+        print(df)
     return df
 
 # Se utiliza column_order desde datos estáticos
@@ -362,11 +368,58 @@ def order_df(df):
     df = df.fillna("Sin dato")
     return df
     
+# Refactorizar
+def format_informe_mensual(df):
+    df_informe = create_an_copy(df, columns_informe)
+    df_informe.rename(columns={"Meta anual": "Meta","numerador": "Numerador",
+                           "denominador": "Denominador",
+                           "Riesgo (Alto - Medio- Bajo) periodo":"Nivel riesgo",
+                           "Análisis DPCG":"Análisis"}, inplace= True)
+    
+    # se trunca a la decima el cumplimiento respecto a la meta
+    df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
+    lambda x: np.floor(x*10)/10)
+    
+    # cambio de tipo de datos, para ingresar miselaneo de tipos
+    df_informe['Meta'] = df_informe['Meta'].astype("object") 
+    df_informe['Resultado periodo'] = df_informe['Resultado periodo'].astype("object")
+    return df_informe
 
-# Funcion para crear el informe BI
-def create_informe_BI(df):
+
+def format_variable(df_informe):
+    list_goal = []
+    list_result = []
+    for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
+        if d == "no aplica":
+            list_goal.append(int(m))
+            list_result.append(int(r))
+        elif ind == ' Transformación Digital':
+            list_goal.append(str("Solo medir"))
+            list_result.append(int(r))
+        else:
+            list_goal.append(str(m).replace(".",",") + "%")
+            r = mat.trunc(r*10)/10
+            list_result.append(str(r).replace(".",",") + "%")
+    df_informe.loc[:,"Meta"] = list_goal
+    df_informe.loc[:,"Resultado periodo"] = list_result
+    df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
+    lambda x: str(x).replace(".",",")+ "%" )
+    return df_informe
+
+
+
+def get_period_format():
     month = datetime.now().month
     date = datetime(2024, month -1, 1)
     mes = date.strftime("%B")
-    df.to_excel(f"datosBI_{mes}.xlsx", index = False)
+    return mes
     
+    # Funcion para crear el informe BI
+def create_informe_BI(df):
+    mes = get_period_format()
+    df.to_excel(f"datosBI_{mes}.xlsx", index = False)
+
+
+def create_informe_mensual(df_informe):
+    mes = get_period_format()
+    df_informe.to_excel(f"informe_{mes}.xlsx", index = False)
