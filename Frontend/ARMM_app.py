@@ -15,7 +15,7 @@ if __name__ == "__main__":
     app.title("Unificador de planes de tratamiento")
     app.geometry("480x750")
     app.minsize(width = 450, height = 650)
-    app.iconbitmap("APP/Frontend/icons/logo-ministerio.ico")
+    app.iconbitmap("ARMM/Frontend/icons/logo-ministerio.ico")
 
 
     # Añadir un frame
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
 
     # Añadir una imagen al frame
-    image_path = "APP/Frontend/icons/Mineduc-PI.png"
+    image_path = "ARMM/Frontend/icons/Mineduc-PI.png"
     image = Image.open(image_path)
     photo = ImageTk.PhotoImage(image)
     lbImg = tk.Label(frame, image = photo)

@@ -195,3 +195,178 @@ def add_cr(df, column):
         else:
             list_CR.append(classificator_by_CR(CR))
     df.loc[:,'CR'] = list_CR
+    return df
+
+
+def concat_column_by_args(df, columns, arg, new_column):
+    # Verificar si 'arg' es un delimitador o algo similar
+    if arg:  # Si 'arg' tiene algún valor, asumimos que es un delimitador
+        delimiter = arg
+    else:
+        delimiter = ''  # Si no, concatenamos sin delimitador
+    
+    # Inicializamos una lista para almacenar los valores concatenados
+    concatenated_values = []
+    
+    # Iteramos sobre las filas del DataFrame
+    for _, row in df.iterrows():
+        # Concatenamos las columnas de la fila especificada en 'columns' con el delimitador
+        concatenated_value = delimiter.join(str(row[col]) for col in columns)
+        concatenated_values.append(concatenated_value)
+    
+    # Asignamos la lista de valores concatenados como la nueva columna
+    df.loc[:,new_column] = concatenated_values
+    return df
+
+
+def add_level(df, column):
+    list_level = []
+    df_CR = create_an_copy(df, column)
+    for CR in df_CR:
+        if CR in ['UCE','DEG','DAG','JURIDICA','DIPLAP','GABINETE','CPEIP']:
+            list_level.append("NC")
+        else:
+            list_level.append("Regiones")
+    df.loc[:,'Nivel'] = list_level
+    return df
+
+def add_risk_as_binary(df, column):
+    list_type_risk = []
+    count_low = []
+    count_medium = []
+    count_high = []
+    df_risk = create_an_copy(df, column)
+    for risk in df_risk:
+        if risk == 'Bajo':
+            list_type_risk.append(1)
+            count_low.append(1)
+            count_medium.append(0)
+            count_high.append(0)
+        elif risk == "Medio":
+            list_type_risk.append(2)
+            count_low.append(0)
+            count_medium.append(1)
+            count_high.append(0)
+        elif risk == "Alto":
+            list_type_risk.append(3)
+            count_low.append(0)
+            count_medium.append(0)
+            count_high.append(1)
+        else:
+            list_type_risk.append("Sin dato")
+            count_low.append(0)
+            count_medium.append(0)
+            count_high.append(0)
+    df.loc[:, 'Tipo Riesgo'] = list_type_risk
+    df.loc[:, 'Cantidad Riesgo Bajo'] = count_low
+    df.loc[:, 'Cantidad Riesgo Medio'] = count_medium
+    df.loc[:, 'Cantidad Riesgo Alto'] = count_high
+    return df
+
+def rename_columns(df):
+    df.rename(columns={"Observación": "Análisis Resultado periodo", 
+                       "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
+                    "Fórmula de Cálculo": "Forma de Cálculo", "Meta del período": "Meta periodo", 
+                    "% Avance": "Resultado periodo","% Cumplimiento efectivo meta anual": "Cumplimiento respecto a meta"},
+                    inplace=True)
+    return df
+
+
+def split_formula(df, column):
+    list_numerator = []
+    list_denominator = []
+    df_formula = create_an_copy(df, column)
+    for f in df_formula:
+        formula = str(f).split("*")[0]
+        formula = formula.replace("(","").replace(")","")
+        formula = formula.split("/")
+        if len(formula) == 2:
+            numerador = formula[0]
+            denominador = formula[1]
+            list_numerator.append(numerador)
+            list_denominator.append(denominador)
+            numerador = numerador.split(" ")
+        elif len(formula) == 1:
+            numerador = formula[0].split(" ")
+            list_denominator.append("no aplica")
+            if len(numerador) == 6:
+                numerador = numerador[5]
+                list_numerator.append(numerador)
+            elif len(numerador) == 2:
+                numerador = numerador[1]
+                list_numerator.append(numerador)
+            else:
+                numerador = numerador[0]
+                list_numerator.append(numerador)
+
+    df.loc[:,'numerador'] = list_numerator
+    df.loc[:,'denominador'] = list_denominator
+    return df
+    
+    
+def add_weighthing(df, column, column_2):
+    list_weighthing = []
+    df_weighthing = create_an_copy(df, column, column_2)
+    for cod, CR in zip(df_weighthing['Cod_Sigemet'], df_weighthing['CR.2']):
+        if cod in Group_5:
+            list_weighthing.append("5,0%")
+        elif cod in Group_10:
+            list_weighthing.append("10,0%")
+        elif cod in Group_13:
+            list_weighthing.append("13,0%")
+        elif cod in Group_14:
+            list_weighthing.append("14,0%")
+        elif cod in Group_15:
+            list_weighthing.append("15,0%")
+        elif cod in Group_16:
+            list_weighthing.append("16,0%")
+        elif cod in Group_17:
+            list_weighthing.append("17,0%")
+        elif cod in Group_18:
+            list_weighthing.append("18,0%")
+        elif cod in Group_23:
+            list_weighthing.append("23,0%")
+        elif cod in Group_27:
+            list_weighthing.append("27,0%")
+        elif cod in Group_30:
+            list_weighthing.append("30,0%")
+        elif cod in Group_33:
+            list_weighthing.append("33,0%")
+        elif cod in Group_34 and CR in ['SECREDUC 13','SECREDUC 16']:
+            list_weighthing.append("34,0%")
+        elif cod in Grupo_35:
+            list_weighthing.append("35,0%")
+        elif cod in Group_40:
+            list_weighthing.append("40,0%")
+        else:
+            list_weighthing.append("25,0%")
+    df.loc[:,'Ponderación'] = list_weighthing
+    return df
+
+
+def change_errors(df):
+    filtered_df = df.query("Cod_Sigemet == 'I16_062'")
+    df.loc[filtered_df.index, 'Tipo'] = "H"
+    return df
+
+# se usa drop_index desde los datos estáticos
+def drop_unless_columns(df):
+    list_index = list(df.columns)
+    for index in drop_index:
+        df.drop(list_index[index], axis = 1, inplace = True)
+    return df
+
+# Se utiliza column_order desde datos estáticos
+def order_df(df):
+    df = df[column_orden]
+    df = df.fillna("Sin dato")
+    return df
+    
+
+# Funcion para crear el informe BI
+def create_informe_BI(df):
+    month = datetime.now().month
+    date = datetime(2024, month -1, 1)
+    mes = date.strftime("%B")
+    df.to_excel(f"datosBI_{mes}.xlsx", index = False)
+    

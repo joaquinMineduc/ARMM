@@ -7,6 +7,8 @@ regiones = [
 
 indexs = [6,7,2,5,4,1,8,3,9,10,12,13,14,15,16,18,19,21,22,23,24,20,11,17]
 
+drop_index = [0,1,2,3,5,6,7,8,10,12]
+
 Group_5 = ['I23_006']
 Group_10 = ['I21_011','I22_006','I21_012']
 Group_13 = ['I16_052','I24_004']
@@ -32,3 +34,12 @@ Group_34 = ['I16_056']
 Grupo_35 = ['I17_001','I23_004']
 
 Group_40 = ['I19_019','I24_008']
+
+
+column_orden = ['Cod_Sigemet','CR.2','Variable','Nivel','CR', 'CR inf','Tipo',
+                'Nombre del Indicador','Forma de Cálculo','Ponderación','Numerador 2024',
+                'Denominador 2024','Meta anual','Mes Periodo','Año Periodo','numerador',
+                'denominador','Meta periodo','Resultado periodo','Cumplimiento respecto a meta',
+                'Variacion Periodo','Riesgo (Alto - Medio- Bajo) periodo','Tipo Riesgo','Cantidad Riesgo Bajo',
+                'Cantidad Riesgo Medio', 'Cantidad Riesgo Alto','Análisis Resultado periodo',
+                'Nombre medios de verificación','Cumplimiento c/r a meta anual','Análisis DPCG', 'Ordenperiodo','ORDENCR']
