@@ -172,8 +172,8 @@ def add_order_CR(df, column):
     return df
 
 
-def classificator_by_CR(CR):
-    num_cr = CR.split(" ")
+def classificator_by_reg(CR, arg):
+    num_cr = CR.split(arg)
     num_cr = int(num_cr[1])
     for index, region in enumerate(regiones, start = 1):
         if index == num_cr:
@@ -193,7 +193,7 @@ def add_cr(df, column):
         elif CR in ['CPEIP','DAG','DEG','UCE']:
             list_CR.append(CR)
         else:
-            list_CR.append(classificator_by_CR(CR))
+            list_CR.append(classificator_by_reg(CR, ' '))
     df.loc[:,'CR'] = list_CR
     return df
 
