@@ -6,7 +6,7 @@ import locale
 from datos_estaticos import *
 
 
-# Configura el idioma a español
+# Configuración del idioma del entorno local, se cambia de EN a ES
 try:
     # Esto funciona en la mayoría de los sistemas operativos
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Para sistemas basados en Unix/Linux
@@ -14,13 +14,17 @@ except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Para Windows
 
 
+
 def get_this_year():
     year = datetime.now().year
     return year
 
+
+
 def create_dataFrame(location):
     df = pd.read_excel(location, header = 1)
     return df
+
 
 
 def create_an_copy(df, columns):
@@ -108,6 +112,7 @@ def add_classificator_type(df, columns):
     return df
 
 
+
 def classificator_CR_REG(CR):
     CR = str(CR).upper()
     num = CR.split(":")
@@ -118,6 +123,7 @@ def classificator_CR_REG(CR):
     else:
         return "format error"
     
+ 
        
 def add_classificator_CR2(df, columns):
     lista_CR2 = []
@@ -148,10 +154,12 @@ def add_classificator_CR2(df, columns):
     return df
 
 
+
 def add_new_column(df, add_columns):
     for column in add_columns:
         df.loc[:,column] = ""
     return df
+
 
 
 def get_order_cr(CR, df_cr2):
@@ -162,6 +170,7 @@ def get_order_cr(CR, df_cr2):
         if CR == cr:
             return index
         
+ 
         
 def add_order_CR(df, column):
     list_order_CR = []
@@ -172,14 +181,18 @@ def add_order_CR(df, column):
     return df
 
 
+
+# Funcion que permite clasificar CR por regiones
 def classificator_by_reg(CR, arg):
     num_cr = CR.split(arg)
     num_cr = int(num_cr[1])
     for index, region in enumerate(regiones, start = 1):
         if index == num_cr:
             return region
+
+
         
-        
+# Agregar una nueva columna al DF con los Centros de responsabilidad en segundo nivel      
 def add_cr(df, column):
     list_CR = []
     df_cr2 = create_an_copy(df, column)
@@ -198,6 +211,8 @@ def add_cr(df, column):
     return df
 
 
+
+# Funcion que permite concatenar columnas, a través de un argumento intermedio
 def concat_column_by_args(df, columns, arg, new_column):
     # Verificar si 'arg' es un delimitador o algo similar
     if arg:  # Si 'arg' tiene algún valor, asumimos que es un delimitador
@@ -219,6 +234,8 @@ def concat_column_by_args(df, columns, arg, new_column):
     return df
 
 
+
+# Crea la columna nivel. Permite hacer la distinción entre indicadores de nivel central y las regiones
 def add_level(df, column):
     list_level = []
     df_CR = create_an_copy(df, column)
@@ -230,6 +247,9 @@ def add_level(df, column):
     df.loc[:,'Nivel'] = list_level
     return df
 
+
+
+# Agrega la columna como riesgo en binario
 def add_risk_as_binary(df, column):
     list_type_risk = []
     count_low = []
@@ -263,6 +283,7 @@ def add_risk_as_binary(df, column):
     df.loc[:, 'Cantidad Riesgo Alto'] = count_high
     return df
 
+
 # Refactorizar 
 def rename_columns(df):
     df.rename(columns={"Observación": "Análisis Resultado periodo", 
@@ -273,6 +294,7 @@ def rename_columns(df):
     return df
 
 
+# Función que separa el denominador y numerador de la formula de calculo del indicador
 def split_formula(df, column):
     list_numerator = []
     list_denominator = []
@@ -304,11 +326,14 @@ def split_formula(df, column):
     df.loc[:,'denominador'] = list_denominator
     return df
 
+
+# Aplica filtro para filtrar todos los indicadores que son podnerados del df
 def query_ponderation(df):
     df_informe = df.query("tag_ponderado == 'NO'")
     return df_informe
+
     
-    
+# Añade la columna ponderación al DF
 def add_weighthing(df, column):
     list_weighthing = []
     df_weighthing = create_an_copy(df, column)
@@ -349,10 +374,12 @@ def add_weighthing(df, column):
     return df
 
 
+
 def change_errors(df):
     filtered_df = df.query("Cod_Sigemet == 'I16_062'")
     df.loc[filtered_df.index, 'Tipo'] = "H"
     return df
+
 
 # se usa drop_index desde los datos estáticos
 def drop_unless_columns(df):
@@ -362,12 +389,14 @@ def drop_unless_columns(df):
         print(df)
     return df
 
+
 # Se utiliza column_order desde datos estáticos
 def order_df(df):
     df = df[column_orden]
     df = df.fillna("Sin dato")
     return df
-    
+
+  
 # Refactorizar
 def format_informe_mensual(df):
     df_informe = create_an_copy(df, columns_informe)
@@ -407,19 +436,21 @@ def format_variable(df_informe):
     return df_informe
 
 
-
+#Funcion entrega formato del periodo
 def get_period_format():
     month = datetime.now().month
     date = datetime(2024, month -1, 1)
     mes = date.strftime("%B")
     return mes
+
     
-    # Funcion para crear el informe BI
+# Funcion para crear el informe BI
 def create_informe_BI(df):
     mes = get_period_format()
     df.to_excel(f"datosBI_{mes}.xlsx", index = False)
 
 
+# Función crear informe mensual
 def create_informe_mensual(df_informe):
     mes = get_period_format()
     df_informe.to_excel(f"informe_{mes}.xlsx", index = False)
