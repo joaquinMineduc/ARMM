@@ -3,7 +3,7 @@ import numpy as np
 import math as mat
 from datetime import datetime
 import locale
-from datos_estaticos import *
+from static_data import *
 
 
 # Configuración del idioma del entorno local, se cambia de EN a ES
@@ -20,11 +20,9 @@ def get_this_year():
     return year
 
 
-
 def create_dataFrame(location):
     df = pd.read_excel(location, header = 1)
     return df
-
 
 
 def create_an_copy(df, columns):
@@ -118,7 +116,8 @@ def classificator_CR_REG(CR):
     num = CR.split(":")
     num = int(num[1])
     num2 = num if num >= 10 else f'0{num}'
-    if CR in [f'R{num2}.EDUC - REG:{num}',f'R{num2}.GAB - REG:{num}',f'R{num2}.SUBV - REG:{num}',f'SECREDUC_{num} - REG:{num}']:
+    if CR in [f'R{num2}.EDUC - REG:{num}',f'R{num2}.GAB - REG:{num}',
+              f'R{num2}.SUBV - REG:{num}',f'SECREDUC_{num} - REG:{num}']:
         return f"SECREDUC {num2}"
     else:
         return "format error"
@@ -134,11 +133,13 @@ def add_classificator_CR2(df, columns):
             x = x.upper()
             if x in ['AUDITORIA - REG:99','ESTUDIOS - REG:99','GABMIN']:
                 lista_CR2.append("Gabinete Ministerio")
-            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99','GABSUB','INNOV - REG:99','INNOV','SEJEC_TP']:
+            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99',
+                    'GABSUB','INNOV - REG:99','INNOV','SEJEC_TP']:
                 lista_CR2.append("Gabinete Subsecretaría")
             elif x in ['CNT - REG:99','CNT','RECFIN - REG:99','SUBV - REG:99','URAE', 'DIPLAP', 'DPCG']:
                 lista_CR2.append("División de Planificación y Presupuesto")
-            elif x in ['C.AYC - REG:99','C.AYC','C.CONV', 'C.NORM - REG:99','C.NORM','C.PROC','C.SYJ - REG:99', 'JURID']:
+            elif x in ['C.AYC - REG:99','C.AYC','C.CONV', 'C.NORM - REG:99','C.NORM',
+                       'C.PROC','C.SYJ - REG:99','JURID']:
                 lista_CR2.append("División Jurídica")
             elif x in ['FCONT','FID','LDP','CPEIP']:
                 lista_CR2.append("CPEIP")
@@ -287,9 +288,10 @@ def add_risk_as_binary(df, column):
 # Refactorizar 
 def rename_columns(df):
     df.rename(columns={"Observación": "Análisis Resultado periodo", 
-                       "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
+                    "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
                     "Fórmula de Cálculo": "Forma de Cálculo", "Meta del período": "Meta periodo", 
-                    "% Avance": "Resultado periodo","% Cumplimiento efectivo meta anual": "Cumplimiento respecto a meta"},
+                    "% Avance": "Resultado periodo",
+                    "% Cumplimiento efectivo meta anual": "Cumplimiento respecto a meta"},
                     inplace=True)
     return df
 
@@ -418,7 +420,9 @@ def format_informe_mensual(df):
 def format_variable(df_informe):
     list_goal = []
     list_result = []
-    for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
+    for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], 
+        df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
+        
         if d == "no aplica":
             list_goal.append(int(m))
             list_result.append(int(r))
@@ -454,3 +458,7 @@ def create_informe_BI(df):
 def create_informe_mensual(df_informe):
     mes = get_period_format()
     df_informe.to_excel(f"informe_{mes}.xlsx", index = False)
+    
+
+
+

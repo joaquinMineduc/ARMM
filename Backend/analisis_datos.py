@@ -1,11 +1,11 @@
-from analitics_class import *
+from report_functions import *
+from principal_functions import *
 
 YEAR = get_this_year()
 
 
 # Creación del data frame
-df = create_dataFrame('APP/Backend/Input/indicadores.xls')
-
+df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls',None,1)
 # Se claisifcan indicadores ponderados
 df = add_clasificator_ponderation(df)
 
@@ -33,7 +33,7 @@ df = change_errors(df)
 
 # Se ramifica el data frame para filtrar todos los ponderados
 df_informe = query_ponderation(df)
-df = drop_unless_columns(df)
+df = drop_unless_columns(df, None, None)
 df = order_df(df)
 
 create_informe_BI(df)
