@@ -16,12 +16,18 @@ def create_dataframe(location, sheet, header):
 
 
 # Eliminar columnas innecesarias
-def drop_unless_columns(df, start, end):
+def drop_unless_columns(df, start, end, columns):
     list_index = list(df.columns)
-    if (start and end) is None:
+    if (start and end) is None and columns is None:
         for index in drop_index:
             df.drop(list_index[index], axis = 1, inplace = True)
-    else:
+    if (start and end) is None and columns is not None:
+        if isinstance(columns, list):
+            for index in columns:
+                df.drop(list_index[index], axis = 1, inplace = True)
+        else:
+            df.drop(list_index[columns], axis = 1, inplace = True)
+    if (start and end) is not None and columns is  None:
         for index in range(start, end):
             df.drop(list_index[index], axis = 1, inplace = True)
     return df
