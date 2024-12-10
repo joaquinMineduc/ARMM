@@ -1,9 +1,14 @@
+
 regiones = [
     "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",
     "O'Higgins", "Maule", "Biobío", "La Araucanía", "Los Lagos",
     "Aysén", "Magallanes", "Metropolitana", "Los Ríos",
     "Arica y Parinacota", "Ñuble"
 ]
+
+df_NC_columns = ['División', 'Cumpl. promedio', 'Oportunidad', 'Consistencia', 'Completitud']
+
+order_columns_NC = ['Lugar de medición','Promedio','Oportunidad.1','Consistencia.1','Completitud.1']
 
 indexs = [6,7,2,5,4,1,8,3,9,10,12,13,14,15,16,18,19,21,22,23,24,20,11,17]
 
@@ -40,9 +45,10 @@ column_orden = ['Cod_Sigemet','CR.2','Variable','Nivel','CR', 'CR inf','Tipo',
                 'Nombre del Indicador','Forma de Cálculo','Ponderación','Numerador 2024',
                 'Denominador 2024','Meta anual','Mes Periodo','Año Periodo','numerador',
                 'denominador','Meta periodo','Resultado periodo','Cumplimiento respecto a meta',
-                'Variacion Periodo','Riesgo (Alto - Medio- Bajo) periodo','Tipo Riesgo','Cantidad Riesgo Bajo',
-                'Cantidad Riesgo Medio', 'Cantidad Riesgo Alto','Análisis Resultado periodo',
-                'Nombre medios de verificación', 'tag_ponderado','Cumplimiento c/r a meta anual','Análisis DPCG', 'Ordenperiodo','ORDENCR']
+                'Variacion Periodo','Riesgo (Alto - Medio- Bajo) periodo','Tipo Riesgo',
+                'Cantidad Riesgo Bajo','Cantidad Riesgo Medio', 'Cantidad Riesgo Alto',
+                'Análisis Resultado periodo','Nombre medios de verificación', 'tag_ponderado',
+                'Cumplimiento c/r a meta anual','Análisis DPCG', 'Ordenperiodo','ORDENCR']
 
 columns_informe = ['CR','Tipo','Nombre del Indicador', 'Forma de Cálculo',
                  "Ponderación",'Meta anual','numerador','denominador','Resultado periodo',
