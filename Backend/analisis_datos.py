@@ -33,7 +33,7 @@ df = change_errors(df)
 
 # Se ramifica el data frame para filtrar todos los ponderados
 df_informe = query_ponderation(df)
-df = drop_unless_columns(df, None, None)
+df = drop_unless_columns(df, None, None, None)
 df = order_df(df)
 
 create_informe_BI(df)
