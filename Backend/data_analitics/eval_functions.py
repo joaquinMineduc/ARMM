@@ -79,7 +79,7 @@ df_NC4.columns = df_NC_columns
 df_eval_NC = pd.concat([df_NC_part1, df_NC2_part1,
                         df_NC_part2, df_NC2_part2,
                         df_NC_part3, df_NC3,df_NC4,
-                        df_NC2_part3], axis = 0)
+                        df_NC2_part3,df_NC_part4], axis = 0)
 
 df_eval_NC.reset_index(drop=True, inplace=True)
 format_divition(df_eval_NC)

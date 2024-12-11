@@ -1,8 +1,8 @@
-from report_functions import *
 from principal_functions import *
+from report_functions import *
+
 
 YEAR = get_this_year()
-
 
 # Creación del data frame
 df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls',None,1)

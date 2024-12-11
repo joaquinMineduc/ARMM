@@ -383,13 +383,6 @@ def change_errors(df):
     return df
 
 
-# se usa drop_index desde los datos estáticos
-def drop_unless_columns(df):
-    list_index = list(df.columns)
-    for index in drop_index:
-        df.drop(list_index[index], axis = 1, inplace = True)
-        print(df)
-    return df
 
 
 # Se utiliza column_order desde datos estáticos
