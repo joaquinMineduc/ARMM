@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from .static_data import *
-from .helper_functions import *
+from static_data import *
+from helper_functions import *
+
+
 
 # Aplicar multiproceso para mejorar rendimiento : PENDIENTE 
 def create_dataframe(location, sheet, header):

@@ -41,18 +41,3 @@ def insert_values_to_excel(values, columns, start_row, end_row, ws):
         
 
     
-    
-"""  # del D11 al D29
-        columnas = ['E']  # Lista de columnas
-        start_row = 11
-        end_row = 29
-
-        # Asegúrate de que los valores sean de tipo lista o iterable
-        values = df_eval_NC['Oportunidad'].tolist()  # Convierte la serie a lista
-        for index_row, valor in enumerate(values, start = start_row):
-            if index_row > end_row:
-                break  # Salir si excede el rango de filas
-
-            # Accede directamente a la celda de la columna 'D' y fila correspondiente
-            cell = ws[f"{columnas[0]}{index_row}"]
-            cell.value = valor"""

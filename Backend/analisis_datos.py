@@ -43,7 +43,7 @@ df_informe = format_variable(df_informe)
 
 create_informe_mensual(df_informe)
 
-
+print(df_informe)
 
 
 
