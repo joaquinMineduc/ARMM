@@ -1,4 +1,4 @@
-from principal_functions import *
+from .principal_functions import *
 
 
 # =============== Tratamiento DF regional ==================================

@@ -1,4 +1,4 @@
-from static_data import regiones
+from .static_data import regiones
 
 
 def classificator_by_reg(CR, arg):
