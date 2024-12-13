@@ -85,7 +85,7 @@ def partioner(df, start, end):
     return df.iloc[start:end]
 
 
-# Funcion que agrupa datos según una columna
+# Funcion que agrupa datos según una columna 
 def union_by_column(df, column):
     df = df.groupby(by=[column]).mean()
     df.reset_index(inplace = True)
@@ -144,21 +144,22 @@ def format_divition(df):
 
 
 def format_percentage(value):
-  if isinstance(value, float):
-    value = np.floor(value*10)/10
-    value = int(value)
-  value = str(value) + "%"
-  return value
+    if isinstance(value, float):
+        value = np.floor(value*10)/10
+        value = int(value)
+    value = str(value) + "%"
+    return value
+
 
 
 def format(df):
   for col in df:
     if col != 'División':
-      list_val = []
-      for row in df[col]:
-        if isinstance(row, float) or isinstance(row, int):
-          row = format_percentage(row)
-          list_val.append(row)
-        else:
-          list_val.append(row)
-      df[col] = list_val
+        list_val = []
+        for row in df[col]:
+            if isinstance(row, float) or isinstance(row, int):
+                row = format_percentage(row)
+                list_val.append(row)
+            else:
+                list_val.append(row)
+        df[col] = list_val

@@ -434,16 +434,20 @@ def format_variable(df_informe):
 
 
 #Funcion entrega formato del periodo
-def get_period_format():
-    month = datetime.now().month
+def get_period_format(month = None):
+    if not month:
+        month = datetime.now().month
     date = datetime(2024, month -1, 1)
     mes = date.strftime("%B")
     return mes
 
     
 # Funcion para crear el informe BI
-def create_informe_BI(df):
-    mes = get_period_format()
+def create_informe_BI(df, mes = None):
+    if mes is None:
+        mes = get_period_format()
+    else:
+        mes = get_period_format(mes)
     df.to_excel(f"datosBI_{mes}.xlsx", index = False)
 
 

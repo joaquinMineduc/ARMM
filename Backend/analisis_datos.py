@@ -3,10 +3,11 @@ from report_functions import *
 
 
 YEAR = get_this_year()
+ 
 
 # Creación del data frame
 df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls',None,1)
-# Se claisifcan indicadores ponderados
+# Se clasifcan indicadores ponderados
 df = add_clasificator_ponderation(df)
 
 df = add_split_indicador(df,'Indicador')
@@ -43,7 +44,7 @@ df_informe = format_variable(df_informe)
 
 create_informe_mensual(df_informe)
 
-print(df_informe)
+
 
 
 
