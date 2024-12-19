@@ -94,9 +94,17 @@ def union_by_column(df, column):
     return df
 
 #Funcion para crear consultas query
-def create_query(df, arg):
+def create_complex_query(df, arg):
     df = df.query(f"`Lugar de medición` == 'GABSUB' and Variable.str.startswith('{arg}')").reset_index(drop=True)
     return df 
+
+# una funcion que ejecuta una query simple
+def create_simple_query(df, column, arg_compare):
+    if isinstance(arg_compare, int):
+        df = df.query(f"`{column}` == {arg_compare}")
+    else:
+        df = df.query(f"`{column}` == '{arg_compare}'")
+    return df
 
 
 def modify_eval_values(df):
@@ -163,3 +171,55 @@ def format(df):
             else:
                 list_val.append(row)
         df[col] = list_val
+        
+# Funcion para eliminar columnas como filas (funcion reutilizable)
+def drop_columns_as_list(df, lista):
+  for col in lista:
+    df.drop(col, axis=1)
+  return df
+
+
+# FUncion para detectar si el dataframe no contiene filas especificas( ver si se puede reutilizar)
+def detector_less_columns(df, arg_rows: list):
+  columns = df['Tipo'].tolist()
+  for arg in arg_rows:
+    if arg not in columns:
+      df.loc[len(df)] = [arg,0,0,0]
+    return df
+
+
+
+# Funcion complemento a f(x) rename_columns
+def validation_type(arg):
+    return isinstance(arg, str)
+    
+
+# funcion que agrupa por tipo  indicador
+def group_by_columns(df, columns):
+    df = df.groupby(by=['Tipo'], as_index = False).count()
+    return df
+
+
+# Modificación y optimización de la funcion rename (Reutilizable)
+def rename_columns(df, origin_columns, new_name_columns):
+    if (validation_type(origin_columns) and validation_type(new_name_columns)):
+        df.rename(columns = {origin_columns:new_name_columns}, inplace = True)      
+    else:
+        for origin, new in zip(origin_columns, new_name_columns):
+            df.rename(columns = {origin:new}, inplace = True)    
+    return df
+
+
+
+def create_group_risk(df, columns_replace, columns_group):
+    origin_columns = df.columns
+    df = group_by_columns(df, columns_group)
+    df = rename_columns(df, origin_columns, columns_replace)
+    df = df.sort_values(by='Tipo')
+    df = df.reset_index(drop=True)
+    df = df[['Riesgo Bajo']]
+    return df    
+        
+        
+    
+    

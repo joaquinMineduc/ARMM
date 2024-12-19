@@ -330,7 +330,7 @@ def split_formula(df, column):
 
 
 # Aplica filtro para filtrar todos los indicadores que son podnerados del df
-def query_ponderation(df):
+def query_ponderation(df):# Se debe refactorizar ojalá reuhitilizar una funcion generixca
     df_informe = df.query("tag_ponderado == 'NO'")
     return df_informe
 

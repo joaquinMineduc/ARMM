@@ -52,7 +52,7 @@ df_NC2_part3.drop(index = 1, inplace = True)
 df_NC3 = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
                           "Eval. interna por variable", 2)
 
-df_NC3 = create_query(df_NC3, '[V21')
+df_NC3 = create_complex_query(df_NC3, '[V21')
 df_NC3 = drop_unless_columns(df_NC3, None, None, [0,2,3,4,5,6,7,8,12])
 df_NC3 = modify_eval_values(df_NC3)
 df_NC3 = create_means(df_NC3, 'Género')
@@ -61,7 +61,7 @@ df_NC3 = create_means(df_NC3, 'Género')
 df_NC4 = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
                           "Eval. interna por variable", 2)
 
-df_NC4 = create_query(df_NC4, '[I24')
+df_NC4 = create_complex_query(df_NC4, '[I24')
 df_NC4 = drop_unless_columns(df_NC4, None, None, [0,2,3,4,5,6,7,8,12])
 df_NC4 = modify_eval_values(df_NC4)
 df_NC4 = create_means(df_NC4, 'Gabinete Subsecretaría')
