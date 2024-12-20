@@ -25,7 +25,7 @@ def insert_values(df, columns, start_row, end_row, ws):
         case 3:
            insert_values_to_excel(df[column], columns[index_column], start_row, end_row, ws)
         case _:
-           insert_values_to_excel(df[column], columns[index_column], start_row, end_row, ws)
+           pass
 
 
 

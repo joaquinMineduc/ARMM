@@ -51,12 +51,15 @@ def drop_unless_rows(df, start, end, rows):
 
 
 # Crea una copia de un dataframe para la manipulacion de datos
-def create_an_copy(df, columns):
-    if isinstance(columns, list):
-        df_copy = df[columns].copy() # Se copian todas las columnas
+def create_an_copy(df, columns = None):
+    if columns:
+        if isinstance(columns, list):
+            df_copy = df[columns].copy() # Se copian todas las columnas
+        else:
+            df_copy = df[columns].copy() # Se copia  sólo 1 columna del df original   
     else:
-        df_copy = df[columns].copy() # Se copia  sólo 1 columna del df original
-    return df_copy
+        df_copy = df.copy()
+    return df_copy    
 
 
 # Funcion que clasifica las regiones según su id de SECREDUC
@@ -96,15 +99,36 @@ def union_by_column(df, column):
 #Funcion para crear consultas query
 def create_complex_query(df, arg):
     df = df.query(f"`Lugar de medición` == 'GABSUB' and Variable.str.startswith('{arg}')").reset_index(drop=True)
-    return df 
+    return df
 
 # una funcion que ejecuta una query simple
-def create_simple_query(df, column, arg_compare):
-    if isinstance(arg_compare, int):
-        df = df.query(f"`{column}` == {arg_compare}")
+def create_simple_query(df, column, arg_compare, filter = None):
+    if filter:
+        if isinstance(arg_compare, int):
+            df = df.query(f"`{column}` == {arg_compare}")[filter]
+        else:
+            df = df.query(f"`{column}` == '{arg_compare}'")[filter]
     else:
-        df = df.query(f"`{column}` == '{arg_compare}'")
+        if isinstance(arg_compare, int):
+            df = df.query(f"`{column}` == {arg_compare}")
+        else:
+            df = df.query(f"`{column}` == '{arg_compare}'")
     return df
+
+
+# Nuevo inspeccionar
+def create_query(df, columns, list_args, list_operator):
+    space = " "
+    query_str = ""
+    # Iterar sobre las columnas y los argumentos
+    for index, (col, arg) in enumerate(zip(columns, list_args)):
+        # Construir la condición
+        query_str += f'`{col}`' + space + "==" + space + f"'{arg}'"
+
+        # Añadir el operador lógico solo si no es la última iteración
+        if index < len(columns) - 1:
+            query_str += space + list_operator[index] + space
+    return query_str
 
 
 def modify_eval_values(df):
@@ -159,7 +183,6 @@ def format_percentage(value):
     return value
 
 
-
 def format(df):
   for col in df:
     if col != 'División':
@@ -171,6 +194,7 @@ def format(df):
             else:
                 list_val.append(row)
         df[col] = list_val
+     
         
 # Funcion para eliminar columnas como filas (funcion reutilizable)
 def drop_columns_as_list(df, lista):
@@ -180,11 +204,11 @@ def drop_columns_as_list(df, lista):
 
 
 # FUncion para detectar si el dataframe no contiene filas especificas( ver si se puede reutilizar)
-def detector_less_columns(df, arg_rows: list):
-  columns = df['Tipo'].tolist()
-  for arg in arg_rows:
-    if arg not in columns:
-      df.loc[len(df)] = [arg,0,0,0]
+def detector_less_columns(df, arg_rows):
+    columns = df['Tipo'].tolist()
+    for arg in arg_rows:
+        if arg not in columns:
+            df.loc[len(df)] = [arg,0,0,0]
     return df
 
 
@@ -195,8 +219,12 @@ def validation_type(arg):
     
 
 # funcion que agrupa por tipo  indicador
-def group_by_columns(df, columns):
-    df = df.groupby(by=['Tipo'], as_index = False).count()
+def group_by_columns(df, columns, arg = None):
+    if arg:
+        if arg == 1:
+            df = df.groupby(by=[columns], as_index = False).sum()
+    else:
+        df = df.groupby(by=[columns], as_index = False).count()
     return df
 
 
@@ -210,16 +238,30 @@ def rename_columns(df, origin_columns, new_name_columns):
     return df
 
 
-
-def create_group_risk(df, columns_replace, columns_group):
-    origin_columns = df.columns
-    df = group_by_columns(df, columns_group)
-    df = rename_columns(df, origin_columns, columns_replace)
+def create_group_risk(df, list_order_type, new_columns):
+    df = group_by_columns(df, 'Tipo')
+    df = detector_less_columns(df, list_order_type )
+    df = rename_columns(df, 'Tipo Riesgo', new_columns)
     df = df.sort_values(by='Tipo')
     df = df.reset_index(drop=True)
-    df = df[['Riesgo Bajo']]
-    return df    
-        
-        
-    
+    df = df[[f'{new_columns}']]
+    return df 
+
+   
+def cut_cr(df):
+    list_update_cr = []
+    CR = df['CR.2'].tolist()
+    for cr in CR:
+        if cr == 'División Jurídica':
+            list_update_cr.append('Jurídica')
+        elif cr == 'División de Planificación y Presupuesto':
+            list_update_cr.append('DIPLAP')
+        elif cr == "Gabinete Subsecretaría":
+            list_update_cr.append('Gab Subse')
+        elif cr == "Gabinete Ministerio":
+            list_update_cr.append('Gab Ministro')
+        else:
+            list_update_cr.append(cr)
+    df['CR.2'] = list_update_cr
+    return df
     
