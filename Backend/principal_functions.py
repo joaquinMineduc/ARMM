@@ -116,8 +116,7 @@ def create_simple_query(df, column, arg_compare, filter = None):
     return df
 
 
-# Nuevo inspeccionar
-def create_query(df, columns, list_args, list_operator):
+def build_query( columns, list_args, list_operator):
     space = " "
     query_str = ""
     # Iterar sobre las columnas y los argumentos
@@ -131,6 +130,13 @@ def create_query(df, columns, list_args, list_operator):
     return query_str
 
 
+# Nuevo inspeccionar 
+def create_query(df, columns, list_args, list_operator, columns_filter = None):
+    str_query = build_query(columns, list_args, list_operator)
+    df = df.query(str_query)[columns_filter]
+    return df
+
+
 def modify_eval_values(df):
     df['Oportunidad'] = df['Oportunidad'].apply(
         lambda op: 100 if op == 'Si' else 0 if op == 'No' else 'Sin informar')
@@ -139,6 +145,7 @@ def modify_eval_values(df):
     df['Completitud'] = df['Completitud'].apply(
         lambda op: 100 if op == 'Si' else 0 if op == 'No' else 'Sin informar')
     return df
+
 
 # recibe como argumento dataframe y arg = nuevo valor del lugar de medición
 def create_means(df, arg):

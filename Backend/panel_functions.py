@@ -6,6 +6,8 @@ all_columns = ['Tipo', 'Riesgo Bajo', 'Riesgo Medio', 'Riesgo Alto']
 list_order_type = ['CDC NIVEL CENTRAL','CDC REGIONES','H','PMG']
 columns1 = ['Tipo','Tipo Riesgo','Nivel','tag_ponderado']
 columns_filter = ['CR.2','Cantidad Riesgo Bajo','Cantidad Riesgo Medio','Cantidad Riesgo Alto']
+
+
 #============= Tratamiento datos panel principal =================
 
 panel_df = create_an_copy(df, columns1)
@@ -48,6 +50,7 @@ df_grap_PMG = create_simple_query(df_grap_PMG, 'Tipo','PMG', columns_filter)
 df_grap_PMG = group_by_columns(df_grap_PMG, 'CR.2', 1)
 df_grap_PMG = cut_cr(df_grap_PMG)
 
+
 #============= Creación data frame grafico H =================
 df_grap_H = create_an_copy(df)
 df_grap_H = create_simple_query(df_grap_H, 'Tipo','H', columns_filter)
@@ -56,5 +59,19 @@ df_grap_H = cut_cr(df_grap_H)
 print(df_grap_H)
 
 
+#============= Creación data frame grafico CDC Nivel central =================
+df_grap_CDC = create_an_copy(df)
+df_grap_CDC = create_query(df_grap_CDC, ['Tipo', 'Nivel'], ['CDC', 'NC'], ['and'], columns_filter)
+df_grap_CDC = group_by_columns(df_grap_CDC, 'CR.2', 1)
+df_grap_CDC = cut_cr(df_grap_CDC)
+print(df_grap_CDC)
 
-#============= Creación data frame grafico CDC =================
+
+#============ Creación data frame grafico CDC reg ==============
+df_grap_reg = create_an_copy(df)
+columns_filter.insert(0,'CR')
+columns_filter.pop(1)
+df_grap_reg = create_query(df_grap_reg, ['Tipo', 'Nivel'], ['CDC', 'Regiones'], 
+                           ['and'], columns_filter)
+df_grap_reg = group_by_columns(df_grap_reg, 'CR', 1)
+print(df_grap_reg)
