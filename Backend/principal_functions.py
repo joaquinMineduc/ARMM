@@ -133,7 +133,8 @@ def build_query( columns, list_args, list_operator):
 # Nuevo inspeccionar 
 def create_query(df, columns, list_args, list_operator, columns_filter = None):
     str_query = build_query(columns, list_args, list_operator)
-    df = df.query(str_query)[columns_filter]
+    if columns_filter:
+        df = df.query(str_query)[columns_filter]
     return df
 
 
@@ -271,4 +272,3 @@ def cut_cr(df):
             list_update_cr.append(cr)
     df['CR.2'] = list_update_cr
     return df
-    

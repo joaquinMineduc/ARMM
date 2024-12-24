@@ -20,6 +20,7 @@ for level, types in zip(panel_df['Nivel'],panel_df['Tipo']):
     list_new_type.append('CDC REGIONES')
   else:
     list_new_type.append(types)
+    
 panel_df['Tipo'] = list_new_type
 
 df_low_risk = create_simple_query(panel_df, 'Tipo Riesgo', 1)
@@ -71,7 +72,6 @@ print(df_grap_CDC)
 df_grap_reg = create_an_copy(df)
 columns_filter.insert(0,'CR')
 columns_filter.pop(1)
-df_grap_reg = create_query(df_grap_reg, ['Tipo', 'Nivel'], ['CDC', 'Regiones'], 
-                           ['and'], columns_filter)
+df_grap_reg = create_query(df_grap_reg, ['Tipo', 'Nivel'], ['CDC', 'Regiones'], ['and'], columns_filter)
 df_grap_reg = group_by_columns(df_grap_reg, 'CR', 1)
 print(df_grap_reg)
