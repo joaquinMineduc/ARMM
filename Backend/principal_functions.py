@@ -101,6 +101,7 @@ def create_complex_query(df, arg):
     df = df.query(f"`Lugar de medición` == 'GABSUB' and Variable.str.startswith('{arg}')").reset_index(drop=True)
     return df
 
+
 # una funcion que ejecuta una query simple
 def create_simple_query(df, column, arg_compare, filter = None):
     if filter:
@@ -271,4 +272,10 @@ def cut_cr(df):
         else:
             list_update_cr.append(cr)
     df['CR.2'] = list_update_cr
+    return df
+
+
+def order_reg_by_columns(df, column):
+    df = df.copy()
+    df.sort_values(by = column, inplace = True)
     return df
