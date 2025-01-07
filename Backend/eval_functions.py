@@ -1,8 +1,9 @@
 from principal_functions import *
 
+date_document = get_date()
 
 # =============== Tratamiento DF regional ==================================
-df_regional = create_dataframe("APP/Backend/Input/Eval_internal/eval.xls",
+df_regional = create_dataframe("APP/Backend/Input/Sigemet/Evaluacion/eval.xls",
                             'Evaluación Interna por Región', 2)
 
 df_regional = drop_unless_columns(df_regional, 1, 7, None)
@@ -17,7 +18,7 @@ format_eval_columns(df_regional)
 print(df_regional)
 
 # ================= Tratamiento DF NC =======================================
-df_NC = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
+df_NC = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
                          'Evaluación Interna por División', 3)
 
 df_NC = drop_unless_columns(df_NC, 1, 7, None)
@@ -32,7 +33,7 @@ df_NC_part4 = partioner(df_NC, 7, 8)
 
 # =========== Tratamiento DF NC por responsable ===================
 
-df_NC2 = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
+df_NC2 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
                           'Eval. interna por responsable', 3)
 
 df_NC2 = drop_unless_columns(df_NC2, 2, 12, None) # Se elimina antes para evitar el resize de los index
@@ -49,7 +50,7 @@ df_NC2_part3 = union_by_column(df_NC2_part3, 'Lugar de medición')
 df_NC2_part3.drop(index = 1, inplace = True)
 
 
-df_NC3 = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
+df_NC3 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
                           "Eval. interna por variable", 2)
 
 df_NC3 = create_complex_query(df_NC3, '[V21')
@@ -58,7 +59,7 @@ df_NC3 = modify_eval_values(df_NC3)
 df_NC3 = create_means(df_NC3, 'Género')
 
 
-df_NC4 = create_dataframe('APP/Backend/Input/Eval_internal/eval.xls',
+df_NC4 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
                           "Eval. interna por variable", 2)
 
 df_NC4 = create_complex_query(df_NC4, '[I24')
@@ -86,3 +87,5 @@ format_divition(df_eval_NC)
 format(df_eval_NC)
 
 df_eval_NC.to_excel("Eval. internal.xlsx", index = False)
+
+

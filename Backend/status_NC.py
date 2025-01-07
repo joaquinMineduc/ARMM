@@ -1,6 +1,8 @@
 from principal_functions import *
 from analisis_datos import df
 
+date_document = get_date()
+
 CR_2 = ['Gabinete Ministerio','Gabinete Subsecretaría','CPEIP','DEG',
         'División de Planificación y Presupuesto','DAG','UCE','División Jurídica']
 

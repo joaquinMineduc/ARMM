@@ -1,4 +1,6 @@
+from datetime import datetime
 
+YEAR = datetime.now().year
 
 regiones = [
     "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",
@@ -45,8 +47,8 @@ Group_40 = ['I19_019','I24_008']
 
 
 column_orden = ['Cod_Sigemet','CR.2','Variable','Nivel','CR', 'CR inf','Tipo',
-                'Nombre del Indicador','Forma de Cálculo','Ponderación','Numerador 2024',
-                'Denominador 2024','Meta anual','Mes Periodo','Año Periodo','numerador',
+                'Nombre del Indicador','Forma de Cálculo','Ponderación',f'Numerador {YEAR}',
+                f'Denominador {YEAR}','Meta anual','Mes Periodo','Año Periodo','numerador',
                 'denominador','Meta periodo','Resultado periodo','Cumplimiento respecto a meta',
                 'Variacion Periodo','Riesgo (Alto - Medio- Bajo) periodo','Tipo Riesgo',
                 'Cantidad Riesgo Bajo','Cantidad Riesgo Medio', 'Cantidad Riesgo Alto',

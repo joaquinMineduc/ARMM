@@ -1,6 +1,8 @@
 from principal_functions import *
 from analisis_datos import df
 
+date_document = get_date()
+
 list_new_type = []
 all_columns = ['Tipo', 'Riesgo Bajo', 'Riesgo Medio', 'Riesgo Alto']
 list_order_type = ['CDC NIVEL CENTRAL','CDC REGIONES','H','PMG']
