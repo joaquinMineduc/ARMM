@@ -34,11 +34,11 @@ df_risk = create_dataframe("APP/Backend/Input/Gestion riesgos/planilla_riesgos.x
 df_risk = drop_unless_columns(df_risk, None, None, 0)
 df_risk = clear_df(df_risk)
 df_risk = partioner(df_risk, 0, 9)
-print(df_risk)
+
 
 
 # ====================== Creación del df para el grafico de calor ==============================
 df_grap = create_dataframe("APP/Backend/Input/Gestion riesgos/planilla_riesgos.xlsx", 
                         'datos_Grafico', 2)
 df_grap = drop_unless_columns(df_grap, None, None, 0)
-print(df_grap)
+
