@@ -1,9 +1,11 @@
 import pandas as pd
+from datetime import datetime, timedelta
 import numpy as np
 from static_data import *
 from helper_functions import *
 
 
+    
 
 # Aplicar multiproceso para mejorar rendimiento : PENDIENTE 
 def create_dataframe(location, sheet, header):
@@ -20,17 +22,17 @@ def create_dataframe(location, sheet, header):
 # Eliminar columnas innecesarias
 def drop_unless_columns(df, start, end, columns):
     list_index = list(df.columns)
-    if (start and end) is None and columns is None:
-        for index in drop_index:
-            df.drop(list_index[index], axis = 1, inplace = True)
+    if (start and end) is None and columns is None: # si no se ingresa un inicio y termino y columna
+        for index in drop_index: 
+            df.drop(list_index[index], axis = 1, inplace = True) # elimina en base a una lsita predefinida
     if (start and end) is None and columns is not None:
-        if isinstance(columns, list):
-            for index in columns:
+        if isinstance(columns, list): # si la columna existe y el resto no, procede a eliminar
+            for index in columns: # las columnas en base a la lsita creada
                 df.drop(list_index[index], axis = 1, inplace = True)
         else:
             df.drop(list_index[columns], axis = 1, inplace = True)
     if (start and end) is not None and columns is  None:
-        for index in range(start, end):
+        for index in range(start, end): # elimina listas desde un rango y no desde una lista.
             df.drop(list_index[index], axis = 1, inplace = True)
     return df
 
@@ -83,7 +85,7 @@ def format_eval_columns(df):
             lambda x: str(x) + "%")
             
             
-# Funcion que crea una particion de un DF
+# Funcion que crea una particion de un DF usando ILOC, esta f(x) recibe un rango para filtrar las columnas
 def partioner(df, start, end):
     return df.iloc[start:end]
 
@@ -279,3 +281,28 @@ def order_reg_by_columns(df, column):
     df = df.copy()
     df.sort_values(by = column, inplace = True)
     return df
+
+# realizar validacion de año según cierre, si es enero debe tomar mes anterior y año anterior
+def get_date(format = None, text = None):
+    today = datetime.now()
+    month = today.month -1
+    if month == 0:
+        month = 12
+        month = datetime(2024, month, 1)
+    month = month.strftime("%B")
+    year = today.year
+    day = today.day
+    if format:
+        year = today.strftime("%y")
+        return f'Acum {month} - {year}'
+    if text and format is None:
+        return f'{text} {day} de {month}'
+    else:
+        return f'{month.upper()} {year}'
+        
+
+def clear_df(df):
+    df.dropna(inplace = True)
+    return df
+
+

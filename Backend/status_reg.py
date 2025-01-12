@@ -3,6 +3,8 @@ from analisis_datos import df
 
 columns = ['I23_014', 'I16_066', 'I24_12_', 'I16_056']
 
+date_document = get_date()
+
 for index, cod in enumerate(columns):
     if index < 1:
         df_status_REG = pd.DataFrame()  

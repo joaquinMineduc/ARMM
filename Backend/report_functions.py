@@ -384,7 +384,6 @@ def change_errors(df):
 
 
 
-
 # Se utiliza column_order desde datos estáticos
 def order_df(df):
     df = df[column_orden]
@@ -435,11 +434,14 @@ def format_variable(df_informe):
 
 #Funcion entrega formato del periodo
 def get_period_format(month = None):
-    if not month:
-        month = datetime.now().month
-    date = datetime(2024, month -1, 1)
-    mes = date.strftime("%B")
-    return mes
+    today = datetime.now()
+    month = today.month -1
+    if month == 0:
+        month = 12
+        month = datetime(2024, month, 1)
+    month = month.strftime("%B")
+    return month
+
 
     
 # Funcion para crear el informe BI
