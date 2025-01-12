@@ -6,7 +6,8 @@ YEAR = get_this_year()
  
 
 # Creación del data frame
-df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls',None,1)
+df = create_dataframe('Backend/Input/Reports/indicadores.xls', None, 1)
+
 # Se clasifcan indicadores ponderados
 df = add_clasificator_ponderation(df)
 
@@ -24,7 +25,7 @@ df = add_new_column(df, [f'Numerador {str(YEAR)}',
 
 df = add_order_CR(df, 'CR.2')
 df = add_cr(df, 'CR.2')
-df = concat_column_by_args(df,['Cod_Sigemet','CR.2'],'-','Variable')
+df = concat_column_by_args(df, ['Cod_Sigemet','CR.2'], '-', 'Variable')
 df = add_level(df, 'CR')
 df = add_risk_as_binary(df, 'Nivel Riesgo')
 df = rename_columns(df)
