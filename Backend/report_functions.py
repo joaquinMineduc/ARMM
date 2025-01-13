@@ -14,12 +14,6 @@ except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Para Windows
 
 
-
-def get_this_year():
-    year = datetime.now().year -1
-    return year
-
-
 def create_dataFrame(location):
     df = pd.read_excel(location, header = 1)
     return df
@@ -438,12 +432,13 @@ def get_period_format(month = None):
     month = today.month -1
     if month == 0:
         month = 12
-        month = datetime(2024, month, 1)
+        year = today.year -1
+        month = datetime(year, month, 1)
     month = month.strftime("%B")
     return month
 
 
-    
+
 # Funcion para crear el informe BI
 def create_informe_BI(df, mes = None):
     if mes is None:

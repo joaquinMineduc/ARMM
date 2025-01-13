@@ -2,11 +2,12 @@ from principal_functions import *
 from report_functions import *
 
 
-YEAR = get_this_year()
+DATE_REPORT = get_date()
+YEAR_REPORT = DATE_REPORT[-4:]
  
 
 # Creación del data frame
-df = create_dataframe('Backend/Input/Reports/indicadores.xls', None, 1)
+df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls', None, 1)
 
 # Se clasifcan indicadores ponderados
 df = add_clasificator_ponderation(df)
@@ -16,8 +17,8 @@ df = add_split_meta_periodo(df,'Período Meta')
 df = add_classificator_type(df, 'Instrumento')
 df = add_classificator_CR2(df, 'Centro Responsabilidad')
 
-df = add_new_column(df, [f'Numerador {str(YEAR)}',
-                         f'Denominador {str(YEAR)}',
+df = add_new_column(df, [f'Numerador {str(YEAR_REPORT)}',
+                         f'Denominador {str(YEAR_REPORT)}',
                          'Variacion Periodo',
                          'CR inf',
                          'Nombre medios de verificación',
@@ -42,6 +43,9 @@ create_informe_BI(df)
 
 df_informe = format_informe_mensual(df_informe)
 df_informe = format_variable(df_informe)
+
+
+# === Se Ordena el DF informe en base al formato requerido ======
 
 create_informe_mensual(df_informe)
 

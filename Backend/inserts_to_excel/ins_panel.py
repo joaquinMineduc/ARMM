@@ -6,18 +6,18 @@ from panel_functions import *
 from inserts_functions import *
 
 DATE_REPORT = get_date()
-YEAR_REPORT = DATE_REPORT[-4:]
 
 columns = ['G','K','M','O']
 columns_graps = ['B','C','D','E']
 
 
-# Se modifica el panel del informe, la primera página que contiene los gráficos.
-
-modify_file(route,'01-PANEL', df_principal_panel, columns, 9, 12)
-
 # Se agrega la fecha al documento
 modify_file(route, '01-PANEL', DATE_REPORT, 'M', 5, 5)
+
+
+# Se modifica el panel del informe, la primera página que contiene los gráficos.
+
+modify_file(route,'01-PANEL', df_principal_panel, columns, 10, 13)
 
 # Grafico PMG
 modify_file(route, 'data_panel',df_grap_PMG, columns_graps, 4, 6)
