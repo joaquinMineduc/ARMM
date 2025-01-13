@@ -7,11 +7,16 @@ from inserts_functions import *
 from risk_functions import *
 
 
+DATE_REPORT = get_date()
+
+
 columns = ['B','C','D']
 
 matriz_columns = ['G','I','L','O','R','T','V','X']
 risk_columns = ['L','O','Q','S','T','V','W','Y']
 columns_graph = ['C','D','E']
+
+modify_file(route, 'Gestión de riesgos', DATE_REPORT,'B', 4, 4)
 
 modify_file(route, 'Gestión de riesgos', df_risk_tools, columns, 8, 15)
 

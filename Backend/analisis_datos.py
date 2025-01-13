@@ -6,7 +6,7 @@ YEAR = get_this_year()
  
 
 # Creación del data frame
-df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls', None, 1)
+df = create_dataframe('Backend/Input/Reports/indicadores.xls', None, 1)
 
 # Se clasifcan indicadores ponderados
 df = add_clasificator_ponderation(df)

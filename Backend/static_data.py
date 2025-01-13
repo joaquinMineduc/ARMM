@@ -1,6 +1,6 @@
 from datetime import datetime
 
-YEAR = datetime.now().year
+YEAR = datetime.now().year -1
 
 regiones = [
     "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",

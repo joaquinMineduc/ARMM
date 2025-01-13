@@ -1,10 +1,17 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import numpy as np
 from static_data import *
 from helper_functions import *
+import locale
 
 
+# Configuración del idioma del entorno local, se cambia de EN a ES
+try:
+    # Esto funciona en la mayoría de los sistemas operativos
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Para sistemas basados en Unix/Linux
+except locale.Error:
+    locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Para Windows
     
 
 # Aplicar multiproceso para mejorar rendimiento : PENDIENTE 
@@ -283,22 +290,26 @@ def order_reg_by_columns(df, column):
     return df
 
 # realizar validacion de año según cierre, si es enero debe tomar mes anterior y año anterior
-def get_date(format = None, text = None):
+def get_date(format = None, text = None, Format2 = None):
     today = datetime.now()
     month = today.month -1
     if month == 0:
         month = 12
-        month = datetime(2024, month, 1)
+        year = datetime.now().year - 1
+        month = datetime(year, month, 1)
+    else:
+        year = today.year
     month = month.strftime("%B")
-    year = today.year
     day = today.day
     if format:
-        year = today.strftime("%y")
+        year = datetime(year, 1, 1).strftime("%Y")
         return f'Acum {month} - {year}'
     if text and format is None:
         return f'{text} {day} de {month}'
+    if Format2 and text is not None:
+        return f'{text} {year}'
     else:
-        return f'{month.upper()} {year}'
+        return f'{month.upper()} - {year}'
         
 
 def clear_df(df):

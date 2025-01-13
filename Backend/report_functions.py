@@ -16,7 +16,7 @@ except locale.Error:
 
 
 def get_this_year():
-    year = datetime.now().year
+    year = datetime.now().year -1
     return year
 
 
