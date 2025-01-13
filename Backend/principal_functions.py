@@ -172,6 +172,7 @@ def create_means(df, arg):
     df.reset_index(inplace=True, drop = True)
     return df
 
+
 def format_divition(df):
     list_divition = []
     for dv in df['División']:

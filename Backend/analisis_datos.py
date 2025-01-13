@@ -45,7 +45,9 @@ df_informe = format_informe_mensual(df_informe)
 df_informe = format_variable(df_informe)
 
 
-# === Se Ordena el DF informe en base al formato requerido ======
+# === Se Ordena el DF informe en base al formato requerido ======#
+
+
 
 create_informe_mensual(df_informe)
 
