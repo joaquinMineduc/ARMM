@@ -132,7 +132,7 @@ def build_query( columns, list_args, list_operator):
     # Iterar sobre las columnas y los argumentos
     for index, (col, arg) in enumerate(zip(columns, list_args)):
         # Construir la condición
-        query_str += f'`{col}`' + space + "==" + space + f"'{arg}'"
+        query_str += f'`{col}`' + space + "==" + space + f'"{arg}"'
 
         # Añadir el operador lógico solo si no es la última iteración
         if index < len(columns) - 1:
@@ -143,6 +143,7 @@ def build_query( columns, list_args, list_operator):
 # Nuevo inspeccionar 
 def create_query(df, columns, list_args, list_operator, columns_filter = None):
     str_query = build_query(columns, list_args, list_operator)
+    df = df.query(str_query)
     if columns_filter:
         df = df.query(str_query)[columns_filter]
     return df

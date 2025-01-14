@@ -1,11 +1,9 @@
 from principal_functions import *
 from report_functions import *
 
-
 DATE_REPORT = get_date()
 YEAR_REPORT = DATE_REPORT[-4:]
  
-
 # Creación del data frame
 df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls', None, 1)
 
@@ -46,9 +44,26 @@ df_informe = format_variable(df_informe)
 
 
 # === Se Ordena el DF informe en base al formato requerido ======#
+df_regiones = pd.DataFrame()
+df_instrument = pd.DataFrame()
+df_NC = pd.DataFrame()
 
+for index, cr in enumerate(regiones):
+   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and'])
+   df_regiones = pd.concat([df_regiones, df_query])
+print(df_regiones)
 
+for index, ins in enumerate(['H','PMG']):
+   df_query = create_query(df_informe, ['Tipo'], [ins], ['and'])
+   df_instrument = pd.concat([df_instrument, df_query])
+print(df_instrument)
 
+for index, cr in enumerate(['CPEIP','DAG','DEG','DIPLAP','GABINETE','JURIDICA','UCE']):
+   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and'])
+   df_NC = pd.concat([df_NC, df_query])
+print(df_NC)
+
+df_informe = pd.concat([df_instrument, df_NC, df_regiones])
 create_informe_mensual(df_informe)
 
 
