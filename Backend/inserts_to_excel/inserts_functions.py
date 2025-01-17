@@ -49,7 +49,6 @@ def insert_values2(df, columns, start_row, end_row, ws):
                 insert_values_to_excel(df[column], columns[index_column], start_row, end_row, ws)
 
 
-
 def modify_file(file_path, sheet_name, df, columns, start_row, end_row):
     with xw.App(visible = False) as app:
         wb = app.books.open(file_path)
