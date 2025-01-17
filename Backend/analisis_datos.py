@@ -64,7 +64,7 @@ for index, cr in enumerate(['CPEIP','DAG','DEG','DIPLAP','GABINETE','JURIDICA','
 print(df_NC)
 
 df_informe = pd.concat([df_instrument, df_NC, df_regiones])
-create_informe_mensual(df_informe)
+#create_informe_mensual(df_informe)
 
 
 
