@@ -64,8 +64,11 @@ for index, cr in enumerate(['CPEIP','DAG','DEG','DIPLAP','GABINETE','JURIDICA','
 print(df_NC)
 
 df_informe = pd.concat([df_instrument, df_NC, df_regiones])
-#create_informe_mensual(df_informe)
 
+
+# Se crea el data freame con los indiciadores que presentan riesgos
+df_risk = df_informe.query("`Nivel riesgo` in ['Medio', 'Alto']")
+print(df_risk)
 
 
 

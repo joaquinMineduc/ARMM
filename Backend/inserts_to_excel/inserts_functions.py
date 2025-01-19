@@ -10,7 +10,7 @@ def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_values2(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            route = "APP/Backend/output/anexo_final.xlsx"
+            route = "Backend/output/anexo_final.xlsx"
             wb.save(route)
             return route
         
@@ -58,7 +58,7 @@ def modify_file(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_values(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            route = "APP/Backend/output/informe_final.xlsx"
+            route = "Backend/output/informe_final.xlsx"
             wb.save(route)
             return route
 
@@ -95,6 +95,29 @@ def insert_date_document(date, column, row, ws):
     cell = ws[f"{column}{row}"]
     cell.value = date
     
+    
+    
+    
+def apply_borders(file_path, sheet_name):
+     with xw.App(visible = False) as app:
+        wb = app.books.open(file_path)
+        if sheet_name in [sheet.name for sheet in wb.sheets]:
+            ws = wb.sheets[sheet_name]
+            used_range  = ws.used_range
+            # Iterar por filas y columnas del rango usado
+            for row in used_range.rows:
+                for cell in row:
+                    if cell.value:  # Validar si la celda tiene valor (no es None ni vacío)
+                        # Aplicar bordes finos a la celda
+                        for border_id in range(7, 13):  # Borde izquierdo, derecho, superior, inferior, y diagonales
+                            cell.api.Borders(border_id).LineStyle = 1  # xlContinuous
+                            cell.api.Borders(border_id).Weight = 2    # xlThin
+                    if cell.value is None:
+                        print("Not data")
+                        
+            # Guardar los cambios
+            wb.save(file_path)
+            wb.close()
     
         
 

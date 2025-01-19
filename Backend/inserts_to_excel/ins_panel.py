@@ -12,7 +12,7 @@ columns_graps = ['B','C','D','E']
 
 
 # Se agrega la fecha al documento
-modify_file(route, '01-PANEL', DATE_REPORT, 'M', 5, 5)
+modify_file(route, '01-PANEL', DATE_REPORT, 'N', 5, 5)
 
 
 # Se modifica el panel del informe, la primera página que contiene los gráficos.
