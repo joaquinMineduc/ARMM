@@ -7,4 +7,4 @@ from inserts_functions import modify_anexo
 
 columns = ['A','B','C','D','E','F','G','H','I','J','K','L','M']
 
-modify_anexo("APP/Backend/Input/Reports/format_anexo.xlsx",'Sheet1', df_informe, columns, 5, 111)
+modify_anexo("Backend/Input/Reports/format_anexo.xlsx",'Sheet1', df_informe, columns, 5, 111)

@@ -9,6 +9,6 @@ YEAR_REPORT = DATE_REPORT[-4:]
 
 
 # Este código modifica la primer pagina del informe, la portada.
-route = modify_file('APP/Backend/Input/Reports/formato.xlsx','Portada', YEAR_REPORT, 'G', 11, 11)
+route = modify_file('Backend/Input/Reports/formato.xlsx','Portada', YEAR_REPORT, 'G', 11, 11)
 
 modify_file(route,'Portada', DATE_REPORT, 'F', 12, 12)
