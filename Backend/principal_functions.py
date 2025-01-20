@@ -26,6 +26,8 @@ def create_dataframe(location, sheet, header):
     return df
 
 
+
+
 # Eliminar columnas innecesarias
 def drop_unless_columns(df, start, end, columns):
     list_index = list(df.columns)

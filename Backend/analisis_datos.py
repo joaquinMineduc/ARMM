@@ -8,7 +8,9 @@ YEAR_REPORT = DATE_REPORT[-4:]
 df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls', None, 1)
 
 # Se clasifcan indicadores ponderados
+
 df = add_clasificator_ponderation(df)
+
 
 df = add_split_indicador(df,'Indicador')
 df = add_split_meta_periodo(df,'Período Meta')

@@ -27,10 +27,12 @@ def create_an_copy(df, columns):
     return df_copy
 
 
+
 def add_clasificator_ponderation(df):
     # Este código crea una clasificación entre indicadores ponderados y normales.
-    df['tag_ponderado'] = df.apply(lambda row: 'SI' if pd.isna
-                            (row['Instrumento']) else 'NO', axis = 1)
+    df['tag_ponderado'] = df.apply(lambda row: 'SI' 
+       if pd.isna(row['Instrumento']) 
+       else 'NO', axis=1)
     return df
 
 
@@ -108,6 +110,7 @@ def add_classificator_type(df, columns):
 def classificator_CR_REG(CR):
     CR = str(CR).upper()
     num = CR.split(":")
+    print(CR)
     num = int(num[1])
     num2 = num if num >= 10 else f'0{num}'
     if CR in [f'R{num2}.EDUC - REG:{num}',f'R{num2}.GAB - REG:{num}',

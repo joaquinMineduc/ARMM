@@ -12,6 +12,7 @@ alignment_center_top = Alignment(horizontal="center", vertical="top", wrap_text=
 alignment_center_center = Alignment(horizontal="center", vertical="center", wrap_text=True)
 alignment_center_left = Alignment(horizontal="left", vertical="top", wrap_text=True)
 
+
 type_font = font = Font(
     name='Calibri',  # Tipo de fuente (por defecto es 'Calibri')
     size=12,         # Tamaño de la fuente
@@ -123,9 +124,7 @@ ws.conditional_formatting.add("K5:K111", rule)
 
 
 ws.merge_cells('J4:K4')
-                
-            
-        
+                       
 ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE  # Landscape orientation
 ws.page_setup.paperSize = ws.PAPERSIZE_LEGAL   
 ws.page_setup.scale = 69  # Fit to one page in width
