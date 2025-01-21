@@ -30,8 +30,7 @@ df_NC_part3 = partioner(df_NC, 6, 7)
 df_NC_part4 = partioner(df_NC, 7, 8)
 
 
-
-# =========== Tratamiento DF NC por responsable ===================
+# =========== Tratamiento DF Evaluación proveedor interna de NC por responsable ===================
 
 df_NC2 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
                           'Eval. interna por responsable', 3)

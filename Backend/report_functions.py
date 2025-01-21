@@ -146,6 +146,8 @@ def add_classificator_CR2(df, columns):
                 lista_CR2.append("DEG")
             elif x in ['CRA - REG:99','CURRIC - REG:99','TE - REG:99', 'UCE - REG:99', 'UCE']:
                 lista_CR2.append("UCE")
+            elif x in ['DES','NIVEL_CENTRAL']:
+                lista_CR2.append("Plan de acción")
             else:
                 lista_CR2.append(classificator_CR_REG(x))
     df.loc[:,'CR.2'] = lista_CR2
@@ -162,6 +164,7 @@ def add_new_column(df, add_columns):
 
 def get_order_cr(CR, df_cr2):
     df_cr2 = df_cr2.drop_duplicates()
+    print(df_cr2)
     df_cr2.index = indexs
     df_cr2.sort_index(inplace = True)
     for index, cr in enumerate(df_cr2, start = 1):
@@ -201,7 +204,7 @@ def add_cr(df, column):
             list_CR.append("DIPLAP")
         elif CR in ['División Jurídica']:
             list_CR.append("JURIDICA")
-        elif CR in ['CPEIP','DAG','DEG','UCE']:
+        elif CR in ['CPEIP','DAG','DEG','UCE', 'Plan de acción']:
             list_CR.append(CR)
         else:
             list_CR.append(classificator_by_reg(CR, ' '))

@@ -15,7 +15,8 @@ order_columns_NC = ['Lugar de medición','Promedio','Oportunidad.1','Consistenci
 
 NC_columns = ['Lugar de medición', 'promedio', 'Oportunidad','Consistencia','Completitud']
 
-indexs = [6,7,2,5,4,1,8,3,9,10,12,13,14,15,16,18,19,21,22,23,24,20,11,17]
+# Se usa para crear el orden en la funcion order cr
+indexs = [6,7,2,5,4,1,8,3,9,10,12,13,14,15,16,18,19,21,22,23,24,20,11,17,28]
 
 drop_index = [0,1,2,3,5,6,7,8,10,12]
 

@@ -11,8 +11,8 @@ DATE_REPORT = get_date(format = True)
 
 
 date_columns = ['B']
-date_acum_columns = ['H']
-services_columns = ['B','C','D','E','F','G','H','I']
+date_acum_columns = ['I']
+services_columns = ['B','C','E','F','G','H','I','J']
 comment_columns = ['D','E']
 
 
