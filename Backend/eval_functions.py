@@ -46,43 +46,16 @@ df_NC2_part3 = partioner(df_NC2, 13, 17)
 df_NC2_part1 = union_by_column(df_NC2_part1, 'Lugar de medición')
 df_NC2_part2 = union_by_column(df_NC2_part2, 'Lugar de medición')
 df_NC2_part3 = union_by_column(df_NC2_part3, 'Lugar de medición')
-df_NC2_part3.drop(index = 1, inplace = True)
 
-
-df_NC3 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
-                          "Eval. interna por variable", 2)
-
-df_NC3 = create_complex_query(df_NC3, '[V21')
-df_NC3 = drop_unless_columns(df_NC3, None, None, [0,2,3,4,5,6,7,8,12])
-df_NC3 = modify_eval_values(df_NC3)
-df_NC3 = create_means(df_NC3, 'Género')
-
-
-df_NC4 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
-                          "Eval. interna por variable", 2)
-
-df_NC4 = create_complex_query(df_NC4, '[I24')
-df_NC4 = drop_unless_columns(df_NC4, None, None, [0,2,3,4,5,6,7,8,12])
-df_NC4 = modify_eval_values(df_NC4)
-df_NC4 = create_means(df_NC4, 'Gabinete Subsecretaría')
-
-
-
-# Se remodifican los headers
-df_NC3 = df_NC3[NC_columns]
-df_NC3.columns = df_NC_columns
-
-# Se remodifican los headers
-df_NC4 = df_NC4[NC_columns]
-df_NC4.columns = df_NC_columns
+df_NC2_part3 = format_divition(df_NC2_part3, True)
 
 df_eval_NC = pd.concat([df_NC_part1, df_NC2_part1,
                         df_NC_part2, df_NC2_part2,
-                        df_NC_part3, df_NC3,df_NC4,
-                        df_NC2_part3,df_NC_part4], axis = 0)
+                        df_NC_part3, df_NC2_part3,
+                        df_NC_part4], axis = 0)
 
 df_eval_NC.reset_index(drop=True, inplace=True)
-format_divition(df_eval_NC)
+df_eval_NC = format_divition(df_eval_NC)
 format(df_eval_NC)
 
 df_eval_NC.to_excel("Eval. internal.xlsx", index = False)
