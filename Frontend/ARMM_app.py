@@ -8,6 +8,7 @@ from Utility_functions import clearDocuments
 
 
 
+
 if __name__ == "__main__":
     clearDocuments() # limpiar todos los archivos generados durante su uso
     # Crear ventana principal  de la app

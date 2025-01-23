@@ -31,7 +31,3 @@ modify_file(route, 'data_panel',df_grap_CDC, columns_graps, 13, 20)
 # Grafico Regiones CDC
 modify_file(route, 'data_panel',df_grap_reg, columns_graps, 25, 40)
 
-
-
-
-#modify_file(route, 'Ev Proveedores', df_regional, columns_reg, 11, 26)

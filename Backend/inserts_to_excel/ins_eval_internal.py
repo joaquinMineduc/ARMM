@@ -7,11 +7,8 @@ from ins_status_reg import route
 from inserts_functions import *
 
 
-
-
 colums_nc = ['C','D','E','F','G']
 columns_reg = ['I','J','K','L','M']
-
 
 modify_file(route, 'Ev Proveedores',df_eval_NC, colums_nc, 11, 29)
 

@@ -4,6 +4,7 @@ import numpy as np
 from static_data import *
 from helper_functions import *
 import locale
+import multiprocessing.process
 
 
 # Configuración del idioma del entorno local, se cambia de EN a ES
@@ -320,5 +321,6 @@ def get_date(format = None, text = None, Format2 = None):
 def clear_df(df):
     df.dropna(inplace = True)
     return df
+
 
 

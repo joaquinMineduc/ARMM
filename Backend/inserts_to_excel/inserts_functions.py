@@ -12,6 +12,7 @@ def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_date_document(df, columns, start_row, ws)
             route = "APP/Backend/output/anexo_final.xlsx"
             wb.save(route)
+            wb.close()
             return route
         
         
@@ -60,7 +61,9 @@ def modify_file(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_date_document(df, columns, start_row, ws)
             route = "APP/Backend/output/informe_final.xlsx"
             wb.save(route)
+            wb.close()
             return route
+        
 
         
 # funcion que inserta valores a la planilla Excel. recibe  df, 

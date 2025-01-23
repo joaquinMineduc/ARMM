@@ -7,11 +7,14 @@ print(f"Directorio base: {base_dir}")
 
 # Construir la ruta relativa al archivo Excel
 excel_file = os.path.join(base_dir, "..", "Backend", "output", "informe_final.xlsx")
-output_pdf = os.path.join(base_dir, "..", "Backend", "output", "report_parts")
+output_pdf_dir = os.path.join(base_dir, "..", "Backend", "output", "report_parts")
 
 # Normalizar las rutas para evitar errores
 excel_file = os.path.normpath(excel_file)
-output_pdf = os.path.normpath(output_pdf)
+output_pdf_dir = os.path.normpath(output_pdf_dir)
+
+# Crear el directorio de salida si no existe
+os.makedirs(output_pdf_dir, exist_ok=True)
 
 # Verificar que el archivo Excel existe
 if not os.path.exists(excel_file):
@@ -19,27 +22,36 @@ if not os.path.exists(excel_file):
 else:
     print(f"El archivo Excel existe en: {excel_file}")
 
-    # Construir la ruta del archivo PDF
-    pdf_file = os.path.join(output_pdf, "informe_final.pdf")
-    pdf_file = os.path.normpath(pdf_file)
-    
     # Iniciar Excel y exportar a PDF
     excel_app = win32.Dispatch("Excel.Application")
     excel_app.Visible = False  # No mostrar la ventana de Excel
+
+    try:
+        # Abre el archivo Excel
+        workbook = excel_app.Workbooks.Open(excel_file)
+
+        # Iterar sobre todas las hojas del libro
+        for  sheet in workbook.Sheets:
+            # Verificar si la hoja está visible
+            if sheet.Visible == win32.constants.xlSheetVisible:
+                # Construir la ruta del archivo PDF para la hoja actual
+                pdf_file = os.path.join(output_pdf_dir, f"{sheet.Name}.pdf")
+                pdf_file = os.path.normpath(pdf_file)
+
+                # Exportar la hoja actual a PDF
+                print(f"Exportando hoja '{sheet.Name}' a {pdf_file}...")
+                sheet.ExportAsFixedFormat(0, pdf_file)
+            else:
+                print(f"Hoja '{sheet.Name}' está oculta. No se exportará.")
+        
+        print(f"Exportación completada. Los archivos PDF están en: {output_pdf_dir}")
     
-    # Abre el archivo Excel
-    workbook = excel_app.Workbooks.Open(excel_file)
+    except Exception as e:
+        print(f"Error durante la exportación: {e}")
     
-    # Seleccionar la hoja activa
-    sheet = workbook.Sheets(1)
-    
-    # Exportar la hoja a PDF
-    sheet.ExportAsFixedFormat(0, pdf_file)
-    
-    # Cerrar el archivo Excel
-    workbook.Close(SaveChanges=False)
-    
-    # Salir de Excel
-    excel_app.Quit()
-    
-    print(f"Hoja exportada a PDF en: {pdf_file}")
+    finally:
+        # Cerrar el archivo Excel
+        workbook.Close(SaveChanges=False)
+        
+        # Salir de Excel
+        excel_app.Quit()
