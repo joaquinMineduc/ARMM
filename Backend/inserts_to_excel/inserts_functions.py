@@ -1,5 +1,5 @@
 import xlwings as xw
-
+from Frontend.Variables import dir_output, path_report, path_anexo
 
 def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
     with xw.App(visible = False) as app:
@@ -10,10 +10,8 @@ def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_values2(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            route = "APP/Backend/output/anexo_final.xlsx"
-            wb.save(route)
+            wb.save(dir_output + path_anexo)
             wb.close()
-            return route
         
         
 # funcion que inserta valores a la planilla Excel. recibe  df, 
@@ -59,10 +57,8 @@ def modify_file(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_values(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            route = "APP/Backend/output/informe_final.xlsx"
-            wb.save(route)
+            wb.save(dir_output + path_report)
             wb.close()
-            return route
         
 
         

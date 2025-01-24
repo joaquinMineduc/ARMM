@@ -1,5 +1,8 @@
 import os, sys
-
+import sys
+import os
+# Añade la raíz del proyecto al PYTHONPATH
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 #-----------Configuración de directorio base ---------------------#
 
@@ -57,5 +60,9 @@ Rgob_Gray = (137,137,137,52)
 Rgob_white = (0,0,0,0)
 
 # ------------------- Variables de directorios de salida  --------------- #
-dir_in = "APP/Backend/Input"
-dir_output = "APP/Backend/output"
+dir_in = "APP/Backend/Input/Reports/"
+path_report_format = "formato.xlsx"
+dir_output = "APP/Backend/output/"
+dir_output_PDFs = "report_parts"
+path_report = "informe_final.xlsx"
+path_anexo = "format_anexo.xlsx"
