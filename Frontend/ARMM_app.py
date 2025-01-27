@@ -10,9 +10,12 @@ from Backend.create_report import print_report_sheets, merge_parts_report
 
 def btn():
     #call_all_inserts()
-    for args in  path_report, path_anexo:
-        print_report_sheets(args)
-    merge_parts_report(dir_output, 1)
+    for file in os.listdir("APP/Backend/output/report_parts"):
+        route_file = os.path.join("APP/Backend/output/report_parts", file)
+        os.remove(route_file)
+    for index, args in enumerate([path_report, path_anexo]):
+        print_report_sheets(args) 
+        merge_parts_report(dir_output, index)
 
 
 

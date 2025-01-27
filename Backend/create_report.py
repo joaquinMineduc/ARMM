@@ -1,7 +1,7 @@
 import os
 import win32com.client as win32
 from PyPDF2 import PdfMerger
-
+import re
 
 def print_report_sheets(dir_document):
     
@@ -35,11 +35,11 @@ def print_report_sheets(dir_document):
             workbook = excel_app.Workbooks.Open(excel_file)
 
             # Iterar sobre todas las hojas del libro
-            for index, sheet in enumerate(workbook.Sheets):
+            for index, sheet in enumerate(workbook.Sheets, start = 0):
                 # Verificar si la hoja está visible
                 if sheet.Visible == win32.constants.xlSheetVisible:
                     # Construir la ruta del archivo PDF para la hoja actual
-                    pdf_file = os.path.join(output_pdf_dir, f"{index}.pdf")
+                    pdf_file = os.path.join(output_pdf_dir, f"{str(index)}.pdf")
                     pdf_file = os.path.normpath(pdf_file)
                     if os.path.exists(pdf_file):
                         pdf_file = os.path.join(output_pdf_dir, f"{sheet.Name}.pdf")
@@ -59,24 +59,36 @@ def print_report_sheets(dir_document):
         
         
 
-def merge_parts_report(dir_output, type):
+def merge_parts_report(dir_output, loop):
+
     # Lista de archivos PDF que deseas concatenar
-    report_parts = []
+    list_report_parts = []
     dir_report_parts = os.path.join(dir_output, "report_parts")
     for parts in os.listdir(dir_report_parts):
-       file = os.path.join(dir_report_parts, parts)
-       report_parts.append(file)
-
-            
-
-    # Nombre del archivo PDF final
-    output_pdf = os.path.join(dir_output,f"Informe indicadores PMG CDC y Formularios H.pdf")  # Añadir periodo al nombre
+        part = parts.split(".")[0]
+        if loop == 0:
+            if part == "anexo_final":
+                part = str(8.5)
+                os.remove(dir_report_parts + "/anexo_risk.pdf")
+                os.rename(os.path.join(dir_report_parts, parts), os.path.join(dir_report_parts, f"{part}.pdf"))
+        if loop == 1:
+            if part == "anexo_risk":
+                part = str(8.5)
+                os.remove(dir_report_parts + "/anexo_final.pdf")
+                os.rename(os.path.join(dir_report_parts, parts), os.path.join(dir_report_parts, f"{part}.pdf"))
+               
+    for file in os.listdir(dir_report_parts):
+        file = os.path.join(dir_report_parts, file)
+        list_report_parts.append(file)
+        
+# Nombre del archivo PDF final
+    output_pdf = os.path.join(dir_output, f"Informe indicadores PMG CDC y Formularios H.pdf")  # Añadir periodo al nombre
 
     # Crear el objeto PdfMerger
     merger = PdfMerger()
 
     # Agregar cada archivo PDF al objeto merger
-    for pdf in report_parts:
+    for pdf in list_report_parts:
         print(pdf)
         merger.append(pdf)
 
@@ -85,3 +97,4 @@ def merge_parts_report(dir_output, type):
     merger.close()
 
     print(f"Archivo PDF combinado creado en: {output_pdf}")
+
