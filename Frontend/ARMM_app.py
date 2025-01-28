@@ -1,26 +1,26 @@
 import tkinter as tk
-import time
 from tkinter import filedialog
 import customtkinter as ct
 from PIL import Image, ImageTk
 from Variables import *
-from Utility_functions import clearDocuments
+from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
+from Backend.helper_functions import drop_parts_report
 
 def btn():
     #call_all_inserts()
-    for file in os.listdir("APP/Backend/output/report_parts"):
-        route_file = os.path.join("APP/Backend/output/report_parts", file)
-        os.remove(route_file)
-    for index, args in enumerate([path_report, path_anexo]):
-        print_report_sheets(args) 
+    for index in range(2):
+        for  args in (path_report, path_anexo):
+            print_report_sheets(args)
         merge_parts_report(dir_output, index)
-
-
+        drop_parts_report()
+        
+        
 
 if __name__ == "__main__":
-    clearDocuments() # limpiar todos los archivos generados durante su uso
+    clear_dir_output() # limpiar todos los archivos generados durante su uso
+    clear_dir_report_parts()
     # Crear ventana principal  de la app
     app = tk.Tk()
     app.title("Generador de informes monitoreo mensual")

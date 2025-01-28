@@ -1,18 +1,25 @@
 # funcion que elimina los documentos remanentes en caso de salida forzada
-import datetime, os, shutil
-import threading
-import pandas as pd
-import multiprocessing.process
-from Variables import dir_in, dir_output
+import os
+from Variables import dir_output, dir_output_PDFs
 
 
-def clearDocuments():
+def clear_dir_output():
     try:
-        documents = os.listdir(dir_in)
+        documents = os.listdir(dir_output)
         for document in documents:
-            os.remove(dir_in + documents)
-        #os.remove(dir_output)
+            if document not in ['anexo.xlsx','informe_final.xlsx','report_parts']:
+                os.remove(os.path.join(dir_output, document))
+                print(document)
     except:       
         print("the directory is empty")
-    return 
+    return
 
+
+def clear_dir_report_parts():
+    try:
+        documents = os.listdir(os.path.join(dir_output, dir_output_PDFs))
+        for document in documents:
+            os.remove(os.path.join(dir_output, dir_output_PDFs, document))
+    except:       
+        print("the directory is empty")
+    return

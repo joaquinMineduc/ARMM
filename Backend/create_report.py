@@ -1,10 +1,9 @@
 import os
 import win32com.client as win32
+from  helper_functions import identificator_type_strings, modfy_parts_reports, order_report_parts
 from PyPDF2 import PdfMerger
-import re
 
 def print_report_sheets(dir_document):
-    
     # Obtener el directorio base del script
     base_dir = os.path.dirname(os.path.abspath(__file__))
     print(f"Directorio base: {base_dir}")
@@ -38,11 +37,12 @@ def print_report_sheets(dir_document):
             for index, sheet in enumerate(workbook.Sheets, start = 0):
                 # Verificar si la hoja está visible
                 if sheet.Visible == win32.constants.xlSheetVisible:
-                    # Construir la ruta del archivo PDF para la hoja actual
-                    pdf_file = os.path.join(output_pdf_dir, f"{str(index)}.pdf")
-                    pdf_file = os.path.normpath(pdf_file)
-                    if os.path.exists(pdf_file):
+                    if sheet.Name in ['anexo_final','anexo_risk']:
                         pdf_file = os.path.join(output_pdf_dir, f"{sheet.Name}.pdf")
+                        pdf_file = os.path.normpath(pdf_file)
+                    else:
+                        # Construir la ruta del archivo PDF para la hoja actual
+                        pdf_file = os.path.join(output_pdf_dir, f"{index}.pdf")
                         pdf_file = os.path.normpath(pdf_file)
                     # Exportar la hoja actual a PDF
                     sheet.ExportAsFixedFormat(0, pdf_file)
@@ -56,40 +56,39 @@ def print_report_sheets(dir_document):
             
             # Salir de Excel
             excel_app.Quit()
-        
-        
 
 def merge_parts_report(dir_output, loop):
-
     # Lista de archivos PDF que deseas concatenar
     list_report_parts = []
     dir_report_parts = os.path.join(dir_output, "report_parts")
     for parts in os.listdir(dir_report_parts):
-        part = parts.split(".")[0]
-        if loop == 0:
-            if part == "anexo_final":
-                part = str(8.5)
-                os.remove(dir_report_parts + "/anexo_risk.pdf")
-                os.rename(os.path.join(dir_report_parts, parts), os.path.join(dir_report_parts, f"{part}.pdf"))
-        if loop == 1:
-            if part == "anexo_risk":
-                part = str(8.5)
-                os.remove(dir_report_parts + "/anexo_final.pdf")
-                os.rename(os.path.join(dir_report_parts, parts), os.path.join(dir_report_parts, f"{part}.pdf"))
-               
+        part = parts.split(".")[0]  # Se disecciona para poder ejercer un orden jerarquico
+        if identificator_type_strings(part):
+            if loop == 0  and part == "anexo_final":
+                modfy_parts_reports(dir_report_parts, parts, '6', '/anexo_risk.pdf')
+                output_pdf = os.path.join(dir_output, 
+                    f"Informe indicadores PMG CDC y Formularios H.pdf")   
+            if loop == 1 and part == "anexo_risk":
+                modfy_parts_reports(dir_report_parts, parts, '6', '/anexo_final.pdf')
+                output_pdf = os.path.join(dir_output, 
+                    f"Informe indicadores PMG CDC y Formularios H con Riesgos.pdf")
+        else:
+            if part == str(7):
+                part = str(5)
+                os.rename(os.path.join(dir_report_parts, parts), 
+                        os.path.join(dir_report_parts, 
+                        f"{part}.pdf"))
+ 
     for file in os.listdir(dir_report_parts):
         file = os.path.join(dir_report_parts, file)
         list_report_parts.append(file)
         
-# Nombre del archivo PDF final
-    output_pdf = os.path.join(dir_output, f"Informe indicadores PMG CDC y Formularios H.pdf")  # Añadir periodo al nombre
-
+    list_report_parts = order_report_parts(list_report_parts)
     # Crear el objeto PdfMerger
     merger = PdfMerger()
 
     # Agregar cada archivo PDF al objeto merger
     for pdf in list_report_parts:
-        print(pdf)
         merger.append(pdf)
 
     # Guardar el PDF combinado
@@ -97,4 +96,5 @@ def merge_parts_report(dir_output, loop):
     merger.close()
 
     print(f"Archivo PDF combinado creado en: {output_pdf}")
+
 
