@@ -123,15 +123,25 @@ def log_in_sigemet(driver, user, password):
     driver.find_element(By.NAME, "commit").click()
     
 # verificar si es necesario guardar el elemento en variables, si no lo es, mejorar mediante ciclos
-def go_managment_instruments(driver):
-    for element in ['frameset','seccion','seccionFrameset','menu','link_3','cuerpo',
-                    'frameset','cambio_subcategoria','cuerpo_seccion','leftFrame','linkItem_16190']:
-        if element in ['frameset']:
-            driver.find_element(By.TAG_NAME, f"{element}")
-        if element in ['seccion','menu','cuerpo','cambio_subcategoria','leftFrame']:
-            driver.switch_to.frame(f"{element}")
+def go_management_instruments(driver):
+    elements = [
+        "frameset", "seccion", "seccionFrameset", "menu", "link_3", "cuerpo",
+        "frameset", "cambio_subcategoria", "cuerpo_seccion", "leftFrame", "linkItem_16190"
+    ]
+
+    for element in elements:
+        if element == "frameset":
+            driver.find_element(By.TAG_NAME, element)  # Find the frameset tag
+        elif element in ["seccion", "menu", "cuerpo", "cambio_subcategoria", "leftFrame"]:
+            driver.switch_to.frame(element)  # Switch to frames
+        elif element in ["link_3", "linkItem_16190"]:
+            driver.find_element(By.ID, element).click()
+            if element == "link_3":
+                driver.switch_to.parent_frame()
         else:
-            driver.find_element(By.ID, f"{element}")
+            driver.find_element(By.ID, element)  # Find other elements
+        time.sleep(1)  # Optional delay for stability
+    time.sleep(5)  # Final delay after all actions
 
 """  driver.find_element(By.TAG_NAME, "frameset")
     #driver.find_element(By.NAME, "seccion")
