@@ -24,10 +24,13 @@ def get_year():
     if month == 0:
         month = 12
         year = datetime.now().year -1
+    else:
+        year = datetime.now().year
     date = datetime(year, month, 1).strftime("%Y-%B")
     return date
 
 year = get_year().split("-")[0]
+
 month = get_year().split("-")[1].capitalize()
 
 
@@ -38,12 +41,12 @@ def select_browser_driver():
     
     for browser in browsers:
         try:
-            if browser == "chrome":
-                driver = webdriver.Chrome()
+            if browser == "edge":
+                driver = webdriver.Edge()
             elif browser == "firefox":
                 driver = webdriver.Firefox()
-            elif browser == "edge":
-                driver = webdriver.Edge()
+            elif browser == "chrome":
+                driver = webdriver.Chrome()
             return driver
         except (SessionNotCreatedException, NoSuchDriverException):
             # alguna función que envíe un mensaje al usuario
@@ -89,19 +92,29 @@ def log_in_sharepoint(driver, email, password):
 def back_directory_base(driver):
     for i in range (3):
         driver.back()
-    time.sleep(2)
+    driver.refresh()
     
 
 def get_document(driver, name_file):
     try:
-        driver.find_element(By.XPATH, f"//button[@data-automationid='FieldRenderer-name' and contains(text(), '{name_file}')]").click()
+        time.sleep(5)
+        driver.find_element(By.XPATH, "//span[@role='button'"+
+            f"and contains(text(), '{name_file}')]").click()
         time.sleep(2)
-        driver.find_element(By.XPATH, f"//button[@data-automationid='FieldRenderer-name' and contains(text(), '{year}')]").click()
+        driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+            f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
         time.sleep(2)
-        driver.find_element(By.XPATH, f"//button[@data-automationid='FieldRenderer-name' and contains(text(), '{month}')]").click()
+        driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+            f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
         time.sleep(2)
-        driver.find_element(By.CLASS_NAME, "ms-SelectionZone").click()
-        driver.find_element(By.NAME, "Descargar").click()
+        driver.find_element(By.CLASS_NAME, "rowSelectionCell_eed5868f  ").click()
+        time.sleep(2)
+        driver.find_element(By.XPATH, "//button[@title='Más acciones'"+
+            " and @aria-label='Más acciones' and @data-automationid='moreActionsHeroField'"+
+            " and @data-selection-invoke='true']").click()
+        time.sleep(2)
+        driver.find_element(By.XPATH, "//button[@data-automationid='downloadCommand'"+
+            " and @role='menuitem']//span[contains(text(), 'Descargar')]").click()
         time.sleep(2)
     except:
         print("Verificar que los directorios no hayan sido modificados"+ 
@@ -126,7 +139,8 @@ def log_in_sigemet(driver, user, password):
 def go_management_instruments(driver):
     elements = [
         "frameset", "seccion", "seccionFrameset", "menu", "link_3", "cuerpo",
-        "frameset", "cambio_subcategoria", "cuerpo_seccion", "leftFrame", "linkItem_16190"
+        "frameset", "cambio_subcategoria", "cuerpo_seccion", "leftFrame", "linkItem_16190",
+        "frame", "mainFrame", "considerarAplicacionesReg", "botonXls"
     ]
 
     for element in elements:
@@ -136,31 +150,19 @@ def go_management_instruments(driver):
             driver.switch_to.frame(element)  # Switch to frames
         elif element in ["link_3", "linkItem_16190"]:
             driver.find_element(By.ID, element).click()
-            if element == "link_3":
-                driver.switch_to.parent_frame()
+            time.sleep(2)
+            driver.switch_to.parent_frame()
         else:
             driver.find_element(By.ID, element)  # Find other elements
         time.sleep(1)  # Optional delay for stability
     time.sleep(5)  # Final delay after all actions
+    
+    
+ 
 
-"""  driver.find_element(By.TAG_NAME, "frameset")
-    #driver.find_element(By.NAME, "seccion")
-    driver.switch_to.frame("seccion")
-    driver.find_element(By.ID, "seccionFrameset")
-    # selección de opciones
-    driver.switch_to.frame("menu")
-    driver.find_element(By.ID, "link_3").click()
-    driver.switch_to.parent_frame()
-    driver.switch_to.frame("cuerpo")
-    driver.find_element(By.TAG_NAME, "frameset")
-    #frame_set_principal.find_element(By.NAME, "cambio_subcategoria")
-    driver.switch_to.frame("cambio_subcategoria")
-    driver.find_element(By.ID, "cuerpo_seccion")
-    #frame_set_body.find_element(By.NAME, "leftFrame")
-    driver.switch_to.frame("leftFrame")
-    driver.find_element(By.ID, "linkItem_16190").click()
-    time.sleep(5)
-"""
+
+
+
 
 # verifica si el   
 def verify_directory(drive, element):
