@@ -2,6 +2,8 @@ from datetime import datetime
 import time 
 import locale
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
     WebDriverException,
@@ -9,7 +11,8 @@ from selenium.common.exceptions import (
     TimeoutException,
     NoSuchDriverException,
     InvalidArgumentException,
-    UnexpectedAlertPresentException
+    UnexpectedAlertPresentException,
+    NoSuchElementException
 )
 
 # Configuración del idioma del entorno local, se cambia de EN a ES
@@ -38,7 +41,6 @@ month = get_year().split("-")[1].capitalize()
 def select_browser_driver():
     browsers = ["chrome", "firefox", "edge"] 
     driver = None
-    
     for browser in browsers:
         try:
             if browser == "edge":
@@ -101,11 +103,17 @@ def get_document(driver, name_file):
         driver.find_element(By.XPATH, "//span[@role='button'"+
             f"and contains(text(), '{name_file}')]").click()
         time.sleep(2)
-        driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
-            f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
+        try:
+            checkpoint = True
+            driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+                f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
+        except NoSuchElementException:
+            
+            print(f"El directorio del año {year} aun no se encuentra creada")
+            
         time.sleep(2)
         driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
-            f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
+                f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
         time.sleep(2)
         driver.find_element(By.CLASS_NAME, "rowSelectionCell_eed5868f  ").click()
         time.sleep(2)
@@ -116,27 +124,42 @@ def get_document(driver, name_file):
         driver.find_element(By.XPATH, "//button[@data-automationid='downloadCommand'"+
             " and @role='menuitem']//span[contains(text(), 'Descargar')]").click()
         time.sleep(2)
-    except:
-        print("Verificar que los directorios no hayan sido modificados"+ 
-              "y que la planilla excel se encuentra en su respectiva carpeta")
+    except Exception as e:
+        if not isinstance(e, NoSuchElementException) and checkpoint:
+            print("Verificar que los directorios no hayan sido  eliminados o modificados"+ 
+                f" que la planilla excel se encuentra en su respectiva carpeta")
+        else:
+            create_new_directory(driver)
+        
+            
+def create_new_directory(driver):
+    driver.find_element(By.ID, "id__75").click()
+    driver.find_element(By.CLASS_NAME, "ms-ContextualMenu-itemText label-255").click()
+    driver.find_element(By.ID, "textField127").send_keys(year)
+    driver.find_element(By.ID, "crear").click()
+
+def create_new_subdirectory():
+    print("hola")
+        
 
 
 # esta  función permite iniciar sesión en sigemet      
 def log_in_sigemet(driver, user, password):
-    driver.switch_to.frame("seccion")
-    principal_frame = driver.find_element(By.ID, "seccionFrameset")
-    principal_frame.find_element(By.NAME, "cuerpo")
-    driver.switch_to.frame("cuerpo")
-    second_frame = driver.find_element(By.ID, "cuerpo_seccion")
-    second_frame.find_element(By.NAME, "mainFrame")
-    driver.switch_to.frame("mainFrame")
+    elements = ["seccion","cuerpo","mainFrame","login","passwdTxt","commit"]
+    for element in elements:
+        if element in ["seccion", "cuerpo", "mainFrame"]:
+            driver.switch_to.frame(element)
+        elif  element in ['login', 'passwdTxt']:
+            if element == "login":
+                driver.find_element(By.NAME, element).send_keys(user)
+            else:
+                driver.find_element(By.NAME, element).send_keys(password)
+        elif element == "commit":
+            driver.find_element(By.NAME, element).click()
     
-    driver.find_element(By.NAME, "login").send_keys(user)
-    driver.find_element(By.NAME, "passwdTxt").send_keys(password)
-    driver.find_element(By.NAME, "commit").click()
     
 # verificar si es necesario guardar el elemento en variables, si no lo es, mejorar mediante ciclos
-def go_management_instruments(driver):
+def download_report_indicators(driver):
     elements = [
         "frameset", "seccion", "seccionFrameset", "menu", "link_3", "cuerpo",
         "frameset", "cambio_subcategoria", "cuerpo_seccion", "leftFrame", "linkItem_16190",
@@ -144,32 +167,50 @@ def go_management_instruments(driver):
     ]
 
     for element in elements:
-        if element == "frameset":
+        if element in  ["frameset", "frame"]:
             driver.find_element(By.TAG_NAME, element)  # Find the frameset tag
-        elif element in ["seccion", "menu", "cuerpo", "cambio_subcategoria", "leftFrame"]:
-            driver.switch_to.frame(element)  # Switch to frames
+        elif element in ["seccion", "menu", "cuerpo", "cambio_subcategoria", 
+            "leftFrame","mainFrame"]:
+            driver.switch_to.frame(element)  # Switch to frames       
+        elif element in ["considerarAplicacionesReg", "botonXls"]:
+            wait = WebDriverWait(driver, 1)  # Espera hasta 1 segundos
+            wait.until(EC.presence_of_element_located((By.ID, element))).click()
         elif element in ["link_3", "linkItem_16190"]:
             driver.find_element(By.ID, element).click()
-            time.sleep(2)
+            time.sleep(1)
             driver.switch_to.parent_frame()
         else:
             driver.find_element(By.ID, element)  # Find other elements
         time.sleep(1)  # Optional delay for stability
-    time.sleep(5)  # Final delay after all actions
+    time.sleep(1)  # Final delay after all actions
+
+    
+
+def download_eval_prov(driver):
+    elements = ["leftFrame", "linkItem_17175", "frame", "mainFrame", "periodo", "btnExportExcel"]
+    time.sleep(2)
+    driver.switch_to.parent_frame()
+    for element in elements:
+        if element in ["leftFrame", "mainFrame"]:
+            driver.switch_to.frame(element)
+        elif element in ["linkItem_17175", "btnExportExcel"]:
+            time.sleep(1)
+            driver.find_element(By.ID, element).click()
+            time.sleep(1)
+            if element == "linkItem_17175":
+                driver.switch_to.parent_frame()     
+        elif element == "periodo":
+            wait = WebDriverWait(driver, 2)  # Espera hasta 10 segundos
+            select_period =  wait.until(EC.presence_of_element_located((By.ID, "periodo")))
+            select = Select(select_period)
+            select.select_by_index(0)
+    driver.close()
+        
     
     
- 
 
+  
 
-
-
-
-# verifica si el   
-def verify_directory(drive, element):
-    if element:
-        pass
-    else:
-        pass
         
     
     

@@ -1,6 +1,7 @@
 from scrapy_functions import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+
+
 
 def get_instruments_files():
     # Inicio sesión en Sharepoint y descarga documento ADP
@@ -16,12 +17,19 @@ def get_instruments_files():
     back_directory_base(driver)
     get_document(driver, 'Programas sociales')
     driver.close()
+    driver.quit()
     
 def upload_reportBI():
-    pass
+    # Inicio sesión en Sharepoint y descarga documento ADP
+    driver = select_browser_driver()
+    driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
+    driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
+    get_document(driver, 'Acumulativos BI')
 
 def download_reportsBI():
     pass
 
 def merge_and_upload_reportBI():
     pass
+
+upload_reportBI()
