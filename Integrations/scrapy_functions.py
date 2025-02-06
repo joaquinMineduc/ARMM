@@ -104,11 +104,11 @@ def get_document(driver, name_file):
             f"and contains(text(), '{name_file}')]").click()
         time.sleep(2)
         try:
-            checkpoint = True
             driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
                 f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
         except NoSuchElementException:
-            
+            checkpoint = True
+            create_new_directory(driver)
             print(f"El directorio del año {year} aun no se encuentra creada")
             
         time.sleep(2)
@@ -133,14 +133,16 @@ def get_document(driver, name_file):
         
             
 def create_new_directory(driver):
-    driver.find_element(By.ID, "id__75").click()
-    driver.find_element(By.CLASS_NAME, "ms-ContextualMenu-itemText label-255").click()
-    driver.find_element(By.ID, "textField127").send_keys(year)
-    driver.find_element(By.ID, "crear").click()
+    wait = WebDriverWait(driver, 3)  # Espera hasta 1 segundos
+    time.sleep(5)  # Wait 5 seconds
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'ms-Button-textContainer textContainer-153'))).click()
+
+        
+    time.sleep(2)
 
 def create_new_subdirectory():
     print("hola")
-        
+    
 
 
 # esta  función permite iniciar sesión en sigemet      
@@ -174,6 +176,7 @@ def download_report_indicators(driver):
             driver.switch_to.frame(element)  # Switch to frames       
         elif element in ["considerarAplicacionesReg", "botonXls"]:
             wait = WebDriverWait(driver, 1)  # Espera hasta 1 segundos
+            
             wait.until(EC.presence_of_element_located((By.ID, element))).click()
         elif element in ["link_3", "linkItem_16190"]:
             driver.find_element(By.ID, element).click()
