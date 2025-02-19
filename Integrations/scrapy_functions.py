@@ -78,6 +78,7 @@ def create_new_conecction(driver, url):
         driver.get(url)
     return driver
 
+# Mejorar - crear un ciclo
 def log_in_sharepoint(driver, email, password):
     time.sleep(2)
     driver.find_element(By.ID, "i0116").send_keys(email)
@@ -96,8 +97,34 @@ def back_directory_base(driver):
         driver.back()
     driver.refresh()
     
+    
+# funcion que accede a los directorios del Sharepoint
+def access_directory_SP(driver, name_file):
+    try:
+        try:
+            time.sleep(2)
+            driver.find_element(By.XPATH, "//span[@role='button'"+
+                f"and contains(text(), '{name_file}')]").click()
+        except NoSuchElementException:
+            error = f"Carpeta {name_file} eliminado o modificado"
+        try:
+            time.sleep(2)
+            error = f"Carpeta {year} eliminado o modificado"
+            driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+                f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
+        except NoSuchElementException:
+            error = f"Carpeta {year} eliminado o modificado"
+        try:
+            time.sleep(2)
+            driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+                f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
+        except NoSuchElementException:
+            error = f"Carpeta {year} eliminado o modificado"
+    except Exception as e:
+        if isinstance(e, NoSuchElementException):
+            print("hola")
 
-def get_document(driver, name_file):
+def get_document_BI(driver, name_file):
     try:
         time.sleep(5)
         driver.find_element(By.XPATH, "//span[@role='button'"+
