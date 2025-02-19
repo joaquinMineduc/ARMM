@@ -1,6 +1,15 @@
 from datetime import datetime
 
-YEAR = datetime.now().year -1
+def get_year():
+    today = datetime.today()
+    month = today.month -1
+    year = today.year
+    if month == 0:
+        year = year -1
+    return year
+
+YEAR = get_year()
+
 
 regiones = [
     "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",

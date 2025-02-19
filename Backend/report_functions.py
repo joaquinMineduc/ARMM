@@ -433,14 +433,17 @@ def format_variable(df_informe):
 
 
 #Funcion entrega formato del periodo
-def get_period_format(month = None):
+def get_period_format(month=None):
     today = datetime.now()
-    month = today.month -1
+    if month is None:
+        month = today.month - 1
     if month == 0:
         month = 12
-        year = today.year -1
-        month = datetime(year, month, 1)
-    month = month.strftime("%B")
+        year = today.year - 1
+    else:
+        year = today.year  # Agregar esta línea para definir year correctamente
+    
+    month = datetime(year, month, 1).strftime("%B")
     return month
 
 

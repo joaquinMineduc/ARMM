@@ -4,7 +4,7 @@ import numpy as np
 from static_data import *
 from helper_functions import *
 import locale
-import multiprocessing.process
+
 
 
 # Configuración del idioma del entorno local, se cambia de EN a ES
@@ -297,30 +297,40 @@ def order_reg_by_columns(df, column):
     return df
 
 # realizar validacion de año según cierre, si es enero debe tomar mes anterior y año anterior
-def get_date(format = None, text = None, Format2 = None):
+
+def get_date(format=None, text=None, Format2=None):
     today = datetime.now()
-    month = today.month -1
+    month = today.month - 1
+
     if month == 0:
         month = 12
-        year = datetime.now().year - 1
-        month = datetime(year, month, 1)
+        year = today.year - 1
     else:
         year = today.year
-    month = month.strftime("%B")
+
+    # Convertimos el número del mes a nombre del mes en inglés
+    month_name = datetime(year, month, 1).strftime("%B").upper()
+
     day = today.day
+
     if format:
-        year = datetime(year, 1, 1).strftime("%Y")
-        return f'Acum {month} - {year}'
+        return f'Acum {month_name} - {year}'
+
     if text and format is None:
-        return f'{text} {day} de {month}'
+        return f'{text} {day} de {month_name}'
+
     if Format2 and text is not None:
         return f'{text} {year}'
-    else:
-        return f'{month.upper()} - {year}'
+
+    return f'{month_name} - {year}'
+       
+       
+
 
 def clear_df(df):
     df.dropna(inplace = True)
     return df
+
 
 
 

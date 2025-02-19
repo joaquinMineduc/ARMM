@@ -1,6 +1,6 @@
 import os
 import win32com.client as win32
-from  helper_functions import identificator_type_strings, modfy_parts_reports, order_report_parts
+from  .helper_functions import identificator_type_strings, modfy_parts_reports, order_report_parts
 from PyPDF2 import PdfMerger
 
 def print_report_sheets(dir_document):

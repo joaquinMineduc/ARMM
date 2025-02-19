@@ -7,7 +7,7 @@ def clear_dir_output():
     try:
         documents = os.listdir(dir_output)
         for document in documents:
-            if document not in ['anexo.xlsx','informe_final.xlsx','report_parts']:
+            if document not in ['anexo_final.xlsx','informe_final.xlsx','report_parts']:
                 os.remove(os.path.join(dir_output, document))
                 print(document)
     except:       
