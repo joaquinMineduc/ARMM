@@ -28,6 +28,8 @@ def get_year():
         month = 12
         year = datetime.now().year -1
     else:
+        if month == 1 or 2:
+            month == 2
         year = datetime.now().year
     date = datetime(year, month, 1).strftime("%Y-%B")
     return date
@@ -78,20 +80,25 @@ def create_new_conecction(driver, url):
         driver.get(url)
     return driver
 
-# Mejorar - crear un ciclo
+# Mejorado
 def log_in_sharepoint(driver, email, password):
     time.sleep(2)
+    for element, credentials in zip(['i0116','i0118'],[email, password]):
+        driver.find_element(By.ID, element).send_keys(credentials)
+        time.sleep(2)
+        driver.find_element(By.ID, "idSIButton9").click()
+    driver.find_element(By.ID, "idBtn_Back").click()
+    return driver
+    
+""" time.sleep(2)
     driver.find_element(By.ID, "i0116").send_keys(email)
     driver.find_element(By.ID, "idSIButton9").click()
     time.sleep(2)
     driver.find_element(By.ID, "i0118").send_keys(password)
     driver.find_element(By.ID, "idSIButton9").click()
-    time.sleep(2)
-    driver.find_element(By.ID, "idBtn_Back").click()
-    time.sleep(2)
-    return driver
-
-
+    time.sleep(2)"""
+    
+    
 def back_directory_base(driver):
     for i in range (3):
         driver.back()
@@ -226,9 +233,9 @@ def download_eval_prov(driver):
         elif element in ["linkItem_17175", "btnExportExcel"]:
             time.sleep(1)
             driver.find_element(By.ID, element).click()
-            time.sleep(1)
+            time.sleep(2)
             if element == "linkItem_17175":
-                driver.switch_to.parent_frame()     
+                driver.switch_to.parent_frame()
         elif element == "periodo":
             wait = WebDriverWait(driver, 2)  # Espera hasta 10 segundos
             select_period =  wait.until(EC.presence_of_element_located((By.ID, "periodo")))

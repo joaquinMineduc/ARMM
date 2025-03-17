@@ -325,8 +325,6 @@ def get_date(format=None, text=None, Format2=None):
     return f'{month_name} - {year}'
        
        
-
-
 def clear_df(df):
     df.dropna(inplace = True)
     return df
