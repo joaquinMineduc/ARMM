@@ -3,6 +3,7 @@ import time
 import locale
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait, Select
+
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
@@ -41,7 +42,7 @@ month = get_year().split("-")[1].capitalize()
 
 
 def select_browser_driver():
-    browsers = ["chrome", "firefox", "edge"] 
+    browsers = ["edge", "firefox", "chrome"] 
     driver = None
     for browser in browsers:
         try:
@@ -90,15 +91,8 @@ def log_in_sharepoint(driver, email, password):
     driver.find_element(By.ID, "idBtn_Back").click()
     return driver
     
-""" time.sleep(2)
-    driver.find_element(By.ID, "i0116").send_keys(email)
-    driver.find_element(By.ID, "idSIButton9").click()
-    time.sleep(2)
-    driver.find_element(By.ID, "i0118").send_keys(password)
-    driver.find_element(By.ID, "idSIButton9").click()
-    time.sleep(2)"""
-    
-    
+
+ 
 def back_directory_base(driver):
     for i in range (3):
         driver.back()
@@ -107,29 +101,30 @@ def back_directory_base(driver):
     
 # funcion que accede a los directorios del Sharepoint
 def access_directory_SP(driver, name_file):
-    try:
-        try:
-            time.sleep(2)
-            driver.find_element(By.XPATH, "//span[@role='button'"+
-                f"and contains(text(), '{name_file}')]").click()
-        except NoSuchElementException:
-            error = f"Carpeta {name_file} eliminado o modificado"
-        try:
-            time.sleep(2)
-            error = f"Carpeta {year} eliminado o modificado"
-            driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
-                f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
-        except NoSuchElementException:
-            error = f"Carpeta {year} eliminado o modificado"
-        try:
-            time.sleep(2)
-            driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
-                f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
-        except NoSuchElementException:
-            error = f"Carpeta {year} eliminado o modificado"
-    except Exception as e:
-        if isinstance(e, NoSuchElementException):
-            print("hola")
+   
+    time.sleep(2)
+    driver.find_element(By.XPATH, "//span[@role='button'"+
+        f"and contains(text(), '{name_file}')]").click()
+        
+    time.sleep(2)
+    driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+        f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
+       
+    time.sleep(2)
+    driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+        f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
+    time.sleep(2)
+    
+    driver.find_element(By.CLASS_NAME, 'rowSelectionCell_13bd9a05').click()
+    time.sleep(2)
+    
+    driver.find_element(By.XPATH, "//button[@title='Más acciones'" + 
+        "and @data-automationid='moreActionsHeroField']").click()
+    time.sleep(2)
+    
+    driver.find_element(By.XPATH, "//button[@data-automationid='downloadCommand']").click()
+    time.sleep(2)
+        
 
 def get_document_BI(driver, name_file):
     try:

@@ -9,7 +9,7 @@ def get_instruments_files():
     # Inicio sesión en Sharepoint y descarga documento ADP
     driver = select_browser_driver()
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
-    driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
+    #driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     # Encuentra los elementos dentro de gridItemFocusFrame
     access_directory_SP(driver, 'ADP')
     back_directory_base(driver)
