@@ -9,7 +9,7 @@ from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import drop_parts_report
 
 def btn():
-    #call_all_inserts()
+    call_all_inserts()
     for index in range(2):
         for  args in (path_report, path_anexo):
             print_report_sheets(args)

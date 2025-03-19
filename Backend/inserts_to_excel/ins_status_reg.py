@@ -9,5 +9,5 @@ columns = ['B','C','D','E']
 
 def insert_data_reg():
     
-    modify_file(dir_output + path_report , 'data_status_reg', df_status_REG, columns, 4, 67)
+    modify_file(dir_output + path_report , 'data_status_reg', df_status_REG, columns, 4, 83)
     modify_file(dir_output + path_report, '03-  ESTADO REGIONES', date_document, 'B', 3, 3)
