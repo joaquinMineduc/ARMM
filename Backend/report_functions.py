@@ -100,11 +100,12 @@ def add_classificator_type(df, columns):
                     list_type.append("H")
                 case "Transversal":
                     list_type.append("PMG")
+                case "Riesgos":
+                    list_type.append("Riesgos")
                 case _:
                     list_type.append("")
         df.loc[:,'Tipo'] = list_type
     return df
-
 
 
 def classificator_CR_REG(CR):
@@ -114,7 +115,8 @@ def classificator_CR_REG(CR):
     num = int(num[1])
     num2 = num if num >= 10 else f'0{num}'
     if CR in [f'R{num2}.EDUC - REG:{num}',f'R{num2}.GAB - REG:{num}',
-              f'R{num2}.SUBV - REG:{num}',f'SECREDUC_{num} - REG:{num}']:
+              f'R{num2}.SUBV - REG:{num}',f'R{num2}.URAE - REG:{num}',
+              f'SECREDUC_{num} - REG:{num}']:
         return f"SECREDUC {num2}"
     else:
         return "format error"
@@ -128,26 +130,28 @@ def add_classificator_CR2(df, columns):
     if shape == 1:
         for x in df_filtrated:
             x = x.upper()
-            if x in ['AUDITORIA - REG:99','ESTUDIOS - REG:99','GABMIN']:
+            if x in ['AUDITORIA - REG:99','ESTUDIOS - REG:99','GABMIN','ESTUDIOS','SEGI']:
                 lista_CR2.append("Gabinete Ministerio")
-            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99',
-                    'GABSUB','INNOV - REG:99','INNOV','SEJEC_TP']:
+            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99','GABSUB',
+                'INNOV - REG:99','INNOV','SEJEC_TP','GENERO','SEJEC_TP - REG:99']:
                 lista_CR2.append("Gabinete Subsecretaría")
-            elif x in ['CNT - REG:99','CNT','RECFIN - REG:99','SUBV - REG:99','URAE', 'DIPLAP', 'DPCG']:
+            elif x in ['CNT - REG:99','CNT','RECFIN','SUBV - REG:99', 'SUBV','URAE',
+                'DIPLAP', 'DPCG', 'GAB_DIPLAP']:
                 lista_CR2.append("División de Planificación y Presupuesto")
             elif x in ['C.AYC - REG:99','C.AYC','C.CONV', 'C.NORM - REG:99','C.NORM',
-                       'C.PROC','C.SYJ - REG:99','JURID']:
+                'C.PROC','C.SYJ - REG:99', 'JURID']:
                 lista_CR2.append("División Jurídica")
-            elif x in ['FCONT','FID','LDP','CPEIP']:
+            elif x in ['FCONT - REG:99','FID','ALDT - REG:99','CPEIP','LDP - REG:99']:
                 lista_CR2.append("CPEIP")
-            elif x in ['COMPRAS','GC - REG:99','GDP - REG:99','DAG', 'BIE - REG:99']:
+            elif x in ['COMPRAS - REG:99','GC - REG:99','GDP - REG:99','DAG', 'BIE - REG:99']:
                 lista_CR2.append("DAG")
             elif x in ['SEP','EPJA - REG:99','EPJA', 'DEG']:
                 lista_CR2.append("DEG")
-            elif x in ['CRA - REG:99','CURRIC - REG:99','TE - REG:99', 'UCE - REG:99', 'UCE']:
+            elif x in ['CRA - REG:99','CURRIC - REG:99','TE - REG:99', 'UCE - REG:99', 'UCE', 
+                'ESTAND - REG:99']:
                 lista_CR2.append("UCE")
             elif x in ['DES','NIVEL_CENTRAL']:
-                lista_CR2.append("Plan de acción")
+                lista_CR2.append("Plan de acciones")
             else:
                 lista_CR2.append(classificator_CR_REG(x))
     df.loc[:,'CR.2'] = lista_CR2
@@ -204,7 +208,7 @@ def add_cr(df, column):
             list_CR.append("DIPLAP")
         elif CR in ['División Jurídica']:
             list_CR.append("JURIDICA")
-        elif CR in ['CPEIP','DAG','DEG','UCE', 'Plan de acción']:
+        elif CR in ['CPEIP','DAG','DEG','UCE', 'Plan de acciones']:
             list_CR.append(CR)
         else:
             list_CR.append(classificator_by_reg(CR, ' '))
@@ -340,10 +344,10 @@ def add_weighthing(df, column):
     list_weighthing = []
     df_weighthing = create_an_copy(df, column)
     for cod, CR in zip(df_weighthing['Cod_Sigemet'], df_weighthing['CR.2']):
-        if cod in Group_5:
-            list_weighthing.append("5,0%")
-        elif cod in Group_10:
+        if cod in Group_10:
             list_weighthing.append("10,0%")
+        elif cod in Group_12:
+            list_weighthing.append("12,0%")
         elif cod in Group_13:
             list_weighthing.append("13,0%")
         elif cod in Group_14:
@@ -354,24 +358,18 @@ def add_weighthing(df, column):
             list_weighthing.append("16,0%")
         elif cod in Group_17:
             list_weighthing.append("17,0%")
-        elif cod in Group_18:
-            list_weighthing.append("18,0%")
-        elif cod in Group_23:
-            list_weighthing.append("23,0%")
-        elif cod in Group_27:
-            list_weighthing.append("27,0%")
+        elif cod in Group_20 and CR not in ['SECREDUC 13','SECREDUC 16']:
+            list_weighthing.append("20,0%")
+        elif cod in Group_25:
+            list_weighthing.append("25,0%")
         elif cod in Group_30:
             list_weighthing.append("30,0%")
-        elif cod in Group_33:
-            list_weighthing.append("33,0%")
-        elif cod in Group_34 and CR in ['SECREDUC 13','SECREDUC 16']:
-            list_weighthing.append("34,0%")
         elif cod in Grupo_35:
             list_weighthing.append("35,0%")
         elif cod in Group_40:
             list_weighthing.append("40,0%")
         else:
-            list_weighthing.append("25,0%")
+            list_weighthing.append("0%")
     df.loc[:,'Ponderación'] = list_weighthing
     return df
 
