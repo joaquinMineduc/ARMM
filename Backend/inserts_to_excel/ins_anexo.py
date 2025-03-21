@@ -10,7 +10,7 @@ columns = ['A','B','C','D','E','F','G','H','I','J','K','L','M']
 
 
 def insert_data_anexo():
-    modify_anexo(dir_in + format_anexo, 'anexo_final', df_informe, columns, 5, 111)
-    modify_anexo(dir_output + path_anexo, 'anexo_risk', df_risk, columns, 5, 111)
+    modify_anexo(dir_in + format_anexo, 'anexo_final', df_informe, columns, 5, 127)
+    modify_anexo(dir_output + path_anexo, 'anexo_risk', df_risk, columns, 5, 127)
     apply_borders(dir_output + path_anexo, 'anexo_final')
     apply_borders(dir_output + path_anexo, 'anexo_risk')
