@@ -17,7 +17,6 @@ def btn():
         drop_parts_report()
         
         
-
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso
     clear_dir_report_parts()
@@ -28,14 +27,12 @@ if __name__ == "__main__":
     app.minsize(width = 450, height = 650)
     app.iconbitmap("APP/Frontend/icons/logo-ministerio.ico")
 
-
     # Añadir un frame
     frame = tk.Frame(app)
     frame.pack(padx = 10, pady = 10,)
 
     frame.columnconfigure([0, 1], weight = 1)
     frame.rowconfigure([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], weight = 0)
-
 
     # Añadir una imagen al frame
     image_path = "APP/Frontend/icons/Mineduc-PI.png"
