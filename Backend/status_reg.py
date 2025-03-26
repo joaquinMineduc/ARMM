@@ -9,7 +9,7 @@ for index, cod in enumerate(columns):
     if index < 1:
         df_status_REG = pd.DataFrame()  
     df_status = create_query(df,['Cod_Sigemet', 'Nivel', 'tag_ponderado'],
-                            [cod, 'Regiones', 'NO'],['and', 'and'], 
+                            [cod, 'Regiones', 'NO'],['and', 'and', 'and'], ['==', '==', '=='],
                             ['Cod_Sigemet', 'Variable', 'CR', 'Riesgo (Alto - Medio- Bajo) periodo'])
     if index == 1:
         df_status.loc[len(df_status)] = ["I16_066","I16_066-SECREDUC 13",'Metropolitana','No aplica']

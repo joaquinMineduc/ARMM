@@ -51,17 +51,17 @@ df_instrument = pd.DataFrame()
 df_NC = pd.DataFrame()
 
 for index, cr in enumerate(regiones):
-   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and'])
+   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and','and'], ['==','=='])
    df_regiones = pd.concat([df_regiones, df_query])
 print(df_regiones)
 
 for index, ins in enumerate(['H','PMG']):
-   df_query = create_query(df_informe, ['Tipo'], [ins], ['and'])
+   df_query = create_query(df_informe, ['Tipo'], [ins], ['and'], ['=='])
    df_instrument = pd.concat([df_instrument, df_query])
 print(df_instrument)
 
 for index, cr in enumerate(['CPEIP','DAG','DEG','DIPLAP','GABINETE','JURIDICA','UCE']):
-   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and'])
+   df_query = create_query(df_informe, ['Tipo','CR'], ['CDC',cr], ['and','and'], ['==','=='])
    df_NC = pd.concat([df_NC, df_query])
 print(df_NC)
 

@@ -128,24 +128,22 @@ def create_simple_query(df, column, arg_compare, filter = None):
             df = df.query(f"`{column}` == '{arg_compare}'")
     return df
 
-
-def build_query( columns, list_args, list_operator):
+def build_query( columns, list_args, list_operator, list_logic):
     space = " "
     query_str = ""
     # Iterar sobre las columnas y los argumentos
-    for index, (col, arg) in enumerate(zip(columns, list_args)):
+    for index, (col, arg, op, log) in enumerate(zip(columns, list_args, list_operator, list_logic)):
         # Construir la condición
-        query_str += f'`{col}`' + space + "==" + space + f'"{arg}"'
-
+        query_str += f'`{col}`' + space + f'{log}' + space + f'"{arg}"'
+        print(query_str)
         # Añadir el operador lógico solo si no es la última iteración
-        if index < len(columns) - 1:
-            query_str += space + list_operator[index] + space
+        if index  < len(columns) - 1:
+          query_str += space + list_operator[index] + space
     return query_str
 
-
-# Nuevo inspeccionar 
-def create_query(df, columns, list_args, list_operator, columns_filter = None):
-    str_query = build_query(columns, list_args, list_operator)
+# Nuevo inspeccionar
+def create_query(df, columns, list_args, list_operator, list_logic = None, columns_filter = None):
+    str_query = build_query(columns, list_args, list_operator, list_logic)
     df = df.query(str_query)
     if columns_filter:
         df = df.query(str_query)[columns_filter]
