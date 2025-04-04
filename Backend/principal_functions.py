@@ -128,6 +128,7 @@ def create_simple_query(df, column, arg_compare, filter = None):
             df = df.query(f"`{column}` == '{arg_compare}'")
     return df
 
+
 def build_query( columns, list_args, list_operator, list_logic):
     space = " "
     query_str = ""
@@ -140,6 +141,7 @@ def build_query( columns, list_args, list_operator, list_logic):
         if index  < len(columns) - 1:
           query_str += space + list_operator[index] + space
     return query_str
+
 
 # Nuevo inspeccionar
 def create_query(df, columns, list_args, list_operator, list_logic = None, columns_filter = None):
@@ -246,6 +248,8 @@ def group_by_columns(df, columns, arg = None):
     if arg:
         if arg == 1:
             df = df.groupby(by=[columns], as_index = False).sum()
+        elif arg == 2:
+            df = df.groupby(by=[[columns]], as_index = False).mean()
     else:
         df = df.groupby(by=[columns], as_index = False).count()
     return df

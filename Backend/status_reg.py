@@ -16,15 +16,6 @@ for index, cod in enumerate(columns):
         df_status.loc[len(df_status)] = ["I16_066","I16_066-SECREDUC 16","Ñuble","No aplica"]
     df_status = order_reg_by_columns(df_status, 'Variable')
     df_status_REG = pd.concat([df_status_REG, df_status])
-    
-"""   if index == 2:
-        df_status = df.query("Cod_Sigemet.str.contains('I24_12_')" + 
-                             "and `Nivel` == 'Regiones'" + 
-                             "and `tag_ponderado` =='NO'")[['Cod_Sigemet', 
-                                                            'Variable','CR', 
-                                                            'Riesgo (Alto - Medio- Bajo) periodo']]
-        df_status = order_reg_by_columns(df_status, 'Variable')
-        df_status_REG = pd.concat([df_status_REG, df_status])"""
         
 
         
