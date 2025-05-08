@@ -18,6 +18,6 @@ def insert_data_adp():
     
     modify_file(dir_output + path_report, 'Convenios ADP', df_adp_data, services_columns, 6, 12)
     modify_file(dir_output + path_report, 'Convenios ADP', df_adp_comments, comment_columns, 16, 22)
-    modify_file(dir_output + path_report, 'Convenios ADP', DATE_REPORT, 'H', 2, 2)
+    modify_file(dir_output + path_report, 'Convenios ADP', DATE_REPORT, 'I', 2, 2)
     modify_file(dir_output + path_report, 'Convenios ADP', date_subtitle, 'B', 3, 3)
 

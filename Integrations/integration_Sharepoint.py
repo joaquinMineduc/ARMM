@@ -1,23 +1,16 @@
 from scrapy_functions import *
 from selenium.webdriver.chrome.options import Options
 from pywinauto import Application
-import os
-from pathlib import Path
 from pywinauto.keyboard import send_keys
 
 def get_instruments_files():
     # Inicio sesión en Sharepoint y descarga documento ADP
     driver = select_browser_driver()
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
-    #driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
+    driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     # Encuentra los elementos dentro de gridItemFocusFrame
-    access_directory_SP(driver, 'ADP')
-    back_directory_base(driver)
-    # retroceder a inicio y descargar documento gestión de riesgos
-    access_directory_SP(driver, 'Gestión de Riesgos')
-    #retroceder al inicio y descargar documento programas sociales
-    back_directory_base(driver)
-    access_directory_SP(driver, 'Programas sociales')
+    for dir in range (3):
+        access_directory_SP(driver, dir)
     driver.close()
     driver.quit()
     
@@ -27,6 +20,7 @@ def upload_reportBI():
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     access_directory_SP(driver, 'Acumulativos BI')
+    
 
 def download_reportsBI():
     pass

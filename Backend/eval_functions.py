@@ -61,26 +61,37 @@ df_NC3 = df_NC3.groupby(by=['Lugar de medición'], as_index = False).mean()
 
 
 df_NC3.loc[:,'Promedio']= np.mean(df_NC3[['Consistencia','Oportunidad','Completitud']].values, axis = 1)
-df_NC3
 
-print(df_NC3)
-    #df_NC2_part2 = partioner(df_NC2_temp, 6, 8)
-    
-    
+df_NC3 = df_NC3[order_partioner]
+df_NC3.columns = df_NC_columns
 
-    
-  
-    
+df_NC3 = format_divition(df_NC3)
 
 
+df_diplap = pd.DataFrame()
+df_gabmin = pd.DataFrame()
+df_gabsub = pd.DataFrame()
 
-"""
-df_NC2_part3 = format_divition(df_NC2_part3, True)
+for row in df_NC3.itertuples(index=True):
+    if row[1] in ["CNT",'Recursos Financieros','Subvenciones','URAE']:
+        df_temp = partioner(df_NC3, row[0], row[0] + 1)
+        df_diplap = pd.concat([df_diplap, df_temp ], axis = 0)
+    if row[1] in ["Auditoria",'Estudios']:
+        df_temp = partioner(df_NC3, row[0], row[0] + 1)
+        df_gabmin = pd.concat([df_gabmin, df_temp ], axis = 0)
+    if row[1] in ["Ayuda Mineduc",'Innovación','Gabinete Subsecretaría','TP']:
+        df_temp = partioner(df_NC3, row[0], row[0] + 1)
+        df_gabsub = pd.concat([df_gabsub, df_temp ], axis = 0)
 
 
-df_eval_NC.reset_index(drop=True, inplace=True)
-df_eval_NC = format_divition(df_eval_NC)
+# Concatenación de todos los df
+df_eval_NC = pd.concat([df_NC_part1, df_diplap, df_NC_part2, 
+    df_gabmin, df_NC_part3, df_gabsub, df_NC_part4], axis = 0)
+
+
 format(df_eval_NC)
 
-df_eval_NC.to_excel("Eval. internal.xlsx", index = False) """
+print(df_eval_NC)
+
+df_eval_NC.to_excel("Eval. internal.xlsx", index = False)
 

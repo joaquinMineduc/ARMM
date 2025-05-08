@@ -177,7 +177,7 @@ def create_means(df, arg):
     return df
 
 
-def format_divition(df, sub_divition = None):
+def format_divition(df):
     list_divition = []
     for dv in df['División']:
         if dv == 'RECFIN':
@@ -192,7 +192,7 @@ def format_divition(df, sub_divition = None):
             list_divition.append('TP')
         elif dv in ['AUDITORIA','ESTUDIOS']:
             list_divition.append(str(dv).lower().capitalize())
-        elif dv == 'GABSUB' and sub_divition is not None:
+        elif dv == 'GABSUB':
             list_divition.append('Gabinete Subsecretaría')
         else:
             list_divition.append(dv)

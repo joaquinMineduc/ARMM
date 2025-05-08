@@ -42,7 +42,7 @@ month = get_year().split("-")[1].capitalize()
 
 
 def select_browser_driver():
-    browsers = ["edge", "firefox", "chrome"] 
+    browsers = ["chrome", "firefox", "edge"] 
     driver = None
     for browser in browsers:
         try:
@@ -93,19 +93,13 @@ def log_in_sharepoint(driver, email, password):
     
 
  
-def back_directory_base(driver):
-    for i in range (3):
+def back_directory_base(driver, rep):
+    for i in range (rep):
         driver.back()
     driver.refresh()
     
     
-# funcion que accede a los directorios del Sharepoint
-def access_directory_SP(driver, name_file):
-   
-    time.sleep(2)
-    driver.find_element(By.XPATH, "//span[@role='button'"+
-        f"and contains(text(), '{name_file}')]").click()
-        
+def access_to_directories(driver):
     time.sleep(2)
     driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
         f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
@@ -115,16 +109,58 @@ def access_directory_SP(driver, name_file):
         f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
     time.sleep(2)
     
-    driver.find_element(By.CLASS_NAME, 'rowSelectionCell_13bd9a05').click()
+    driver.find_element(By.XPATH, '//div[@data-automationid="item-state-container"]').click()
     time.sleep(2)
     
-    driver.find_element(By.XPATH, "//button[@title='Más acciones'" + 
-        "and @data-automationid='moreActionsHeroField']").click()
+    driver.find_element(By.XPATH, "//button[@title='Más acciones'"+ 
+        " and @data-automationid='moreActionsHeroField']").click()
     time.sleep(2)
     
     driver.find_element(By.XPATH, "//button[@data-automationid='downloadCommand']").click()
     time.sleep(2)
-        
+    
+
+# funcion que accede a los directorios del Sharepoint
+def access_directory_SP(driver, directory):
+    match directory:
+        case 0:
+            for level_adp in ['Nivel I','Nivel II']:
+                time.sleep(2)
+                driver.find_element(By.XPATH, "//span[@role='button'"+
+                    f"and contains(text(), 'ADP')]").click()
+                time.sleep(2)
+                driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
+                    f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
+                access_to_directories(driver)
+                back_directory_base(driver, 4)
+        case 1:
+            if month in ['Marzo', 'Junio', 'Septiembre', 'Diciembre']:
+                for level_adp in ['Monitoreo PGR','Monitoreo PTR']:
+                    time.sleep(2)
+                    driver.find_element(By.XPATH, "//span[@role='button'"+
+                        f"and contains(text(), 'Gestión de Riesgos')]").click()
+                    time.sleep(2)
+                    driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
+                        f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
+                    access_to_directories(driver)
+                    back_directory_base(driver, 4)
+            else:
+                time.sleep(2)
+                driver.find_element(By.XPATH, "//span[@role='button'"+
+                    f"and contains(text(), 'Gestión de Riesgos')]").click()
+                time.sleep(2)
+                driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
+                    f" and @data-selection-invoke='true' and contains(text(), 'Monitoreo PGR')]").click()
+                access_to_directories(driver)
+                back_directory_base(driver, 4)
+        case 2:
+            driver.find_element(By.XPATH, "//span[@role='button'"+
+                f"and contains(text(), 'Programas sociales')]").click()
+            time.sleep(2)
+            access_to_directories(driver)
+            back_directory_base(driver, 3)
+                
+    
 
 def get_document_BI(driver, name_file):
     try:
