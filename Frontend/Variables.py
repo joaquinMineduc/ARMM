@@ -60,7 +60,7 @@ Rgob_Gray = (137,137,137,52)
 Rgob_white = (0,0,0,0)
 
 # ------------------- Variables de directorios de salida  --------------- #
-dir_in = "APP/Backend/Input/Reports/"
+dir_in = "APP/Backend/Input/format_reports/"
 path_report_format = "formato.xlsx"
 dir_output = "APP/Backend/output/"
 dir_output_PDFs = "report_parts/"

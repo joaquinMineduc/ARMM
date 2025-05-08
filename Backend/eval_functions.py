@@ -3,7 +3,7 @@ from principal_functions import *
 date_document = get_date()
 
 # =============== Tratamiento DF regional ==================================
-df_regional = create_dataframe("APP/Backend/Input/Sigemet/Evaluacion/eval.xls",
+df_regional = create_dataframe("APP/Backend/Input/Sigemet/eval.xls",
                             'Evaluación Interna por Región', 2)
 
 df_regional = drop_unless_columns(df_regional, 1, 7, None)
@@ -18,7 +18,7 @@ format_eval_columns(df_regional)
 print(df_regional)
 
 # ================= Tratamiento DF NC =======================================
-df_NC = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
+df_NC = create_dataframe('APP/Backend/Input/Sigemet/eval.xls',
                          'Evaluación Interna por División', 3)
 
 df_NC = drop_unless_columns(df_NC, 1, 7, None)
@@ -32,7 +32,7 @@ df_NC_part4 = partioner(df_NC, 7, 8)
 
 # =========== Tratamiento DF Evaluación proveedor interna de NC por variable ===================
 
-df_NC2 = create_dataframe('APP/Backend/Input/Sigemet/Evaluacion/eval.xls',
+df_NC2 = create_dataframe('APP/Backend/Input/Sigemet\eval.xls',
                           'Eval. interna por variable', 2)
 
 """df_NC2 = drop_unless_columns(df_NC2, 2, 12, None) # Se elimina antes para evitar el resize de los index

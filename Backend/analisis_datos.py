@@ -5,7 +5,7 @@ DATE_REPORT = get_date()
 YEAR_REPORT = DATE_REPORT[-4:]
  
 # Creación del data frame
-df = create_dataframe('APP/Backend/Input/Reports/indicadores.xls', None, 1)
+df = create_dataframe('APP/Backend/Input/Sigemet/indicadores.xls', None, 1)
 
 # Se clasifcan indicadores ponderados
 
