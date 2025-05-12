@@ -18,6 +18,8 @@ regiones = [
     "Arica y Parinacota", "Ñuble"
 ]
 
+cr_eval = ['CPEIP', 'DAG', 'DEG', 'DIPLAP', 'JURID', 'GABMIN', 'GABSUB', 'UCE']
+
 df_NC_columns = ['División', 'Cumpl. promedio', 'Oportunidad', 'Consistencia', 'Completitud']
 
 order_columns_NC = ['Lugar de medición','Promedio','Oportunidad.1','Consistencia.1','Completitud.1']

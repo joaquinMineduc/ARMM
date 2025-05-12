@@ -15,6 +15,8 @@ except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Para Windows
     
 
+
+
 # Aplicar multiproceso para mejorar rendimiento : PENDIENTE 
 def create_dataframe(location, sheet, header):
     if (sheet and header) is None: 
@@ -244,12 +246,15 @@ def validation_type(arg):
     
 
 # funcion que agrupa por tipo  indicador
-def group_by_columns(df, columns, arg = None):
-    if arg:
+def group_by_columns(df, columns, arg = None, type = None):
+    if arg:  
         if arg == 1:
             df = df.groupby(by=[columns], as_index = False).sum()
         elif arg == 2:
-            df = df.groupby(by=[[columns]], as_index = False).mean()
+            if isinstance(type, list):
+                df = df.groupby(by=[[columns]], as_index = False).mean()
+            else:
+                df = df.groupby(by=[columns], as_index = False).mean()
     else:
         df = df.groupby(by=[columns], as_index = False).count()
     return df
@@ -332,5 +337,19 @@ def clear_df(df):
     return df
 
 
+def build_df_eval_prov(df_div, df_sub_div = None):
+    # ----- Se hace transformación del DF de división --
+    df_div = modify_eval_values(df_div)
+    df_div = group_by_columns(df_div, 'División', 2)
+    if df_sub_div is not None:
+        columns_temp = df_div.columns # Se extraen las columnas del primer dataframe
+        # ----- Se hace transformación del DF lugar de medición --
+        df_sub_div = modify_eval_values(df_sub_div)
+        df_sub_div = group_by_columns(df_sub_div, 'Lugar de medición', 2)
+        df_sub_div.columns = columns_temp
+        df_unificated = pd.concat([df_div, df_sub_div], axis = 0)
+        return df_unificated
+    return df_div
+    
 
 
