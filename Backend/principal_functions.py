@@ -336,7 +336,7 @@ def clear_df(df):
     df.dropna(inplace = True)
     return df
 
-
+# AGREGAR promedio para terminar
 def build_df_eval_prov(df_div, df_sub_div = None):
     # ----- Se hace transformación del DF de división --
     df_div = modify_eval_values(df_div)
