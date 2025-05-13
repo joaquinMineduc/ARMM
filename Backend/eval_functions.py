@@ -45,7 +45,8 @@ df_eval_NC = df_eval_NC[df_NC_columns]
 
 print(df_eval_NC)
         
-        
+df_eval_NC = format_divition(df_eval_NC)
+     
 format(df_eval_NC)
 
 print(df_eval_NC)
