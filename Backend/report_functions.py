@@ -374,7 +374,7 @@ def add_weighthing(df, column):
     return df
 
 
-
+# Eliminar una vez que se realice la actualización de los paneles 
 def change_errors(df):
     filtered_df = df.query("Cod_Sigemet == 'I16_062'")
     df.loc[filtered_df.index, 'Tipo'] = "H"
@@ -389,7 +389,7 @@ def order_df(df):
     return df
 
   
-# Refactorizar
+# Refactorizar 
 def format_informe_mensual(df):
     df_informe = create_an_copy(df, columns_informe)
     df_informe.rename(columns={"Meta anual": "Meta","numerador": "Numerador",

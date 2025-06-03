@@ -2,7 +2,8 @@ from static_data import regiones
 from Frontend.Variables import dir_output, dir_output_PDFs
 import os
 import re
-
+import xlwings as xw
+from win32com.client import constants
 
 
 
@@ -78,6 +79,29 @@ def order_report_parts(data_list):
     new_route =  os.path.join(dir_output, dir_output_PDFs,f"{part}.pdf")
     reassembled_list.append(new_route)
   return reassembled_list
+
+
   
+"""def update_estructure_adp(document_path, sheet_file, rows_datas, row_comments):
+  edges = [
+    constants.xlEdgeLeft,
+    constants.xlEdgeTop,
+    constants.xlEdgeBottom,
+    constants.xlEdgeRight
+  ]
+  
+  wb = xw.Book(document_path)
+  ws = wb.sheets[sheet_file]
+  
+  for _ in range(rows_datas):
+    ws.range('6:6').api.EntireRow.Insert()
     
-  
+  for row in range(row_comments):
+    range_border = ws.range(f'D{10+row}:J{10+row}')
+    borders = range_border.api.Borders
+    for edge in edges:
+      b = borders(edge)
+      b.LineStyle = constants.xlContinuous
+      b.Weight    = constants.xlMedium
+  wb.save()
+  wb.close()"""
