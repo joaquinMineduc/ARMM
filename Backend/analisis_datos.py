@@ -13,7 +13,7 @@ df = create_dataframe('APP/Backend/Input/Sigemet/indicadores.xls', None, 1)
 df = add_clasificator_ponderation(df)
 
 df = add_split_indicador(df,'Indicador')
-df = add_split_meta_periodo(df,'Período Meta')
+df = add_split_meta_periodo(df,'Período Meta') # validar error de fecha
 df = add_classificator_type(df, 'Instrumento')
 df = add_classificator_CR2(df, 'Centro Responsabilidad')
 
@@ -30,16 +30,15 @@ df = concat_column_by_args(df, ['Cod_Sigemet','CR.2'], '-', 'Variable')
 df = add_level(df, 'CR')
 df = add_risk_as_binary(df, 'Nivel Riesgo') # Revisar lógica y factorizar
 df = rename_columns(df)
+df.loc[:,"Cumplimiento respecto a meta"] = df.apply(calculate_cump_meta, axis=1)
 df = split_formula(df, 'Formula Aplicada')
 df = add_weighthing(df, ['Cod_Sigemet','CR.2'])
-df = change_errors(df) # Eliminar una vez que sigemet actualice reporte panel indicadores
+
 
 # Se ramifica el data frame para filtrar todos los ponderados
 df_informe = query_ponderation(df)
 df = drop_unless_columns(df, None, None, None)
 df = order_df(df)
-
-df.to_excel(f"Deprueba.xlsx", index = False)
 
 create_informe_BI(df)
 

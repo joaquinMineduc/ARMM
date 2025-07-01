@@ -3,33 +3,24 @@ from report_functions import *
 
 
 df_programs = create_dataframe("APP/Backend/Input/social_programs/Planillas programas sociales.xlsx",
-    'programas sociales', 0)
-
-df_programs = drop_unless_columns(df_programs, None, None, [2,3,4])
-df_programs = clear_df(df_programs)
+    'programas sociales', 1)
 
 
 df_monitoring = create_dataframe("APP/Backend/Input/social_programs/Planillas programas sociales.xlsx",
-                                'Monitoreo y exantes', header = None)
-df_monitoring = drop_unless_columns(df_monitoring, None, None, [2,3,4])
-df_monitoring = clear_df(df_monitoring)
-drop_unless_rows(df_monitoring, None, None, 0)
-
-df_milestones_programs = create_dataframe("APP/Backend/Input/social_programs/Planillas "+ 
-    "programas sociales.xlsx", 'programas sociales')
-
-df_milestones_programs = drop_unless_columns(df_milestones_programs, None, None, [0,1,2])
-df_milestones_programs = clear_df(df_milestones_programs)
-drop_unless_rows(df_milestones_programs, None, None, 0)
+                                'Monitoreo y exante', header = 1)
+df_monitoring = drop_unless_columns(df_monitoring, None, None, [2,3])
+df_monitoring = partioner(df_monitoring, 0, 6)
+#df_monitoring = clear_df(df_monitoring)
+#drop_unless_rows(df_monitoring, None, None, [7])
 
 
 print(df_programs)
-print(df_milestones_programs)
+print("----------------------")
+print(df_monitoring)
 
-df_exante = create_dataframe("APP/Backend/Input/social_programs/Planillas programas sociales.xlsx",
-                            'Monitoreo y exantes', header = None)
-df_exante = partioner(df_exante, 10, 23)
-df_exante = drop_unless_columns(df_exante, None, None, [1,3])
+
+df_exante = create_dataframe("APP/Backend/Input/social_programs/Planillas programas sociales.xlsx",'Monitoreo y exante', header = 10)
+df_exante = drop_unless_columns(df_exante, columns = 1 )
 df_exante = clear_df(df_exante)
 
 print(df_exante)

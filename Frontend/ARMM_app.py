@@ -8,6 +8,7 @@ from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import drop_parts_report
 
+
 def btn():
     call_all_inserts()
     for index in range(2):
@@ -15,8 +16,7 @@ def btn():
             print_report_sheets(args)
         merge_parts_report(dir_output, index)
         drop_parts_report()
-        
-        
+               
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso
     clear_dir_report_parts()

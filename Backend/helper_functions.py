@@ -1,10 +1,13 @@
 from static_data import regiones
-from Frontend.Variables import dir_output, dir_output_PDFs
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+import numpy as np
+from Frontend.Variables import dir_output, dir_output_PDFs, dir_in, path_report_format
 import os
 import re
 import xlwings as xw
-from win32com.client import constants
-
+import win32com.client as win32
+from pathlib import Path
 
 
 def classificator_by_reg(CR, arg):
@@ -81,27 +84,139 @@ def order_report_parts(data_list):
   return reassembled_list
 
 
-  
-"""def update_estructure_adp(document_path, sheet_file, rows_datas, row_comments):
-  edges = [
-    constants.xlEdgeLeft,
-    constants.xlEdgeTop,
-    constants.xlEdgeBottom,
-    constants.xlEdgeRight
-  ]
-  
-  wb = xw.Book(document_path)
-  ws = wb.sheets[sheet_file]
-  
-  for _ in range(rows_datas):
-    ws.range('6:6').api.EntireRow.Insert()
+
+def cut_parent_base():
+  ruta_base = Path(__file__).parent
+  for parent in  ruta_base.parents:
+    if parent.name == "Proyecto ARMM":
+      return parent
     
-  for row in range(row_comments):
-    range_border = ws.range(f'D{10+row}:J{10+row}')
-    borders = range_border.api.Borders
-    for edge in edges:
-      b = borders(edge)
-      b.LineStyle = constants.xlContinuous
-      b.Weight    = constants.xlMedium
-  wb.save()
-  wb.close()"""
+def adaptater_df_chart(df):
+  df = df.sum()
+  return df
+
+
+def modify_status(sheet, status = False):
+  ruta_base = cut_parent_base()
+  location = ruta_base  / dir_in / path_report_format 
+    
+  init_excel = win32.gencache.EnsureDispatch('Excel.Application')
+    
+  init_excel.Visible = False # Para que la app de Excel no se inicialice en segundo plano, es decir, sin modo ventana
+    
+  constants = win32.constants
+    
+  wb = init_excel.Workbooks.Open(str(location))
+  sheet = wb.Sheets(sheet)
+    
+  if status:
+    sheet.Visible = constants.xlSheetVisible
+  else:
+    sheet.Visible = constants.xlSheetHidden
+    
+  wb.Save()
+  wb.Close()
+  init_excel.Quit()
+    
+  
+def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk, configuration):
+  ind = np.arange(len(categories)) * configuration['size'][1]
+  width = configuration['size'][0]
+
+  fig, ax = plt.subplots(figsize=(len(categories) * configuration['size'][1], 8))
+  
+  G1 = ax.bar(ind, low_risk, width, color = configuration['colors'][0])
+  G2 = ax.bar(ind, medium_risk, width, bottom=low_risk, color = configuration['colors'][1])
+  G3 = ax.bar(ind, high_risk, width, bottom=np.array(low_risk) + np.array(medium_risk), color = configuration['colors'][2])
+  
+  
+  # Ocultar todos los bordes del gráfico
+  for spine in ax.spines:
+    if spine != 'bottom':
+      ax.spines[spine].set_visible(False)
+
+
+  ax.yaxis.set_visible(False)
+  ax.set_xticks(ind)
+  ax.set_xticklabels(categories, fontsize= configuration['label_size'], fontweight = 'bold', rotation = configuration['rotation'])
+  ax.set_ylabel('Valores')
+  
+    # Modificar etiquetas de datos con formato personalizado:
+  for i in range(len(categories)):
+      # medium_risk: agregar “✔” y color blanco
+      ax.text(ind[i], low_risk[i]/2, f"{low_risk[i]}" if low_risk[i] > 0 else "", ha='center', va='center', color='white', fontweight='bold', 
+        fontsize=configuration['dt_size'])
+          
+      # Amarillo: mostrar solo valor en negrita y color negro
+      ax.text(ind[i], low_risk[i] + medium_risk[i]/2, f"{medium_risk[i]:.0f}" if  medium_risk[i] > 0  else "", ha='center', va='center',
+        color='black', fontweight='bold', fontsize=configuration['dt_size'])
+          
+      # Rojo: mostrar valor con signo “⚠” y en rojo
+      ax.text(ind[i], low_risk[i] + medium_risk[i] + high_risk[i]/2, f"{high_risk[i]}" if  high_risk[i] > 0  else "", ha='center',
+        va='center', color='white', fontweight='bold', fontsize=configuration['dt_size'])
+      
+      plt.tight_layout()
+      
+  plt.savefig(f"APP/Backend/output/graphics/NC/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=1)
+  
+  
+def create_bar_chart(df, chart_name, configuration = None):
+  # Datos de ejemplo
+  print(df.columns)
+  estados = list(df.columns)
+  valores = df.iloc[0].tolist()
+
+  col_implementada, col_en_proceso, col_no_implementada = df.columns
+  
+  # Colores según el estado
+  colores = {
+        col_implementada: configuration['colors'][0],  # Implementada
+        col_en_proceso: configuration['colors'][1],   # En proceso de implementación
+        col_no_implementada: configuration['colors'][2]  # No implementada
+  }
+
+  # Aplicar colores a cada barra según su estado
+  colores_barras = [colores[estado] for estado in estados]
+
+  # Crear gráfico
+  plt.figure(figsize=(4, 2))
+  plt.bar(estados, valores, color=colores_barras)
+  
+  ax = plt.gca()
+  for spine in ax.spines:
+    if spine != 'bottom':
+      ax.spines[spine].set_visible(False)
+      
+  ax.yaxis.set_visible(False)
+  ax.xaxis.set_visible(False)
+  
+  if configuration['leyenda']:
+    # creación de leyendas
+    legend_elements = [
+        Patch(facecolor = configuration['colors'][0], label = col_implementada),
+        Patch(facecolor = configuration['colors'][1], label = col_en_proceso),
+        Patch(facecolor = configuration['colors'][2], label = col_no_implementada)
+    ]
+    
+    # Mostrar leyenda
+    plt.legend(handles=legend_elements, loc="lower center", bbox_to_anchor=(0.5, -0.30),
+      ncol=3, frameon=False)  # ncol=3 para alineación horizontal
+  
+  # Título y etiquetas
+  plt.title(configuration['title'])
+  plt.ylabel("Cantidad")
+  plt.xlabel("Estado")
+
+  # Mostrar valores sobre cada barra
+  for i, valor in enumerate(valores):
+    plt.text(i, valor + 0.3, str(valor), ha='center')
+
+  # Mostrar gráfico
+  plt.tight_layout()
+  plt.savefig(f"APP/Backend/output/graphics/PTR/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=0.05)
+     
+
+  
+
+      
+

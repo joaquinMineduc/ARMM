@@ -3,6 +3,8 @@ import os
 from Variables import dir_output, dir_output_PDFs
 
 
+
+
 def clear_dir_output():
     try:
         documents = os.listdir(dir_output)
@@ -23,3 +25,6 @@ def clear_dir_report_parts():
     except:       
         print("the directory is empty")
     return
+
+
+    

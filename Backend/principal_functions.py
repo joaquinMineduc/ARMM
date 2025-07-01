@@ -19,7 +19,6 @@ except locale.Error:
 def create_dataframe(location, sheet = None, header = None):
     if sheet is None and header is None: 
         df = pd.read_excel(location, header = 0) # Si hoja y header no están definidos
-
     if sheet is None and header is not None: 
         df = pd.read_excel(location, header = header)# Si sólo se tiene header
     else:
@@ -28,10 +27,11 @@ def create_dataframe(location, sheet = None, header = None):
 
 
 # Eliminar columnas innecesarias
-def drop_unless_columns(df, start, end, columns):
+def drop_unless_columns(df, start = None, end = None, columns = None):
     list_index = list(df.columns)
     if start is None and end is None and columns is None: # si no se ingresa un inicio y termino y columna
-        for index in drop_index: 
+        for index in drop_index:
+            print(list_index[index])
             df.drop(list_index[index], axis = 1, inplace = True) # elimina en base a una lsita predefinida
     if start is None and end is None and columns is not None:
         if isinstance(columns, list): # si la columna existe y el resto no, procede a eliminar
@@ -284,7 +284,7 @@ def group_by_columns(df, columns, arg = None):
 
 # Modificación y optimización de la funcion rename (Reutilizable)
 def rename_columns(df, origin_columns, new_name_columns):
-    if (validation_type(origin_columns) and validation_type(new_name_columns)):
+    if validation_type(origin_columns) and validation_type(new_name_columns):
         df.rename(columns = {origin_columns:new_name_columns}, inplace = True)      
     else:
         for origin, new in zip(origin_columns, new_name_columns):
@@ -329,6 +329,15 @@ def last_bussines_day(month, year, holy_days = None):
         last_day -= pd.Timedelta(days=1)
     return last_day.day
 
+def get_month(year = None, month = None):
+    # Convertimos el número del mes a nombre del mes en inglés
+    if year and month:
+        month_name = datetime(year, month, 1).strftime("%B").upper()
+    else:
+        now = datetime.now()
+        month_name = now.strftime("%B").upper()
+    return month_name
+
 
 def order_reg_by_columns(df, column):
     df = df.copy()
@@ -337,32 +346,24 @@ def order_reg_by_columns(df, column):
 
 # realizar validacion de año según cierre, si es enero debe tomar mes anterior y año anterior
 
-def get_date(format=None, text=None, Format2=None):
+def get_date(format: bool = None, text:str = None, format2:bool = None):
     today = datetime.now()
     month = today.month - 1
-
-    if month == 0:
-        month = 12
-        year = today.year - 1
-    else:
-        year = today.year
+    year, month = (today.year -1, 12) if month == 0 else (today.year, month)
 
     # Convertimos el número del mes a nombre del mes en inglés
-    month_name = datetime(year, month, 1).strftime("%B").upper()
-
-    day = today.day
-
+    month_name = get_month(year, month)
     if format:
         return f'Acum {month_name} - {year}'
 
-    if text and format is None:
+    if text and not format and not format2 :
         last_day = last_bussines_day(month, year)
         return f'{text} {last_day} de {month_name}'
 
-    if Format2 and text is not None:
+    if format2 and text and not format:
         return f'{text} {year}'
-
-    return f'{month_name} - {year}'
+    else:
+        return f'{month_name} - {year}'
 
        
 def clear_df(df):

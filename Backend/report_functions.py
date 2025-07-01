@@ -31,7 +31,7 @@ def create_an_copy(df, columns):
 def add_clasificator_ponderation(df):
     # Este código crea una clasificación entre indicadores ponderados y normales.
     df['tag_ponderado'] = df.apply(lambda row: 'SI' 
-       if pd.isna(row['Instrumento']) 
+       if pd.isna(row['Formula Aplicada']) 
        else 'NO', axis=1)
     return df
 
@@ -294,8 +294,7 @@ def rename_columns(df):
     df.rename(columns={"Observación": "Análisis Resultado periodo", 
                     "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
                     "Fórmula de Cálculo": "Forma de Cálculo", "Meta del período": "Meta periodo", 
-                    "% Avance": "Resultado periodo",
-                    "% Cumplimiento efectivo meta anual": "Cumplimiento respecto a meta"},
+                    "% Avance": "Resultado periodo"},
                     inplace=True)
     return df
 
@@ -380,6 +379,13 @@ def change_errors(df):
     df.loc[filtered_df.index, 'Tipo'] = "H"
     return df
 
+
+# Calcula el cumplimiento con respecto a la meta
+def calculate_cump_meta(row):
+    try:
+        return (row['Resultado periodo'] / row['Meta anual'])*100
+    except ZeroDivisionError:
+        return 0
 
 
 # Se utiliza column_order desde datos estáticos

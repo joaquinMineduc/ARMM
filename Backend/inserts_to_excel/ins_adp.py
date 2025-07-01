@@ -6,9 +6,6 @@ from Frontend.Variables import dir_output, path_report
 from adp_functions import *
 
 
-DATE_REPORT = get_date(format = True)
-
-
 date_columns = ['B']
 date_acum_columns = ['I']
 services_columns = ['B','C','E','F','G','H','I','J']
@@ -19,12 +16,12 @@ def insert_data_adp():
     
     modify_file(dir_output + path_report, 'Convenios ADP', df_adp_data, services_columns, 6, 12)
     modify_file(dir_output + path_report, 'Convenios ADP', df_adp_comments, comment_columns, 16, 22)
-    modify_file(dir_output + path_report, 'Convenios ADP', DATE_REPORT, 'I', 2, 2)
+    modify_file(dir_output + path_report, 'Convenios ADP', date_document, 'I', 2, 2)
     modify_file(dir_output + path_report, 'Convenios ADP', date_subtitle, 'B', 3, 3)
     
     modify_file(dir_output + path_report, 'Convenios ADP_II', df_adp_data_II, services_columns, 6, 7)
     modify_file(dir_output + path_report, 'Convenios ADP_II', df_adp_comments_II, comment_columns, 13, 14)
-    modify_file(dir_output + path_report, 'Convenios ADP_II', DATE_REPORT, 'I', 2, 2)
+    modify_file(dir_output + path_report, 'Convenios ADP_II', date_document, 'I', 2, 2)
     modify_file(dir_output + path_report, 'Convenios ADP_II', date_subtitle, 'B', 3, 3)
     
 
