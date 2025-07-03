@@ -69,5 +69,6 @@ path_anexo = "anexo_final.xlsx"
 format_anexo = "format_anexo.xlsx"
 dir_graphics_NC = "graphics/NC/"
 dir_graphics_PTR = "graphics/PTR/"
+Path_charts_PTR = (Path(dir_output)/ dir_graphics_PTR).resolve()
 Path_charts_NC = (Path(dir_output) / dir_graphics_NC).resolve()
 Path_report_final = (Path(dir_output) / path_report).resolve()

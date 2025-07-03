@@ -14,10 +14,10 @@ columns_graps = ['B','C','D','E']
 
 def insert_data_panel():
     
-    configurations_cdc = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [1.2, 1.8], 'label_size': 16, 'dt_size': 42}
-    configurations_reg = {'title':None,'colors':['green','yellow','red'], 'rotation': 75,'size': [1, 1.7], 'label_size': 28, 'dt_size': 35}
-    configurations_H = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [4, 7], 'label_size': 28, 'dt_size': 35}
-    configuration = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [2, 4], 'label_size': 28, 'dt_size': 35}
+    configurations_cdc = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [1.2, 1.8], 'label_size': 16, 'dt_size': 42, 'height':8}
+    configurations_reg = {'title':None,'colors':['green','yellow','red'], 'rotation': 65,'size': [1.3, 2.2], 'label_size': 30, 'dt_size': 38,'height':12}
+    configurations_H = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [4, 7], 'label_size': 28, 'dt_size': 35, 'height':8}
+    configuration = {'title':None,'colors':['green','yellow','red'], 'rotation': 0,'size': [2, 4], 'label_size': 28, 'dt_size': 35, 'height':8}
     chart_names = ['chart_CDC_reg', 'chart_H', 'chart_CDC', 'chart_PMG']
     
     for instrument, df in zip(chart_names, [df_chart_reg, df_chart_H, df_chart_CDC, df_chart_PMG]):
@@ -31,8 +31,8 @@ def insert_data_panel():
             create_chart_panel(instrument, df['CR.2'], df['Cantidad Riesgo Bajo'], 
             df['Cantidad Riesgo Medio'], df['Cantidad Riesgo Alto'], configurations_cdc)
         else:
-             create_chart_panel(instrument, df['CR.2'], df['Cantidad Riesgo Bajo'], 
-                df['Cantidad Riesgo Medio'], df['Cantidad Riesgo Alto'], configuration)
+            create_chart_panel(instrument, df['CR.2'], df['Cantidad Riesgo Bajo'], 
+            df['Cantidad Riesgo Medio'], df['Cantidad Riesgo Alto'], configuration)
         
     # Crear una validación para identificar imagenes con los nombres asignados
     for path_charts in Path_charts_NC.iterdir():

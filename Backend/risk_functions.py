@@ -58,7 +58,6 @@ if month_validation in ['ABRIL','JULIO','OCTUBRE']:
     df_eval_NC_ptr = eval_ptr()
     modify_status("Planes de tratamientos", status = True)
 
-    
     # ======== Creación del DataFrame para el Dashboard planes de tratamientos =================
     df_plan_tratamiento = create_dataframe("APP/Backend/Input/Adm_risk/Planilla_PTR.xlsx", header = 5)
     df_plan_tratamiento = drop_unless_columns(df_plan_tratamiento, columns=[0, 1, 5])

@@ -123,7 +123,7 @@ def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk,
   ind = np.arange(len(categories)) * configuration['size'][1]
   width = configuration['size'][0]
 
-  fig, ax = plt.subplots(figsize=(len(categories) * configuration['size'][1], 8))
+  fig, ax = plt.subplots(figsize=(len(categories) * configuration['size'][1], configuration['height']))
   
   G1 = ax.bar(ind, low_risk, width, color = configuration['colors'][0])
   G2 = ax.bar(ind, medium_risk, width, bottom=low_risk, color = configuration['colors'][1])
@@ -141,6 +141,9 @@ def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk,
   ax.set_xticklabels(categories, fontsize= configuration['label_size'], fontweight = 'bold', rotation = configuration['rotation'])
   ax.set_ylabel('Valores')
   
+  for label in ax.get_xticklabels():
+    label.set_color('#595959')
+  
     # Modificar etiquetas de datos con formato personalizado:
   for i in range(len(categories)):
       # medium_risk: agregar “✔” y color blanco
@@ -157,29 +160,31 @@ def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk,
       
       plt.tight_layout()
       
-  plt.savefig(f"APP/Backend/output/graphics/NC/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=1)
+  plt.savefig(f"APP/Backend/output/graphics/NC/{chart_name}.png", dpi=800, bbox_inches='tight', pad_inches=0.2)
   
   
 def create_bar_chart(df, chart_name, configuration = None):
-  # Datos de ejemplo
-  print(df.columns)
-  estados = list(df.columns)
-  valores = df.iloc[0].tolist()
-
-  col_implementada, col_en_proceso, col_no_implementada = df.columns
+  if configuration['simple_df']:
+    estados = df.columns.tolist()
+    valores = df.iloc[0].tolist()
+  else:
+    estados = df.index.tolist()
+    valores = df.values.flatten().tolist()
+    
+  col_a, col_b, col_c = estados
   
   # Colores según el estado
   colores = {
-        col_implementada: configuration['colors'][0],  # Implementada
-        col_en_proceso: configuration['colors'][1],   # En proceso de implementación
-        col_no_implementada: configuration['colors'][2]  # No implementada
+        col_a: configuration['colors'][0],  # Implementada / cumplidos
+        col_b: configuration['colors'][1],   # En proceso de implementación / En proceso
+        col_c: configuration['colors'][2]  # No implementada / No cumplidos
   }
 
   # Aplicar colores a cada barra según su estado
   colores_barras = [colores[estado] for estado in estados]
 
   # Crear gráfico
-  plt.figure(figsize=(4, 2))
+  plt.figure(figsize=(configuration['size'][0], configuration['size'][1]))
   plt.bar(estados, valores, color=colores_barras)
   
   ax = plt.gca()
@@ -189,13 +194,17 @@ def create_bar_chart(df, chart_name, configuration = None):
       
   ax.yaxis.set_visible(False)
   ax.xaxis.set_visible(False)
-  
+
+  if configuration['categories']:
+    ax.xaxis.set_visible(True)
+    ax.tick_params(axis='x', labelsize=10, color = '#595959')
+
   if configuration['leyenda']:
     # creación de leyendas
     legend_elements = [
-        Patch(facecolor = configuration['colors'][0], label = col_implementada),
-        Patch(facecolor = configuration['colors'][1], label = col_en_proceso),
-        Patch(facecolor = configuration['colors'][2], label = col_no_implementada)
+        Patch(facecolor = configuration['colors'][0], label = col_a),
+        Patch(facecolor = configuration['colors'][1], label = col_b),
+        Patch(facecolor = configuration['colors'][2], label = col_c)
     ]
     
     # Mostrar leyenda
@@ -203,13 +212,15 @@ def create_bar_chart(df, chart_name, configuration = None):
       ncol=3, frameon=False)  # ncol=3 para alineación horizontal
   
   # Título y etiquetas
-  plt.title(configuration['title'])
+  plt.title(configuration['title'], fontsize = 10 , color ='#595959', fontweight = 'bold', pad = 25)
   plt.ylabel("Cantidad")
-  plt.xlabel("Estado")
+  
+  for label in ax.get_xticklabels():
+    label.set_color('#595959')
 
   # Mostrar valores sobre cada barra
   for i, valor in enumerate(valores):
-    plt.text(i, valor + 0.3, str(valor), ha='center')
+    plt.text(i, valor + 1, str(valor), ha='center')
 
   # Mostrar gráfico
   plt.tight_layout()
