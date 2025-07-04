@@ -39,10 +39,15 @@ def insert_data_risk():
             'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
             'label_size': 14, 'dt_size': 35, 'leyenda': False, 'simple_df':False, 'categories': True}
         
-        df_chart_modify = adaptater_df_chart(df_plan_tratamiento)
+        configuration_c = {'title':f'Planes de Tratamiento de Riesgos Comprometidos el {datetime.now().today().year -1}',
+            'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
+            'label_size': 14, 'dt_size': 35, 'leyenda': True, 'simple_df':False, 'categories': True}
         
+        df_chart_modify = adaptater_df_chart(df_plan_tratamiento)
+        print(df_chart_modify)
         create_bar_chart(df_chart_modify, 'ptr_chart', configuration_b)
         create_bar_chart(df_alerts,'signals_chart', configuration)
+        create_bar_chart_h(df_plan_tratamiento, 'ptr_chart_A', configuration_c)
         
         # Crear una validación para identificar imagenes con los nombres asignados
         for path_charts in Path_charts_PTR.iterdir():

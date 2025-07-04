@@ -185,6 +185,7 @@ def create_bar_chart(df, chart_name, configuration = None):
 
   # Crear gráfico
   plt.figure(figsize=(configuration['size'][0], configuration['size'][1]))
+  
   plt.bar(estados, valores, color=colores_barras)
   
   ax = plt.gca()
@@ -225,8 +226,64 @@ def create_bar_chart(df, chart_name, configuration = None):
   # Mostrar gráfico
   plt.tight_layout()
   plt.savefig(f"APP/Backend/output/graphics/PTR/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=0.05)
-     
+  
+  
 
+def create_bar_chart_h(df, chart_name, configuration):
+  categorias = ['Financieros', 'Estratégicos', 'Financieros']
+  cumplidos = df['Cumplidos'].tolist()
+  en_proceso = df['En proceso'].tolist()
+  no_cumplidos = df['No Cumplidos/ Con retraso.'].tolist()
+
+
+  # Posiciones en el eje Y
+  y = np.arange(len(categorias))  # [0, 1, 2]
+  altura_barra = 0.25
+
+  # Crear gráfico
+  plt.figure(figsize=(10, 6))
+
+  bars1 = plt.barh(y - altura_barra, cumplidos, height=altura_barra, color=configuration['colors'][0], label='Cumplidos')
+  bars2 =plt.barh(y, en_proceso, height=altura_barra, color=configuration['colors'][1], label='En Proceso')
+  bars3 =plt.barh(y + altura_barra, no_cumplidos, height=altura_barra, color=configuration['colors'][2], label='No Cumplidos')
+
+  # Ejes y título
+  plt.yticks(y, categorias)
+  plt.title(configuration['title'], fontsize = 10 , color ='#595959', fontweight = 'bold', pad = 10)
+    
+  ax = plt.gca()
+  for spine in ax.spines:
+    if spine != 'left':
+      ax.spines[spine].set_visible(False)
+      
+  ax.xaxis.set_visible(False)
+    
+  for label in ax.get_xticklabels():
+    label.set_color('#595959')
+      
+  if configuration['leyenda']:
+    # creación de leyendas
+    legend_elements = [
+        Patch(facecolor = configuration['colors'][0], label = 'Cumplidos'),
+        Patch(facecolor = configuration['colors'][1], label = 'En proceso'),
+        Patch(facecolor = configuration['colors'][2], label = 'No cumplidos / con retraso')
+    ]
+      
+  # Mostrar leyenda
+  plt.legend(handles=legend_elements, loc="lower left", bbox_to_anchor=(0.5, -0.30),
+  ncol=3, frameon=False)  # ncol=3 para alineación horizontal
+  
+  # Mostrar valores al final de cada barra
+  for bars in [bars1, bars2, bars3]:
+      for bar in bars:
+          width = bar.get_width()
+          if width !=0:
+            y_pos = bar.get_y() + bar.get_height() / 2
+            plt.text(width + 1, y_pos, str(int(width)), va='center', fontsize= configuration['label_size'], color = '#595959')
+          
+  # Mostrar gráfico
+  plt.tight_layout()
+  plt.savefig(f"APP/Backend/output/graphics/PTR/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=0.05)
   
 
       

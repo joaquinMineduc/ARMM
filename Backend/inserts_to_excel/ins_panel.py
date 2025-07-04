@@ -38,7 +38,7 @@ def insert_data_panel():
     for path_charts in Path_charts_NC.iterdir():
         if path_charts.is_file():
             insert_graphics(Path_report_final, '01-PANEL', path_charts.resolve(), path_charts.stem)
-
+    
     
     # Se agrega la fecha al documento
     modify_file(Path_report_final, '01-PANEL', DATE_REPORT, 'N', 5, 5)
