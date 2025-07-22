@@ -41,7 +41,7 @@ def insert_data_risk():
         
         configuration_c = {'title':f'Planes de Tratamiento de Riesgos Comprometidos el {datetime.now().today().year -1}',
             'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
-            'label_size': 14, 'dt_size': 35, 'leyenda': True, 'simple_df':False, 'categories': True}
+            'label_size': 20, 'dt_size': 35, 'leyenda': True, 'simple_df':False, 'categories': True}
         
         df_chart_modify = adaptater_df_chart(df_plan_tratamiento)
         print(df_chart_modify)

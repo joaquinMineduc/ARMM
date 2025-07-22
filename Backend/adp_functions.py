@@ -28,7 +28,7 @@ df_adp_data_II = drop_unless_columns(df_adp_data_II, None, None, 0)
 df_adp_data_II = clear_df(df_adp_data_II)
 
 # Se crea el DF con los comentarios de los servicios
-df_adp_comments_II = create_dataframe("APP/Backend/Input/ADP/Monitoreo ADP - Nivel II.xlsx", None, header = 9)
+df_adp_comments_II = create_dataframe("APP/Backend/Input/ADP/Monitoreo ADP - Nivel II.xlsx", None, header = 10)
 df_adp_comments_II = drop_unless_columns(df_adp_comments_II, None, None, [0,3,4,5,6,7,8])
 
 print(df_adp_comments_II)

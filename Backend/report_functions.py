@@ -337,6 +337,10 @@ def query_ponderation(df):# Se debe refactorizar ojalá reuhitilizar una funcion
     df_informe = df.query("tag_ponderado == 'NO'")
     return df_informe
 
+# Aplica filtro para filtrar todos los indicadores que son podnerados del df
+def query_riesgos(df):# Se debe refactorizar ojalá reuhitilizar una funcion generixca
+    df_informe = df.query("Tipo != 'Riesgos'")
+    return df_informe
     
 # Añade la columna ponderación al DF
 def add_weighthing(df, column):
@@ -414,26 +418,28 @@ def format_informe_mensual(df):
 
 
 def format_variable(df_informe):
-    list_goal = []
-    list_result = []
-    for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], 
-        df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
-        
-        if d == "no aplica":
-            list_goal.append(int(m))
-            list_result.append(int(r))
-        elif ind == ' Transformación Digital':
-            list_goal.append(str("Solo medir"))
-            list_result.append(int(r))
-        else:
-            list_goal.append(str(m).replace(".",",") + "%")
-            r = mat.trunc(r*10)/10
-            list_result.append(str(r).replace(".",",") + "%")
-    df_informe.loc[:,"Meta"] = list_goal
-    df_informe.loc[:,"Resultado periodo"] = list_result
-    df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
-    lambda x: str(x).replace(".",",")+ "%" )
-    return df_informe
+ 
+        list_goal = []
+        list_result = []
+        for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], 
+            df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
+            
+            if d == "no aplica":
+                list_goal.append(int(m))
+                list_result.append(int(r))
+            elif ind == ' Transformación Digital':
+                list_goal.append(str("Solo medir"))
+                list_result.append(int(r))
+            else:
+                list_goal.append(str(m).replace(".",",") + "%")
+                r = mat.trunc(r*10)/10
+                list_result.append(str(r).replace(".",",") + "%")
+        df_informe.loc[:,"Meta"] = list_goal
+        df_informe.loc[:,"Resultado periodo"] = list_result
+        df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
+        lambda x: str(x).replace(".",",")+ "%" )
+
+        return df_informe
 
 
 #Funcion entrega formato del periodo

@@ -230,7 +230,7 @@ def create_bar_chart(df, chart_name, configuration = None):
   
 
 def create_bar_chart_h(df, chart_name, configuration):
-  categorias = ['Financieros', 'Estratégicos', 'Financieros']
+  categorias = ['Financieros', 'Estratégicos', 'Institucionales']
   cumplidos = df['Cumplidos'].tolist()
   en_proceso = df['En proceso'].tolist()
   no_cumplidos = df['No Cumplidos/ Con retraso.'].tolist()
@@ -238,18 +238,18 @@ def create_bar_chart_h(df, chart_name, configuration):
 
   # Posiciones en el eje Y
   y = np.arange(len(categorias))  # [0, 1, 2]
-  altura_barra = 0.25
+  altura_barra = 0.28
 
   # Crear gráfico
-  plt.figure(figsize=(10, 6))
+  plt.figure(figsize=(9.3, 7.3))
 
   bars1 = plt.barh(y - altura_barra, cumplidos, height=altura_barra, color=configuration['colors'][0], label='Cumplidos')
   bars2 =plt.barh(y, en_proceso, height=altura_barra, color=configuration['colors'][1], label='En Proceso')
   bars3 =plt.barh(y + altura_barra, no_cumplidos, height=altura_barra, color=configuration['colors'][2], label='No Cumplidos')
 
   # Ejes y título
-  plt.yticks(y, categorias)
-  plt.title(configuration['title'], fontsize = 10 , color ='#595959', fontweight = 'bold', pad = 10)
+  plt.yticks(y, categorias, fontsize = 20)
+  plt.title(configuration['title'], fontsize = 20 , color ='#595959', fontweight = 'bold', pad = 5, loc='left')
     
   ax = plt.gca()
   for spine in ax.spines:
@@ -270,8 +270,8 @@ def create_bar_chart_h(df, chart_name, configuration):
     ]
       
   # Mostrar leyenda
-  plt.legend(handles=legend_elements, loc="lower left", bbox_to_anchor=(0.5, -0.30),
-  ncol=3, frameon=False)  # ncol=3 para alineación horizontal
+  plt.legend(handles=legend_elements, loc="lower left", bbox_to_anchor=(0.5, -0.15),
+  ncol=3, frameon=False, fontsize=20)  # ncol=3 para alineación horizontal
   
   # Mostrar valores al final de cada barra
   for bars in [bars1, bars2, bars3]:
@@ -279,7 +279,7 @@ def create_bar_chart_h(df, chart_name, configuration):
           width = bar.get_width()
           if width !=0:
             y_pos = bar.get_y() + bar.get_height() / 2
-            plt.text(width + 1, y_pos, str(int(width)), va='center', fontsize= configuration['label_size'], color = '#595959')
+            plt.text(width + 1, y_pos, str(int(width)), va='center', fontsize= 18, color = '#595959')
           
   # Mostrar gráfico
   plt.tight_layout()

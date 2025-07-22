@@ -37,8 +37,11 @@ df = add_weighthing(df, ['Cod_Sigemet','CR.2'])
 
 # Se ramifica el data frame para filtrar todos los ponderados
 df_informe = query_ponderation(df)
+df_informe = query_riesgos(df_informe)
 df = drop_unless_columns(df, None, None, None)
 df = order_df(df)
+
+create_informe_mensual(df)
 
 create_informe_BI(df)
 
