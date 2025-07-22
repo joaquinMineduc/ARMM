@@ -8,16 +8,15 @@ from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import drop_parts_report
 
+
 def btn():
-    #call_all_inserts()
+    call_all_inserts()
     for index in range(2):
         for  args in (path_report, path_anexo):
             print_report_sheets(args)
         merge_parts_report(dir_output, index)
         drop_parts_report()
-        
-        
-
+               
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso
     clear_dir_report_parts()
@@ -28,14 +27,12 @@ if __name__ == "__main__":
     app.minsize(width = 450, height = 650)
     app.iconbitmap("APP/Frontend/icons/logo-ministerio.ico")
 
-
     # Añadir un frame
     frame = tk.Frame(app)
     frame.pack(padx = 10, pady = 10,)
 
     frame.columnconfigure([0, 1], weight = 1)
     frame.rowconfigure([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], weight = 0)
-
 
     # Añadir una imagen al frame
     image_path = "APP/Frontend/icons/Mineduc-PI.png"

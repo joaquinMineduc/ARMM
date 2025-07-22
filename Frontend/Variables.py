@@ -1,6 +1,6 @@
 import os, sys
-import sys
-import os
+from pathlib import Path
+
 # Añade la raíz del proyecto al PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
@@ -60,9 +60,15 @@ Rgob_Gray = (137,137,137,52)
 Rgob_white = (0,0,0,0)
 
 # ------------------- Variables de directorios de salida  --------------- #
-dir_in = "APP/Backend/Input/Reports/"
+dir_in = "APP/Backend/Input/format_reports/"
 path_report_format = "formato.xlsx"
 dir_output = "APP/Backend/output/"
 dir_output_PDFs = "report_parts/"
 path_report = "informe_final.xlsx"
-path_anexo = "anexo.xlsx"
+path_anexo = "anexo_final.xlsx"
+format_anexo = "format_anexo.xlsx"
+dir_graphics_NC = "graphics/NC/"
+dir_graphics_PTR = "graphics/PTR/"
+Path_charts_PTR = (Path(dir_output)/ dir_graphics_PTR).resolve()
+Path_charts_NC = (Path(dir_output) / dir_graphics_NC).resolve()
+Path_report_final = (Path(dir_output) / path_report).resolve()

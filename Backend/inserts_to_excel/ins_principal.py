@@ -9,6 +9,7 @@ from Backend.inserts_to_excel.ins_programs import insert_data_programs
 from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
 
+
 # Intentar mejorar con multihilo para optimizar performance
 def call_all_inserts():
     ins_data_to_report()

@@ -31,7 +31,7 @@ def create_an_copy(df, columns):
 def add_clasificator_ponderation(df):
     # Este código crea una clasificación entre indicadores ponderados y normales.
     df['tag_ponderado'] = df.apply(lambda row: 'SI' 
-       if pd.isna(row['Instrumento']) 
+       if pd.isna(row['Formula Aplicada']) 
        else 'NO', axis=1)
     return df
 
@@ -100,11 +100,12 @@ def add_classificator_type(df, columns):
                     list_type.append("H")
                 case "Transversal":
                     list_type.append("PMG")
+                case "Riesgos":
+                    list_type.append("Riesgos")
                 case _:
                     list_type.append("")
         df.loc[:,'Tipo'] = list_type
     return df
-
 
 
 def classificator_CR_REG(CR):
@@ -114,7 +115,8 @@ def classificator_CR_REG(CR):
     num = int(num[1])
     num2 = num if num >= 10 else f'0{num}'
     if CR in [f'R{num2}.EDUC - REG:{num}',f'R{num2}.GAB - REG:{num}',
-              f'R{num2}.SUBV - REG:{num}',f'SECREDUC_{num} - REG:{num}']:
+              f'R{num2}.SUBV - REG:{num}',f'R{num2}.URAE - REG:{num}',
+              f'SECREDUC_{num} - REG:{num}']:
         return f"SECREDUC {num2}"
     else:
         return "format error"
@@ -128,26 +130,28 @@ def add_classificator_CR2(df, columns):
     if shape == 1:
         for x in df_filtrated:
             x = x.upper()
-            if x in ['AUDITORIA - REG:99','ESTUDIOS - REG:99','GABMIN']:
+            if x in ['AUDITORIA - REG:99','ESTUDIOS - REG:99','GABMIN','ESTUDIOS','SEGI']:
                 lista_CR2.append("Gabinete Ministerio")
-            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99',
-                    'GABSUB','INNOV - REG:99','INNOV','SEJEC_TP']:
+            elif x in ['AYUMIN - REG:99','AYUMIN','GABSUB - REG:99','GABSUB',
+                'INNOV - REG:99','INNOV','SEJEC_TP','GENERO','SEJEC_TP - REG:99']:
                 lista_CR2.append("Gabinete Subsecretaría")
-            elif x in ['CNT - REG:99','CNT','RECFIN - REG:99','SUBV - REG:99','URAE', 'DIPLAP', 'DPCG']:
+            elif x in ['CNT - REG:99','CNT','RECFIN','SUBV - REG:99', 'SUBV','URAE',
+                'DIPLAP', 'DPCG', 'GAB_DIPLAP']:
                 lista_CR2.append("División de Planificación y Presupuesto")
             elif x in ['C.AYC - REG:99','C.AYC','C.CONV', 'C.NORM - REG:99','C.NORM',
-                       'C.PROC','C.SYJ - REG:99','JURID']:
+                'C.PROC','C.SYJ - REG:99', 'JURID']:
                 lista_CR2.append("División Jurídica")
-            elif x in ['FCONT','FID','LDP','CPEIP']:
+            elif x in ['FCONT - REG:99','FID','ALDT - REG:99','CPEIP','LDP - REG:99']:
                 lista_CR2.append("CPEIP")
-            elif x in ['COMPRAS','GC - REG:99','GDP - REG:99','DAG', 'BIE - REG:99']:
+            elif x in ['COMPRAS - REG:99','GC - REG:99','GDP - REG:99','DAG', 'BIE - REG:99']:
                 lista_CR2.append("DAG")
             elif x in ['SEP','EPJA - REG:99','EPJA', 'DEG']:
                 lista_CR2.append("DEG")
-            elif x in ['CRA - REG:99','CURRIC - REG:99','TE - REG:99', 'UCE - REG:99', 'UCE']:
+            elif x in ['CRA - REG:99','CURRIC - REG:99','TE - REG:99', 'UCE - REG:99', 'UCE', 
+                'ESTAND - REG:99']:
                 lista_CR2.append("UCE")
             elif x in ['DES','NIVEL_CENTRAL']:
-                lista_CR2.append("Plan de acción")
+                lista_CR2.append("Plan de acciones")
             else:
                 lista_CR2.append(classificator_CR_REG(x))
     df.loc[:,'CR.2'] = lista_CR2
@@ -204,7 +208,7 @@ def add_cr(df, column):
             list_CR.append("DIPLAP")
         elif CR in ['División Jurídica']:
             list_CR.append("JURIDICA")
-        elif CR in ['CPEIP','DAG','DEG','UCE', 'Plan de acción']:
+        elif CR in ['CPEIP','DAG','DEG','UCE', 'Plan de acciones']:
             list_CR.append(CR)
         else:
             list_CR.append(classificator_by_reg(CR, ' '))
@@ -290,8 +294,7 @@ def rename_columns(df):
     df.rename(columns={"Observación": "Análisis Resultado periodo", 
                     "Riesgo": "Análisis DPCG","Nivel Riesgo": "Riesgo (Alto - Medio- Bajo) periodo",
                     "Fórmula de Cálculo": "Forma de Cálculo", "Meta del período": "Meta periodo", 
-                    "% Avance": "Resultado periodo",
-                    "% Cumplimiento efectivo meta anual": "Cumplimiento respecto a meta"},
+                    "% Avance": "Resultado periodo"},
                     inplace=True)
     return df
 
@@ -334,16 +337,20 @@ def query_ponderation(df):# Se debe refactorizar ojalá reuhitilizar una funcion
     df_informe = df.query("tag_ponderado == 'NO'")
     return df_informe
 
+# Aplica filtro para filtrar todos los indicadores que son podnerados del df
+def query_riesgos(df):# Se debe refactorizar ojalá reuhitilizar una funcion generixca
+    df_informe = df.query("Tipo != 'Riesgos'")
+    return df_informe
     
 # Añade la columna ponderación al DF
 def add_weighthing(df, column):
     list_weighthing = []
     df_weighthing = create_an_copy(df, column)
     for cod, CR in zip(df_weighthing['Cod_Sigemet'], df_weighthing['CR.2']):
-        if cod in Group_5:
-            list_weighthing.append("5,0%")
-        elif cod in Group_10:
+        if cod in Group_10:
             list_weighthing.append("10,0%")
+        elif cod in Group_12:
+            list_weighthing.append("12,0%")
         elif cod in Group_13:
             list_weighthing.append("13,0%")
         elif cod in Group_14:
@@ -354,34 +361,35 @@ def add_weighthing(df, column):
             list_weighthing.append("16,0%")
         elif cod in Group_17:
             list_weighthing.append("17,0%")
-        elif cod in Group_18:
-            list_weighthing.append("18,0%")
-        elif cod in Group_23:
-            list_weighthing.append("23,0%")
-        elif cod in Group_27:
-            list_weighthing.append("27,0%")
+        elif cod in Group_20 and CR not in ['SECREDUC 13','SECREDUC 16']:
+            list_weighthing.append("20,0%")
+        elif cod in Group_25:
+            list_weighthing.append("25,0%")
         elif cod in Group_30:
             list_weighthing.append("30,0%")
-        elif cod in Group_33:
-            list_weighthing.append("33,0%")
-        elif cod in Group_34 and CR in ['SECREDUC 13','SECREDUC 16']:
-            list_weighthing.append("34,0%")
         elif cod in Grupo_35:
             list_weighthing.append("35,0%")
         elif cod in Group_40:
             list_weighthing.append("40,0%")
         else:
-            list_weighthing.append("25,0%")
+            list_weighthing.append("0%")
     df.loc[:,'Ponderación'] = list_weighthing
     return df
 
 
-
+# Eliminar una vez que se realice la actualización de los paneles 
 def change_errors(df):
     filtered_df = df.query("Cod_Sigemet == 'I16_062'")
     df.loc[filtered_df.index, 'Tipo'] = "H"
     return df
 
+
+# Calcula el cumplimiento con respecto a la meta
+def calculate_cump_meta(row):
+    try:
+        return (row['Resultado periodo'] / row['Meta anual'])*100
+    except ZeroDivisionError:
+        return 0
 
 
 # Se utiliza column_order desde datos estáticos
@@ -391,7 +399,7 @@ def order_df(df):
     return df
 
   
-# Refactorizar
+# Refactorizar 
 def format_informe_mensual(df):
     df_informe = create_an_copy(df, columns_informe)
     df_informe.rename(columns={"Meta anual": "Meta","numerador": "Numerador",
@@ -410,37 +418,42 @@ def format_informe_mensual(df):
 
 
 def format_variable(df_informe):
-    list_goal = []
-    list_result = []
-    for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], 
-        df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
-        
-        if d == "no aplica":
-            list_goal.append(int(m))
-            list_result.append(int(r))
-        elif ind == ' Transformación Digital':
-            list_goal.append(str("Solo medir"))
-            list_result.append(int(r))
-        else:
-            list_goal.append(str(m).replace(".",",") + "%")
-            r = mat.trunc(r*10)/10
-            list_result.append(str(r).replace(".",",") + "%")
-    df_informe.loc[:,"Meta"] = list_goal
-    df_informe.loc[:,"Resultado periodo"] = list_result
-    df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
-    lambda x: str(x).replace(".",",")+ "%" )
-    return df_informe
+ 
+        list_goal = []
+        list_result = []
+        for d, m, r, ind in zip(df_informe['Denominador'], df_informe['Meta'], 
+            df_informe['Resultado periodo'], df_informe['Nombre del Indicador']):
+            
+            if d == "no aplica":
+                list_goal.append(int(m))
+                list_result.append(int(r))
+            elif ind == ' Transformación Digital':
+                list_goal.append(str("Solo medir"))
+                list_result.append(int(r))
+            else:
+                list_goal.append(str(m).replace(".",",") + "%")
+                r = mat.trunc(r*10)/10
+                list_result.append(str(r).replace(".",",") + "%")
+        df_informe.loc[:,"Meta"] = list_goal
+        df_informe.loc[:,"Resultado periodo"] = list_result
+        df_informe.loc[:,"Cumplimiento respecto a meta"] = df_informe["Cumplimiento respecto a meta"].apply(
+        lambda x: str(x).replace(".",",")+ "%" )
+
+        return df_informe
 
 
 #Funcion entrega formato del periodo
-def get_period_format(month = None):
+def get_period_format(month=None):
     today = datetime.now()
-    month = today.month -1
+    if month is None:
+        month = today.month - 1
     if month == 0:
         month = 12
-        year = today.year -1
-        month = datetime(year, month, 1)
-    month = month.strftime("%B")
+        year = today.year - 1
+    else:
+        year = today.year  # Agregar esta línea para definir year correctamente
+    
+    month = datetime(year, month, 1).strftime("%B")
     return month
 
 

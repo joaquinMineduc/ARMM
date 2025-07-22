@@ -48,9 +48,13 @@ def insert_values2(df, columns, start_row, end_row, ws):
                 insert_values_to_excel(df[column], columns[index_column], start_row, end_row, ws)
 
 
-def modify_file(file_path, sheet_name, df, columns, start_row, end_row):
+def modify_file(file_path, sheet_name, df, columns, start_row, end_row = None):
     with xw.App(visible = False) as app:
         wb = app.books.open(file_path)
+        
+        if end_row is None:
+            end_row = start_row + len(df) -1
+            
         if sheet_name in [sheet.name for sheet in wb.sheets]:
             ws = wb.sheets[sheet_name]
             if isinstance(columns, list):
@@ -94,9 +98,7 @@ def insert_date_document(date, column, row, ws):
     cell = ws[f"{column}{row}"]
     cell.value = date
     
-    
-    
-    
+     
 def apply_borders(file_path, sheet_name):
      with xw.App(visible = False) as app:
         wb = app.books.open(file_path)
@@ -106,7 +108,7 @@ def apply_borders(file_path, sheet_name):
             # Iterar por filas y columnas del rango usado
             for row in used_range.rows:
                 for cell in row:
-                    if cell.value:  # Validar si la celda tiene valor (no es None ni vacío)
+                    if cell.value or cell.value == 0:  # Validar si la celda tiene valor (no es None ni vacío)
                         # Aplicar bordes finos a la celda
                         for border_id in range(7, 13):  # Borde izquierdo, derecho, superior, inferior, y diagonales
                             cell.api.Borders(border_id).LineStyle = 1  # xlContinuous
@@ -114,7 +116,35 @@ def apply_borders(file_path, sheet_name):
             # Guardar los cambios
             wb.save(file_path)
             wb.close()
-    
-        
+            
 
-    
+# Añade una formula para la validación de lso estados de cada indicador
+def apply_format_formula(file_path, sheet_name, formula, columns, start_row, end_row):
+    with xw.App(visible = False) as app:
+        wb = app.books.open(file_path)
+        if sheet_name in [sheet.name for sheet in wb.sheets]:
+            ws = wb.sheets[sheet_name]
+            ws.range(f'{columns}{start_row}:{columns}{end_row}').formula = formula
+        wb.save(dir_output + path_report)
+        wb.close()
+        
+        
+def insert_graphics(file_path, sheet_name, path_chart, chart_name):
+    with xw.App(visible=False) as app:
+        wb = app.books.open(file_path)
+        sheet_panel = wb.sheets[sheet_name]
+
+        for chart in sheet_panel.api.ChartObjects():
+            if chart.Name == str(chart_name):
+                top, left = chart.Top, chart.Left 
+                height, width = chart.Height, chart.Width
+                chart.Delete()
+                print(f"✅ Insertando imagen desde: {path_chart}")
+                # Insertar imagen en la misma posición
+                new_pic = sheet_panel.pictures.add(str(path_chart), top = top, left = left)
+                new_pic.height = height
+                new_pic.width = width
+                break
+        wb.save(dir_output + path_report)
+        wb.close()
+        

@@ -4,7 +4,7 @@ import numpy as np
 from static_data import *
 from helper_functions import *
 import locale
-import multiprocessing.process
+
 
 
 # Configuración del idioma del entorno local, se cambia de EN a ES
@@ -16,10 +16,9 @@ except locale.Error:
     
 
 # Aplicar multiproceso para mejorar rendimiento : PENDIENTE 
-def create_dataframe(location, sheet, header):
-    if (sheet and header) is None: 
+def create_dataframe(location, sheet = None, header = None):
+    if sheet is None and header is None: 
         df = pd.read_excel(location, header = 0) # Si hoja y header no están definidos
-       
     if sheet is None and header is not None: 
         df = pd.read_excel(location, header = header)# Si sólo se tiene header
     else:
@@ -27,21 +26,20 @@ def create_dataframe(location, sheet, header):
     return df
 
 
-
-
 # Eliminar columnas innecesarias
-def drop_unless_columns(df, start, end, columns):
+def drop_unless_columns(df, start = None, end = None, columns = None):
     list_index = list(df.columns)
-    if (start and end) is None and columns is None: # si no se ingresa un inicio y termino y columna
-        for index in drop_index: 
+    if start is None and end is None and columns is None: # si no se ingresa un inicio y termino y columna
+        for index in drop_index:
+            print(list_index[index])
             df.drop(list_index[index], axis = 1, inplace = True) # elimina en base a una lsita predefinida
-    if (start and end) is None and columns is not None:
+    if start is None and end is None and columns is not None:
         if isinstance(columns, list): # si la columna existe y el resto no, procede a eliminar
             for index in columns: # las columnas en base a la lsita creada
                 df.drop(list_index[index], axis = 1, inplace = True)
         else:
             df.drop(list_index[columns], axis = 1, inplace = True)
-    if (start and end) is not None and columns is  None:
+    if start is not None and end is not None and columns is  None:
         for index in range(start, end): # elimina listas desde un rango y no desde una lista.
             df.drop(list_index[index], axis = 1, inplace = True)
     return df
@@ -49,7 +47,7 @@ def drop_unless_columns(df, start, end, columns):
 
 # Eliminar filas innecesarias
 def drop_unless_rows(df, start, end, rows):
-    if (start and end) is None:
+    if start is None and end is None:
         if isinstance(rows, list):
             for index in rows:
                 df.drop(index = index, axis = 0, inplace = True)
@@ -59,7 +57,6 @@ def drop_unless_rows(df, start, end, rows):
         for index in range(start, end):
             df.drop(index = index, axis = 0, inplace = True)
     return df
-
 
 
 # Crea una copia de un dataframe para la manipulacion de datos
@@ -91,8 +88,7 @@ def format_eval_columns(df):
     for col in columns:
         if col != 'Regiones':
             df[col] = df[col].apply(
-            lambda x: np.floor(x*10)/10).apply(lambda x: int(x)).apply(
-            lambda x: str(x) + "%")
+            lambda x: format_percentage(x))
             
             
 # Funcion que crea una particion de un DF usando ILOC, esta f(x) recibe un rango para filtrar las columnas
@@ -129,23 +125,23 @@ def create_simple_query(df, column, arg_compare, filter = None):
     return df
 
 
-def build_query( columns, list_args, list_operator):
+def build_query( columns, list_args, list_operator, list_logic):
     space = " "
     query_str = ""
     # Iterar sobre las columnas y los argumentos
-    for index, (col, arg) in enumerate(zip(columns, list_args)):
+    for index, (col, arg, op, log) in enumerate(zip(columns, list_args, list_operator, list_logic)):
         # Construir la condición
-        query_str += f'`{col}`' + space + "==" + space + f'"{arg}"'
-
+        query_str += f'`{col}`' + space + f'{log}' + space + f'"{arg}"'
+        print(query_str)
         # Añadir el operador lógico solo si no es la última iteración
-        if index < len(columns) - 1:
-            query_str += space + list_operator[index] + space
+        if index  < len(columns) - 1:
+          query_str += space + list_operator[index] + space
     return query_str
 
 
-# Nuevo inspeccionar 
-def create_query(df, columns, list_args, list_operator, columns_filter = None):
-    str_query = build_query(columns, list_args, list_operator)
+# Nuevo inspeccionar
+def create_query(df, columns, list_args, list_operator, list_logic = None, columns_filter = None):
+    str_query = build_query(columns, list_args, list_operator, list_logic)
     df = df.query(str_query)
     if columns_filter:
         df = df.query(str_query)[columns_filter]
@@ -153,12 +149,9 @@ def create_query(df, columns, list_args, list_operator, columns_filter = None):
 
 
 def modify_eval_values(df):
-    df['Oportunidad'] = df['Oportunidad'].apply(
-        lambda op: 100 if op == 'Si' else 0 if op == 'No' else 'Sin informar')
-    df['Consistencia'] = df['Consistencia'].apply(
-        lambda op: 100 if op == 'Si' else 0 if op == 'No' else 'Sin informar')
-    df['Completitud'] = df['Completitud'].apply(
-        lambda op: 100 if op == 'Si' else 0 if op == 'No' else 'Sin informar')
+    df['Oportunidad'] = df['Oportunidad'].apply(lambda op: 100 if op == 'Si' else 0)
+    df['Consistencia'] = df['Consistencia'].apply(lambda op: 100 if op == 'Si' else 0)
+    df['Completitud'] = df['Completitud'].apply(lambda op: 100 if op == 'Si' else 0)
     return df
 
 
@@ -177,7 +170,7 @@ def create_means(df, arg):
     return df
 
 
-def format_divition(df, sub_divition = None):
+def format_divition(df):
     list_divition = []
     for dv in df['División']:
         if dv == 'RECFIN':
@@ -192,8 +185,12 @@ def format_divition(df, sub_divition = None):
             list_divition.append('TP')
         elif dv in ['AUDITORIA','ESTUDIOS']:
             list_divition.append(str(dv).lower().capitalize())
-        elif dv == 'GABSUB' and sub_divition is not None:
+        elif dv == 'GABSUB':
             list_divition.append('Gabinete Subsecretaría')
+        elif dv == 'SEGI':
+            list_divition.append("Seguridad de la Información")
+        elif dv == 'GAB_DIPLAP':
+            list_divition.append("Gabinete DIPLAP")
         else:
             list_divition.append(dv)
     df['División'] = list_divition
@@ -201,11 +198,35 @@ def format_divition(df, sub_divition = None):
 
 
 def format_percentage(value):
-    if isinstance(value, float):
-        value = np.floor(value*10)/10
-        value = int(value)
-    value = str(value) + "%"
-    return value
+    """
+    Convierte un número a un porcentaje formateado como cadena.
+    
+    Si el valor es un float entre 0 y 1, se interpreta como una fracción y se multiplica por 100.
+    Luego el valor se redondea al entero más cercano y se añade el símbolo '%'.
+
+    Parámetros:
+    ----------
+    value : int o float
+        Número a convertir a porcentaje. Puede ser una fracción (0 < value < 1) o un porcentaje directo.
+
+    Retorna:
+    --------
+    str
+        Cadena con el valor porcentual redondeado y el símbolo '%'.
+
+    Ejemplos:
+    ---------
+    >>> format_percentage(0.457)
+    '46%'
+    >>> format_percentage(45.7)
+    '46%'
+    >>> format_percentage(100)
+    '100%'
+    """
+    if isinstance(value, float) and 0 < value < 1:
+        value = value*100
+    value = round(value)
+    return f"{value}%"
 
 
 def format(df):
@@ -245,17 +266,25 @@ def validation_type(arg):
 
 # funcion que agrupa por tipo  indicador
 def group_by_columns(df, columns, arg = None):
-    if arg:
+    if arg:  
         if arg == 1:
-            df = df.groupby(by=[columns], as_index = False).sum()
+            df = df.groupby(by=columns, as_index = False).sum()
+        elif arg == 2:
+            if isinstance(columns, list):
+                df = df.groupby(by=columns, as_index = False).mean(numeric_only=True)
+            else:
+                df = df.groupby(by=[columns], as_index = False).mean(numeric_only=True)
     else:
-        df = df.groupby(by=[columns], as_index = False).count()
+        if isinstance(columns, list):
+            df = df.groupby(by=columns, as_index = False).count()
+        else:
+            df = df.groupby(by=[columns], as_index = False).count()
     return df
 
 
 # Modificación y optimización de la funcion rename (Reutilizable)
 def rename_columns(df, origin_columns, new_name_columns):
-    if (validation_type(origin_columns) and validation_type(new_name_columns)):
+    if validation_type(origin_columns) and validation_type(new_name_columns):
         df.rename(columns = {origin_columns:new_name_columns}, inplace = True)      
     else:
         for origin, new in zip(origin_columns, new_name_columns):
@@ -291,36 +320,64 @@ def cut_cr(df):
     return df
 
 
+def last_bussines_day(month, year, holy_days = None):
+    # Último día del mes
+    last_day = pd.Timestamp(year, month, 1) + pd.offsets.MonthEnd(0)
+
+    # Retrocede hasta el día hábil más cercano
+    while last_day.weekday() >= 5 or (holy_days and last_day in holy_days):
+        last_day -= pd.Timedelta(days=1)
+    return last_day.day
+
+def get_month(year = None, month = None):
+    # Convertimos el número del mes a nombre del mes en inglés
+    if year and month:
+        month_name = datetime(year, month, 1).strftime("%B").upper()
+    else:
+        now = datetime.now()
+        month_name = now.strftime("%B").upper()
+    return month_name
+
+
 def order_reg_by_columns(df, column):
     df = df.copy()
     df.sort_values(by = column, inplace = True)
     return df
 
 # realizar validacion de año según cierre, si es enero debe tomar mes anterior y año anterior
-def get_date(format = None, text = None, Format2 = None):
+
+def get_date(format: bool = None, text:str = None, format2:bool = None):
     today = datetime.now()
-    month = today.month -1
-    if month == 0:
-        month = 12
-        year = datetime.now().year - 1
-        month = datetime(year, month, 1)
-    else:
-        year = today.year
-    month = month.strftime("%B")
-    day = today.day
+    month = today.month - 1
+    year, month = (today.year -1, 12) if month == 0 else (today.year, month)
+
+    # Convertimos el número del mes a nombre del mes en inglés
+    month_name = get_month(year, month)
     if format:
-        year = datetime(year, 1, 1).strftime("%Y")
-        return f'Acum {month} - {year}'
-    if text and format is None:
-        return f'{text} {day} de {month}'
-    if Format2 and text is not None:
+        return f'Acum {month_name} - {year}'
+
+    if text and not format and not format2 :
+        last_day = last_bussines_day(month, year)
+        return f'{text} {last_day} de {month_name}'
+
+    if format2 and text and not format:
         return f'{text} {year}'
     else:
-        return f'{month.upper()} - {year}'
+        return f'{month_name} - {year}'
 
+       
 def clear_df(df):
     df.dropna(inplace = True)
     return df
 
-
+# AGREGAR promedio para terminar
+def build_df_eval_prov(df_div, df_sub_div = None):
+    # ----- Se hace transformación del DF de división --
+    df_div = group_by_columns(df_div, 'División', 2)
+    if df_sub_div is not None:
+        df_sub_div = group_by_columns(df_sub_div, 'Lugar de medición', 2)
+        df_sub_div.columns = df_div.columns
+        df_unificated = pd.concat([df_div, df_sub_div])
+        return df_unificated
+    return df_div
 

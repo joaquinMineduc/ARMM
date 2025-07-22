@@ -1,8 +1,6 @@
 from scrapy_functions import *
 from selenium.webdriver.chrome.options import Options
 from pywinauto import Application
-import os
-from pathlib import Path
 from pywinauto.keyboard import send_keys
 
 def get_instruments_files():
@@ -11,13 +9,8 @@ def get_instruments_files():
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     # Encuentra los elementos dentro de gridItemFocusFrame
-    get_document(driver, 'ADP')
-    back_directory_base(driver)
-    # retroceder a inicio y descargar documento gestión de riesgos
-    get_document(driver, 'Gestión de Riesgos')
-    #retroceder al inicio y descargar documento programas sociales
-    back_directory_base(driver)
-    get_document(driver, 'Programas sociales')
+    for dir in range (3):
+        access_directory_SP(driver, dir)
     driver.close()
     driver.quit()
     
@@ -26,7 +19,8 @@ def upload_reportBI():
     driver = select_browser_driver()
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
-    get_document(driver, 'Acumulativos BI')
+    access_directory_SP(driver, 'Acumulativos BI')
+    
 
 def download_reportsBI():
     pass
@@ -39,7 +33,7 @@ def merge_and_upload_reportBI():
 def de_prueba():
  
     ruta_archivo = "C:/Users/joaquin.astorga/mis_proyectos/Proyecto ARMM"
-    name_file = "datosBI_diciembre.xlsx"
+    name_file = "datosBI_enero.xlsx"
   
     driver = select_browser_driver()
     driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
@@ -90,7 +84,7 @@ def de_prueba():
     time.sleep(10)
     
 
-de_prueba()
+get_instruments_files()
 
 
 

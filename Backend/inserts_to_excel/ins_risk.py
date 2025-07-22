@@ -1,29 +1,62 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Backend.inserts_to_excel.inserts_functions import modify_file
-from Frontend.Variables import dir_output, path_report
+from Backend.inserts_to_excel.inserts_functions import modify_file, insert_graphics
+from Frontend.Variables import Path_report_final, Path_charts_PTR
 from risk_functions import *
+
 
 
 DATE_REPORT = get_date()
 
-
 columns = ['B','C','D']
-
+columns_alerts = ['B', 'D', 'E']    
 matriz_columns = ['G','I','L','O','R','T','V','X']
 risk_columns = ['L','O','Q','S','T','V','W','Y']
 columns_graph = ['C','D','E']
+columns_eval_ptr = ['H', 'I','J', 'K', 'L']
+
 
 def insert_data_risk():
-    modify_file(dir_output + path_report, 'Gestión de riesgos', DATE_REPORT,'B', 4, 4)
+    modify_file(Path_report_final, 'Gestión de riesgos', DATE_REPORT,'B', 4, 4)
 
-    modify_file(dir_output + path_report, 'Gestión de riesgos', df_risk_tools, columns, 8, 15)
+    modify_file(Path_report_final, 'Gestión de riesgos', df_risk_tools, columns, 8, 15)
 
-    modify_file(dir_output + path_report, 'Gestión de riesgos', df_monitoring, columns, 19, 23)
+    modify_file(Path_report_final, 'Gestión de riesgos', df_monitoring, columns, 19, 23)
 
-    modify_file(dir_output + path_report, 'Gestión de riesgos', df_matriz, matriz_columns, 14, 22)
+    modify_file(Path_report_final, 'Gestión de riesgos', df_matriz, matriz_columns, 14, 22)
 
-    modify_file(dir_output + path_report, 'Gestión de riesgos', df_risk, risk_columns, 29, 37)
+    modify_file(Path_report_final, 'Gestión de riesgos', df_risk, risk_columns, 29, 37)
 
-    modify_file(dir_output + path_report, 'data_riesgos', df_grap, columns_graph, 15, 39)
+    modify_file(Path_report_final, 'data_riesgos', df_grap, columns_graph, 15, 39)
+     
+    if STATUS_PTR:
+        configuration = {'title':f'Nivel de Cumplimiento - Estrategias para Señales de Alerta {datetime.now().today().year -1}',
+            'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
+            'label_size': 16, 'dt_size': 35, 'leyenda': True, 'simple_df':True, 'categories': False}
+        
+        configuration_b = {'title':f'Nivel de Cumplimiento - Planes de Tratamiento de Riesgos {datetime.now().today().year -1}',
+            'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
+            'label_size': 14, 'dt_size': 35, 'leyenda': False, 'simple_df':False, 'categories': True}
+        
+        configuration_c = {'title':f'Planes de Tratamiento de Riesgos Comprometidos el {datetime.now().today().year -1}',
+            'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
+            'label_size': 20, 'dt_size': 35, 'leyenda': True, 'simple_df':False, 'categories': True}
+        
+        df_chart_modify = adaptater_df_chart(df_plan_tratamiento)
+        print(df_chart_modify)
+        create_bar_chart(df_chart_modify, 'ptr_chart', configuration_b)
+        create_bar_chart(df_alerts,'signals_chart', configuration)
+        create_bar_chart_h(df_plan_tratamiento, 'ptr_chart_A', configuration_c)
+        
+        # Crear una validación para identificar imagenes con los nombres asignados
+        for path_charts in Path_charts_PTR.iterdir():
+            if path_charts.is_file():
+                insert_graphics(Path_report_final, 'Planes de tratamientos', path_charts.resolve(), path_charts.stem)
+        
+        modify_file(Path_report_final, 'Planes de tratamientos', DATE_PTR, 'A', 4, 4)
+        modify_file(Path_report_final, 'Planes de tratamientos', df_plan_tratamiento, 
+            columns, 13, 15)
+        modify_file(Path_report_final, 'Planes de tratamientos', df_alerts, columns_alerts, 25, 25)
+        modify_file(Path_report_final, 'Planes de tratamientos', df_eval_NC_ptr, 
+            columns_eval_ptr, 21, 37)
