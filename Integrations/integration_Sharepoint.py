@@ -6,7 +6,7 @@ from pywinauto.keyboard import send_keys
 def get_instruments_files():
     # Inicio sesión en Sharepoint y descarga documento ADP
     driver = select_browser_driver()
-    driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
+    driver = create_new_conecction(driver,"https://mineduca.sharepoint.com/:f:/r/sites/PCG/Documentos%20compartidos/Reporte%20mensual%20-ARMM?csf=1&web=1&e=JpsyG3")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     # Encuentra los elementos dentro de gridItemFocusFrame
     for dir in range (3):
@@ -17,7 +17,7 @@ def get_instruments_files():
 def upload_reportBI():
     # Inicio sesión en Sharepoint y descarga documento ADP
     driver = select_browser_driver()
-    driver = create_new_conecction(driver,"https://shorturl.at/FsTEF")
+    driver = create_new_conecction(driver,"https://mineduca.sharepoint.com/:f:/r/sites/PCG/Documentos%20compartidos/Reporte%20mensual%20-ARMM?csf=1&web=1&e=JpsyG3")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     access_directory_SP(driver, 'Acumulativos BI')
     

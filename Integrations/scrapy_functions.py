@@ -39,8 +39,14 @@ year = get_year().split("-")[0]
 
 month = get_year().split("-")[1].capitalize()
 
+def validation_month():
+    month = datetime.now().month
+    year = datetime.now().year
+    month = datetime(year, month, 1).strftime("%B").capitalize()
+    return month
 
-
+new_month = validation_month()
+print(new_month)
 def select_browser_driver():
     browsers = ["chrome", "firefox", "edge"] 
     driver = None
@@ -99,16 +105,18 @@ def back_directory_base(driver, rep):
     driver.refresh()
     
     
-def access_to_directories(driver):
+def access_to_directories(driver, index = 0):
     time.sleep(2)
     driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
         f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
-       
     time.sleep(2)
-    driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
-        f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
+    if index == 1:
+        driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+                f" and @data-selection-invoke='true' and contains(text(), '{new_month}')]").click()
+    else:
+        driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
+                f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
     time.sleep(2)
-    
     driver.find_element(By.XPATH, '//div[@data-automationid="item-state-container"]').click()
     time.sleep(2)
     
@@ -125,34 +133,29 @@ def access_directory_SP(driver, directory):
     match directory:
         case 0:
             for level_adp in ['Nivel I','Nivel II']:
-                time.sleep(2)
-                driver.find_element(By.XPATH, "//span[@role='button'"+
-                    f"and contains(text(), 'ADP')]").click()
+                time.sleep(3)
+                driver.find_element(By.XPATH, "//span[@role='button' and contains(text(), 'ADP')]").click()
                 time.sleep(2)
                 driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
                     f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
                 access_to_directories(driver)
                 back_directory_base(driver, 4)
         case 1:
-            if month in ['Marzo', 'Junio', 'Septiembre', 'Diciembre']:
-                for level_adp in ['Monitoreo PGR','Monitoreo PTR']:
-                    time.sleep(2)
-                    driver.find_element(By.XPATH, "//span[@role='button'"+
-                        f"and contains(text(), 'Gestión de Riesgos')]").click()
-                    time.sleep(2)
-                    driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
-                        f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
-                    access_to_directories(driver)
-                    back_directory_base(driver, 4)
-            else:
+            for index, level_adp in enumerate(['Monitoreo PGR','Monitoreo PTR']):
                 time.sleep(2)
                 driver.find_element(By.XPATH, "//span[@role='button'"+
                     f"and contains(text(), 'Gestión de Riesgos')]").click()
                 time.sleep(2)
                 driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
-                    f" and @data-selection-invoke='true' and contains(text(), 'Monitoreo PGR')]").click()
-                access_to_directories(driver)
+                    f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
+                access_to_directories(driver, 0)
                 back_directory_base(driver, 4)
+                if  month in ['Marzo','Agosto','Septiembre'] and index == 1:
+                    driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
+                            f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
+                    access_to_directories(driver, index)
+                    back_directory_base(driver, 4)
+                time.sleep(2)
         case 2:
             driver.find_element(By.XPATH, "//span[@role='button'"+
                 f"and contains(text(), 'Programas sociales')]").click()
