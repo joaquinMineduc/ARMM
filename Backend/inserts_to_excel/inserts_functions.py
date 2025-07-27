@@ -1,5 +1,5 @@
 import xlwings as xw
-from Frontend.Variables import dir_output, path_report, path_anexo
+from Frontend.Variables import Path_last_report, path_last_anexo
 
 def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
     with xw.App(visible = False) as app:
@@ -10,7 +10,7 @@ def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
                 insert_values2(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            wb.save(dir_output + path_anexo)
+            wb.save(path_last_anexo)
             wb.close()
         
         
@@ -61,7 +61,7 @@ def modify_file(file_path, sheet_name, df, columns, start_row, end_row = None):
                 insert_values(df, columns, start_row, end_row, ws)
             else:
                 insert_date_document(df, columns, start_row, ws)
-            wb.save(dir_output + path_report)
+            wb.save(Path_last_report)
             wb.close()
         
 
@@ -125,7 +125,7 @@ def apply_format_formula(file_path, sheet_name, formula, columns, start_row, end
         if sheet_name in [sheet.name for sheet in wb.sheets]:
             ws = wb.sheets[sheet_name]
             ws.range(f'{columns}{start_row}:{columns}{end_row}').formula = formula
-        wb.save(dir_output + path_report)
+        wb.save(Path_last_report)
         wb.close()
         
         
@@ -145,6 +145,6 @@ def insert_graphics(file_path, sheet_name, path_chart, chart_name):
                 new_pic.height = height
                 new_pic.width = width
                 break
-        wb.save(dir_output + path_report)
+        wb.save(Path_last_report)
         wb.close()
         

@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from panel_functions import *
 from Backend.inserts_to_excel.inserts_functions import modify_file, insert_graphics
-from Frontend.Variables import Path_report_final, Path_charts_NC
+from Frontend.Variables import Path_last_report, Path_charts_NC
 
 
 
@@ -37,11 +37,11 @@ def insert_data_panel():
     # Crear una validación para identificar imagenes con los nombres asignados
     for path_charts in Path_charts_NC.iterdir():
         if path_charts.is_file():
-            insert_graphics(Path_report_final, '01-PANEL', path_charts.resolve(), path_charts.stem)
+            insert_graphics(Path_last_report, '01-PANEL', path_charts.resolve(), path_charts.stem)
     
     
     # Se agrega la fecha al documento
-    modify_file(Path_report_final, '01-PANEL', DATE_REPORT, 'N', 5, 5)
+    modify_file(Path_last_report, '01-PANEL', DATE_REPORT, 'N', 5, 5)
     # Se modifica el panel del informe, la primera página que contiene los gráficos.
-    modify_file(Path_report_final,'01-PANEL', df_principal_panel, columns, 10, 13)
+    modify_file(Path_last_report,'01-PANEL', df_principal_panel, columns, 10, 13)
     

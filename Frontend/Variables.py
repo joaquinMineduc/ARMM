@@ -9,6 +9,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 proyecto_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(proyecto_path)
 
+
+# Ruta absoluta del archivo actual
+ruta_actual = Path(__file__).resolve()
+
+# Subir 3 niveles hasta llegar a APP/
+ruta_base = ruta_actual.parents[1]  # 0 = mi_archivo.py, 1 = format_reports, 2 = Input, 3 = Backend
+
+
 #---------------- Variables de utilidad --------------------------#
 
 # -------------- Colores en Exadecimal ----------------------#
@@ -60,15 +68,12 @@ Rgob_Gray = (137,137,137,52)
 Rgob_white = (0,0,0,0)
 
 # ------------------- Variables de directorios de salida  --------------- #
-dir_in = "APP/Backend/Input/format_reports/"
-path_report_format = "formato.xlsx"
-dir_output = "APP/Backend/output/"
-dir_output_PDFs = "report_parts/"
-path_report = "informe_final.xlsx"
-path_anexo = "anexo_final.xlsx"
-format_anexo = "format_anexo.xlsx"
-dir_graphics_NC = "graphics/NC/"
-dir_graphics_PTR = "graphics/PTR/"
-Path_charts_PTR = (Path(dir_output)/ dir_graphics_PTR).resolve()
-Path_charts_NC = (Path(dir_output) / dir_graphics_NC).resolve()
-Path_report_final = (Path(dir_output) / path_report).resolve()
+dir_in = (Path(ruta_base)/ 'Backend/Input/format_reports/').resolve()
+dir_output = (Path(ruta_base)/ 'Backend/output/').resolve()
+Path_charts_PTR = (Path(dir_output)/ 'graphics/PTR/').resolve()
+Path_charts_NC = (Path(dir_output)/ 'graphics/NC/').resolve()
+Path_last_report = (Path(dir_output)/ 'informe_final.xlsx').resolve()
+path_report_format = (Path(dir_in)/'formato.xlsx').resolve()
+path_last_anexo = (Path(dir_output)/'anexo_final.xlsx').resolve()
+dir_output_PDFs = (Path(dir_output)/'report_parts/').resolve()
+format_anexo = (Path(dir_in)/'format_anexo.xlsx').resolve()

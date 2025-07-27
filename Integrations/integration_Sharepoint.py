@@ -1,4 +1,4 @@
-from scrapy_functions import *
+from Integrations.scrapy_functions import *
 from selenium.webdriver.chrome.options import Options
 from pywinauto import Application
 from pywinauto.keyboard import send_keys
@@ -9,7 +9,7 @@ def get_instruments_files():
     driver = create_new_conecction(driver,"https://mineduca.sharepoint.com/:f:/r/sites/PCG/Documentos%20compartidos/Reporte%20mensual%20-ARMM?csf=1&web=1&e=JpsyG3")
     driver = log_in_sharepoint(driver, "armm.dpcg.system@mineduc.cl", "ERMC$7835*$")
     # Encuentra los elementos dentro de gridItemFocusFrame
-    for dir in range (3):
+    for dir in range (4):
         access_directory_SP(driver, dir)
     driver.close()
     driver.quit()
@@ -84,7 +84,7 @@ def de_prueba():
     time.sleep(10)
     
 
-get_instruments_files()
+
 
 
 

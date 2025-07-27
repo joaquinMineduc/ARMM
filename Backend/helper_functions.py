@@ -2,7 +2,7 @@ from static_data import regiones
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import numpy as np
-from Frontend.Variables import dir_output, dir_output_PDFs, dir_in, path_report_format
+from Frontend.Variables import dir_output_PDFs, path_report_format, Path_charts_NC, Path_charts_PTR
 import os
 import re
 import xlwings as xw
@@ -49,7 +49,7 @@ def modfy_parts_reports(dir_base, path_file, new_path, drop_path):
   
   
 def drop_parts_report():
-  dir_directory = os.path.join(dir_output, dir_output_PDFs)
+  dir_directory = os.path.join(dir_output_PDFs)
   for file in os.listdir(dir_directory):
         route_file = os.path.join(dir_directory, file)
         os.remove(route_file)
@@ -79,26 +79,18 @@ def order_report_parts(data_list):
   segment_list = sorted(segment_list)
   # Segunda parte : Reestructuración de ruta con el orden requerido
   for part in segment_list:
-    new_route =  os.path.join(dir_output, dir_output_PDFs,f"{part}.pdf")
+    new_route =  os.path.join(dir_output_PDFs,f"{part}.pdf")
     reassembled_list.append(new_route)
   return reassembled_list
 
-
-
-def cut_parent_base():
-  ruta_base = Path(__file__).parent
-  for parent in  ruta_base.parents:
-    if parent.name == "Proyecto ARMM":
-      return parent
     
 def adaptater_df_chart(df):
   df = df.sum()
   return df
 
-
+# modifica el estatus de visible cuando requiere realizar el reporte de indicadores PTR
 def modify_status(sheet, status = False):
-  ruta_base = cut_parent_base()
-  location = ruta_base  / dir_in / path_report_format 
+  location = path_report_format 
     
   init_excel = win32.gencache.EnsureDispatch('Excel.Application')
     
@@ -160,7 +152,7 @@ def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk,
       
       plt.tight_layout()
       
-  plt.savefig(f"APP/Backend/output/graphics/NC/{chart_name}.png", dpi=800, bbox_inches='tight', pad_inches=0.2)
+  plt.savefig(Path(Path_charts_NC)/f'{chart_name}.png', dpi=800, bbox_inches='tight', pad_inches=0.2)
   
   
 def create_bar_chart(df, chart_name, configuration = None):
@@ -225,7 +217,7 @@ def create_bar_chart(df, chart_name, configuration = None):
 
   # Mostrar gráfico
   plt.tight_layout()
-  plt.savefig(f"APP/Backend/output/graphics/PTR/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=0.05)
+  plt.savefig(Path(Path_charts_PTR)/f'{chart_name}.png', dpi=700, bbox_inches='tight', pad_inches=0.05)
   
   
 
@@ -283,7 +275,7 @@ def create_bar_chart_h(df, chart_name, configuration):
           
   # Mostrar gráfico
   plt.tight_layout()
-  plt.savefig(f"APP/Backend/output/graphics/PTR/{chart_name}.png", dpi=700, bbox_inches='tight', pad_inches=0.05)
+  plt.savefig(Path(Path_charts_PTR)/f'{chart_name}.png', dpi=700, bbox_inches='tight', pad_inches=0.05)
   
 
       
