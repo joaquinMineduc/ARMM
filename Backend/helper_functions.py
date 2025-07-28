@@ -1,4 +1,5 @@
 from static_data import regiones
+import time
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import numpy as np
@@ -66,6 +67,24 @@ def drop_file_charts():
 def clear_directories():
   drop_parts_report()
   drop_file_charts()
+  
+  
+def get_download_reports():
+  download_path = Path.home()/"Downloads"
+  if not download_path.exists():
+    download_path = Path.home()/ "Descargas"
+  # Tiempo actual en segundos desde 1970 (epoch)
+  now = time.time()
+
+  # Lista de archivos modificados hace menos de 3 minutos (180 segundos)
+  recent_files = [
+      f for f in download_path.iterdir()
+      if f.is_file() and (now - f.stat().st_mtime) < 190
+  ]
+  
+  # Mostrar resultados
+  for file in recent_files:
+      print(f"Modificado recientemente: {file}")
 
 
 def order_report_parts(data_list):
@@ -289,6 +308,3 @@ def create_bar_chart_h(df, chart_name, configuration):
   plt.savefig(Path(Path_charts_PTR)/f'{chart_name}.png', dpi=700, bbox_inches='tight', pad_inches=0.05)
   
 
-      
-
-drop_file_charts()

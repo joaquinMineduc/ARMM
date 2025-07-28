@@ -10,12 +10,13 @@ from pathlib import Path
 from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
-from Backend.helper_functions import clear_directories, modify_status
+from Backend.helper_functions import clear_directories, modify_status, get_download_reports
 from Integrations.integration_Sharepoint import get_instruments_files
 
 
 def btn():
     get_instruments_files()
+    get_download_reports()
     call_all_inserts()
     for index in range(2):
         for  args in (Path_last_report, path_last_anexo):
