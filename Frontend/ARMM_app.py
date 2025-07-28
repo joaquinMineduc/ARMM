@@ -3,6 +3,7 @@ from tkinter import filedialog
 import customtkinter as ct
 from PIL import Image, ImageTk
 from Variables import *
+import time
 import sys
 from pathlib import Path
 # # Agrega la raíz del proyecto al path
@@ -10,12 +11,15 @@ from pathlib import Path
 from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
-from Backend.helper_functions import clear_directories, modify_status, get_download_reports
+from Backend.helper_functions import clear_directories, modify_status, get_download_reports, second_thread
 from Integrations.integration_Sharepoint import get_instruments_files
+from Integrations.integration_Sigemet import get_reports_sigemet
 
-
-def btn():
-    get_instruments_files()
+def data_process():
+    update_frame(0, "init")
+    second_thread(get_reports_sigemet)
+    second_thread(get_instruments_files, flag_wait=True)
+    update_frame(0, "end")
     get_download_reports()
     call_all_inserts()
     for index in range(2):
@@ -24,6 +28,24 @@ def btn():
         merge_parts_report(dir_output, index)
         clear_directories()
         modify_status("Planes de tratamientos", status = False)
+
+def btn():
+    second_thread(data_process)
+    
+    
+def update_frame(status, process):
+    Aumento = ['.','..','...']
+    if status == 0 and process =="init":
+        for i in Aumento:
+            time.sleep(1.5)
+            label_notify_report.configure(text=f"Descargando planillas y reportes{i}")
+        frame.update()
+    # match status:
+    #     case 0:
+    #         if process == "init":
+    #             for i in range(2):
+    #                 label_notify_create_report.config(text8 = "Descargando reportes y planillas")
+
 
                   
 if __name__ == "__main__":
@@ -41,7 +63,7 @@ if __name__ == "__main__":
     frame.pack(padx = 10, pady = 10,)
 
     frame.columnconfigure([0, 1], weight = 1)
-    frame.rowconfigure([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], weight = 0)
+    frame.rowconfigure([0, 1, 2, 3, 4, 5, 6], weight = 0)
 
     # Añadir una imagen al frame
     image_path = "APP/Frontend/icons/Mineduc-PI.png"
@@ -51,18 +73,21 @@ if __name__ == "__main__":
     lbImg.grid(columnspan = 2, row = 0, pady = 50, sticky = 's')
 
     ## Añadir un label
-    label_notify_report = ct.CTkLabel(frame, font = ("inter", 16, "bold"), 
-                        text = "✓  Información obtenida", 
-                        text_color = Exgob_Gray).grid(columnspan = 2,row = 1, pady = 5)
+    label_notify_report = ct.CTkLabel(frame, font=("inter", 16, "bold"), 
+                                  text="hola", 
+                                  text_color=Exgob_Gray)
 
+    label_notify_report.grid(columnspan=2, row=1, pady=5)
+    
+    
      ## Añadir un label
     label_notify_data = ct.CTkLabel(frame, font = ("inter", 16, "bold"), 
-                        text = "✓ fuentes de datos creadas", 
+                        text = "", 
                         text_color = Exgob_Gray).grid(columnspan = 2,row = 2, pady = 5)
     
      ## Añadir un label
     label_notify_create_report = ct.CTkLabel(frame, font = ("inter", 16, "bold"), 
-                        text = "✓ Informe creado", 
+                        text = "", 
                         text_color = Exgob_Gray).grid(columnspan = 2, row = 3, pady = 5)
 
     # Botón que permite subir el plan de tratamiento
@@ -86,7 +111,7 @@ if __name__ == "__main__":
                          text = "Aplicación propiedad del gobierno - desarrollado por el DPCG", 
                          text_color = Exgob_black)
     
-    label4.grid(columnspan = 2, row = 9, pady = 80)
+    label4.grid(columnspan = 2, row = 6, pady = 80)
 
     # Ejecutar la aplicación
     app.mainloop()

@@ -3,7 +3,8 @@ import time
 import locale
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait, Select
-
+from selenium.webdriver.chrome.options import Options
+import tempfile
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
@@ -49,6 +50,8 @@ def validation_month():
 new_month = validation_month()
 print(new_month)
 def select_browser_driver():
+    options = Options()
+    options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
     browsers = ["chrome", "firefox", "edge"] 
     driver = None
     for browser in browsers:
@@ -58,7 +61,7 @@ def select_browser_driver():
             elif browser == "firefox":
                 driver = webdriver.Firefox()
             elif browser == "chrome":
-                driver = webdriver.Chrome()
+                driver = webdriver.Chrome(options=options)
             return driver
         except (SessionNotCreatedException, NoSuchDriverException):
             # alguna función que envíe un mensaje al usuario
@@ -250,23 +253,23 @@ def download_report_indicators(driver):
             "leftFrame","mainFrame"]:
             driver.switch_to.frame(element)  # Switch to frames       
         elif element in ["considerarAplicacionesReg", "botonXls"]:
-            wait = WebDriverWait(driver, 1)  # Espera hasta 1 segundos
+            wait = WebDriverWait(driver, 2)  # Espera hasta 1 segundos
             
             wait.until(EC.presence_of_element_located((By.ID, element))).click()
         elif element in ["link_3", "linkItem_16190"]:
             driver.find_element(By.ID, element).click()
-            time.sleep(1)
+            time.sleep(2)
             driver.switch_to.parent_frame()
         else:
             driver.find_element(By.ID, element)  # Find other elements
-        time.sleep(1)  # Optional delay for stability
-    time.sleep(1)  # Final delay after all actions
+        time.sleep(2)  # Optional delay for stability
+    time.sleep(2)  # Final delay after all actions
 
     
 
 def download_eval_prov(driver):
     elements = ["leftFrame", "linkItem_17175", "frame", "mainFrame", "periodo", "btnExportExcel"]
-    time.sleep(2)
+    time.sleep(1)
     driver.switch_to.parent_frame()
     for element in elements:
         if element in ["leftFrame", "mainFrame"]:
@@ -274,7 +277,7 @@ def download_eval_prov(driver):
         elif element in ["linkItem_17175", "btnExportExcel"]:
             time.sleep(1)
             driver.find_element(By.ID, element).click()
-            time.sleep(2)
+            time.sleep(1)
             if element == "linkItem_17175":
                 driver.switch_to.parent_frame()
         elif element == "periodo":

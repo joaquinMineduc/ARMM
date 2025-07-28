@@ -1,5 +1,8 @@
 from static_data import regiones
 import time
+import re
+from collections import defaultdict
+import ctypes
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import numpy as np
@@ -9,6 +12,16 @@ import re
 import xlwings as xw
 import win32com.client as win32
 from pathlib import Path
+import threading
+
+
+
+def second_thread(function, flag_wait = False):
+  secondThread = threading.Thread(target = function)
+  secondThread.start()
+  if flag_wait:
+    secondThread.join()
+
 
 
 def classificator_by_reg(CR, arg):
@@ -69,22 +82,83 @@ def clear_directories():
   drop_file_charts()
   
   
-def get_download_reports():
-  download_path = Path.home()/"Downloads"
-  if not download_path.exists():
-    download_path = Path.home()/ "Descargas"
-  # Tiempo actual en segundos desde 1970 (epoch)
-  now = time.time()
-
-  # Lista de archivos modificados hace menos de 3 minutos (180 segundos)
-  recent_files = [
-      f for f in download_path.iterdir()
-      if f.is_file() and (now - f.stat().st_mtime) < 190
+# Estructura GUID para SHGetKnownFolderPath
+class GUID(ctypes.Structure):
+  _fields_ = [
+      ("Data1", ctypes.c_uint32),
+      ("Data2", ctypes.c_uint16),
+      ("Data3", ctypes.c_uint16),
+      ("Data4", ctypes.c_ubyte * 8),
   ]
   
-  # Mostrar resultados
-  for file in recent_files:
-      print(f"Modificado recientemente: {file}")
+  
+def get_folder_id(folder_id):
+  """Obtiene la ruta de una carpeta especial de Windows usando su GUID."""
+  SHGetKnownFolderPath = ctypes.windll.shell32.SHGetKnownFolderPath
+  SHGetKnownFolderPath.argtypes = [ctypes.POINTER(GUID), ctypes.c_uint32, ctypes.c_void_p, ctypes.POINTER(ctypes.c_wchar_p)]
+  SHGetKnownFolderPath.restype = ctypes.c_uint32
+
+  # Convertir GUID desde string usando CLSIDFromString
+  guid = GUID()
+  ctypes.oledll.ole32.CLSIDFromString(folder_id, ctypes.byref(guid))
+
+  path_ptr = ctypes.c_wchar_p()
+  result = SHGetKnownFolderPath(ctypes.byref(guid), 0, None, ctypes.byref(path_ptr))
+  if result != 0:
+    raise Exception(f"Error obteniendo la carpeta: {result}")
+
+  return Path(path_ptr.value)
+  
+
+def verify_donwload_reports(donwload_files):
+  grouped_files = defaultdict(list)
+  for file in donwload_files:
+    # Eliminar sufijos como " (1)", " (2)" antes de la extensión
+    base_name = re.sub(r' \(\d+\)$', '', file.stem) + file.suffix
+    grouped_files[base_name].append(file)
+
+    # ✅ Para cada grupo, quedarnos con el más reciente
+    unique_files = []
+    for base_name, files in grouped_files.items():
+      most_recent = max(files, key=lambda f: f.stat().st_mtime)
+      unique_files.append(most_recent)
+
+    # ✅ Ordenar por fecha (más reciente primero)
+    unique_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+  return unique_files
+
+
+def normalizer_name_file(name_file):
+  name_file = str(name_file).replace(" (","(")
+  extention_file = str(name_file).split(".")[1]
+  extract_name = str(name_file).split("(")[0]
+  new_file_path = Path(f"{extract_name}.{extention_file}").resolve()
+  return new_file_path
+
+  
+def get_download_reports():
+  # GUID oficial para la carpeta Downloads
+  FOLDERID_Downloads = "{374DE290-123F-4565-9164-39C4925E467B}"
+
+  download_path = get_folder_id(FOLDERID_Downloads)
+
+  if not download_path.exists():
+    raise FileNotFoundError(f"No se encontró la carpeta Descargas: {download_path}")
+
+  now = time.time()
+
+  recent_files = [
+    f for f in download_path.iterdir()
+    if f.is_file() and (now - f.stat().st_mtime) < 190
+  ]
+
+  download_files = verify_donwload_reports(recent_files)
+  for index, file in enumerate(download_files):
+    if str(file).find("(") != -1:
+      file = normalizer_name_file(file)
+    print(f"{index}:{file}")
+      
+  
 
 
 def order_report_parts(data_list):

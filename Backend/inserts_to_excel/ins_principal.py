@@ -5,7 +5,6 @@ from Backend.inserts_to_excel.ins_status_reg import insert_data_reg
 from Backend.inserts_to_excel.ins_eval_internal import insert_data_prov
 from Backend.inserts_to_excel.ins_adp import insert_data_adp
 from Backend.inserts_to_excel.ins_risk import insert_data_risk
-from Backend.inserts_to_excel.ins_programs import insert_data_programs
 from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
 
@@ -19,5 +18,4 @@ def call_all_inserts():
     insert_data_prov()
     insert_data_adp()
     insert_data_risk()
-    insert_data_programs()
     insert_data_anexo()
