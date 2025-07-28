@@ -22,7 +22,8 @@ try:
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Para sistemas basados en Unix/Linux
 except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Para Windows
-
+    
+    
 def get_year():
     month = datetime.now().month -1
     if month == 0:
@@ -106,45 +107,45 @@ def back_directory_base(driver, rep):
     
     
 def access_to_directories(driver, index = None):
-    time.sleep(2)
+    time.sleep(3)
     driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
         f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
-    time.sleep(2)
+    time.sleep(3)
     if index:
         driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
                 f" and @data-selection-invoke='true' and contains(text(), '{new_month}')]").click()
     else:
         driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
                 f" and @data-selection-invoke='true' and contains(text(), '{month}')]").click()
-    time.sleep(2)
+    time.sleep(3)
     driver.find_element(By.XPATH, '//div[@data-automationid="item-state-container"]').click()
-    time.sleep(2)
+    time.sleep(3)
     
     driver.find_element(By.XPATH, "//button[@title='Más acciones'"+ 
         " and @data-automationid='moreActionsHeroField']").click()
-    time.sleep(2)
+    time.sleep(3)
     
     driver.find_element(By.XPATH, "//button[@data-automationid='downloadCommand']").click()
-    time.sleep(2)
+    time.sleep(3)
     
 
 # funcion que accede a los directorios del Sharepoint
-def access_directory_SP(driver, directory):
+def access_directory_SP(driver, directory):     
     match directory:
         case 0:
             for level_adp in ['Nivel I','Nivel II']:
                 time.sleep(3)
                 driver.find_element(By.XPATH, "//span[@role='button' and contains(text(), 'ADP')]").click()
-                time.sleep(2)
+                time.sleep(3)
                 driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
                     f" and @data-selection-invoke='true' and contains(text(), '{level_adp}')]").click()
                 access_to_directories(driver)
                 back_directory_base(driver, 4)
         case 1:
-            time.sleep(2)
+            time.sleep(3)
             driver.find_element(By.XPATH, "//span[@role='button'"+
                 f"and contains(text(), 'Gestión de Riesgos')]").click()
-            time.sleep(2)
+            time.sleep(3)
             driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
                 f" and @data-selection-invoke='true' and contains(text(), 'Monitoreo PGR')]").click()
             access_to_directories(driver)
@@ -152,19 +153,20 @@ def access_directory_SP(driver, directory):
               
         case 2:
             if  month in ['Marzo','Junio','Septiembre']:
-                time.sleep(2)
+                time.sleep(3)
                 driver.find_element(By.XPATH, "//span[@role='button'"+
                     f"and contains(text(), 'Gestión de Riesgos')]").click()
-                time.sleep(2)
+                time.sleep(3)
                 driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
                     f" and @data-selection-invoke='true' and contains(text(), 'Monitoreo PTR')]").click()
                 access_to_directories(driver, new_month)
                 back_directory_base(driver, 4)
-                time.sleep(2)
+               
         case 3:
+            time.sleep(3)
             driver.find_element(By.XPATH, "//span[@role='button'"+
                 f"and contains(text(), 'Programas sociales')]").click()
-            time.sleep(2)
+            time.sleep(3)
             access_to_directories(driver)
             back_directory_base(driver, 3)
                 

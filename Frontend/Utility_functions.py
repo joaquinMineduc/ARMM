@@ -3,8 +3,6 @@ import os
 from Variables import dir_output, dir_output_PDFs
 
 
-
-
 def clear_dir_output():
     try:
         documents = os.listdir(dir_output)

@@ -5,15 +5,13 @@ from PIL import Image, ImageTk
 from Variables import *
 import sys
 from pathlib import Path
-# Agrega la raíz del proyecto al path
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
+# # Agrega la raíz del proyecto al path
+# sys.path.append(str(Path(__file__).resolve().parent.parent))
 from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
-from Backend.helper_functions import drop_parts_report
+from Backend.helper_functions import clear_directories, modify_status
 from Integrations.integration_Sharepoint import get_instruments_files
-
 
 
 def btn():
@@ -23,8 +21,10 @@ def btn():
         for  args in (Path_last_report, path_last_anexo):
             print_report_sheets(args)
         merge_parts_report(dir_output, index)
-        drop_parts_report()
-               
+        clear_directories()
+        modify_status("Planes de tratamientos", status = False)
+
+                  
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso
     clear_dir_report_parts()
@@ -48,7 +48,6 @@ if __name__ == "__main__":
     photo = ImageTk.PhotoImage(image)
     lbImg = tk.Label(frame, image = photo)
     lbImg.grid(columnspan = 2, row = 0, pady = 50, sticky = 's')
-
 
     ## Añadir un label
     label_notify_report = ct.CTkLabel(frame, font = ("inter", 16, "bold"), 

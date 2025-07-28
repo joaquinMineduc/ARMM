@@ -55,6 +55,17 @@ def drop_parts_report():
         os.remove(route_file)
 
 
+def drop_file_charts():
+  for dir in [Path_charts_NC, Path_charts_PTR]:
+    charts_files = os.listdir(dir)
+    for file in charts_files:
+      route_file = os.path.join(dir, file)
+      os.remove(route_file)
+      
+      
+def clear_directories():
+  drop_parts_report()
+  drop_file_charts()
 
 
 def order_report_parts(data_list):
@@ -280,3 +291,4 @@ def create_bar_chart_h(df, chart_name, configuration):
 
       
 
+drop_file_charts()
