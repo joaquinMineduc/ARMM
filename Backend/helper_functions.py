@@ -16,13 +16,13 @@ import threading
 
 
 
-def second_thread(function, flag_wait = False):
-  secondThread = threading.Thread(target = function)
-  secondThread.start()
+def second_threads(function, flag_wait = False):
+  second_Thread = threading.Thread(target = function)
+  second_Thread.start()
   if flag_wait:
-    secondThread.join()
-
-
+    second_Thread.join()
+    
+  
 
 def classificator_by_reg(CR, arg):
   num_cr = CR.split(arg)
