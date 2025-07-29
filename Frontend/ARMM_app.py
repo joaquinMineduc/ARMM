@@ -17,15 +17,15 @@ from Integrations.integration_Sigemet import get_reports_sigemet
 
 
 EVENT_END = threading.Event()
+animation_thread = None 
 
-animation_thread = None  # fuera de la función
 
 def data_process():
     try:
         status_view(3, "disabled", Exgob_GrayLigth, Exgob_disabled_red, Exgob_Gray)
         animation("Extrayendo reportes y planillas",'gray')
-        second_threads(get_reports_sigemet)
-        second_threads(get_instruments_files, flag_wait=True)
+        second_threads(get_instruments_files)
+        second_threads(get_reports_sigemet,flag_wait=True)
         get_download_reports()
         EVENT_END.is_set()
         status_view(0)
@@ -45,13 +45,14 @@ def data_process():
             EVENT_END.is_set()
             status_view(2)
             EVENT_END.clear()
-            EVENT_END.clear()
             status_view(4)
             # solicitar ubicación de guardado del informe
-            status_view(3, "normal", Exgob_Red, Exgob_white, Exgob_Red)
+            clear_view(1)
     except Exception as e:
         print("Error:", e)
+        EVENT_END.is_set()
         status_view(-1)
+        clear_view(0)
 
     finally:
         EVENT_END.set()
@@ -88,23 +89,47 @@ def animation(text, text_color):
 def status_view(widget, state_btn = None, background_color = None, fg_color = None, border_color = None):
     match widget:
         case 0:
-            status_process_1.configure(text=f"Reportes y planillas extraidas: OK ✅", text_color= "green", font = ("inter", 18))
+            status_process_1.configure(text=f"Reportes y planillas extraidas: OK ✅", text_color= "green", font = ("inter", 20))
             frame.update()
         case 1:
-            status_process_2.configure(text=f"Tratamientos de datos: OK ✅", text_color= "green", font = ("inter", 18))
+            status_process_2.configure(text=f"Tratamientos de datos: OK ✅", text_color= "green", font = ("inter", 20))
             frame.update()
         case 2:
-            status_process_3.configure(text=f"Informe mensual generado: OK ✅", text_color= "green", font = ("inter", 18))
+            status_process_3.configure(text=f"Informe mensual generado: OK ✅", text_color= "green", font = ("inter", 20))
             frame.update()
         case 3:
             btn_create_report.configure(state=state_btn, fg_color = background_color, text_color=fg_color, border_color = border_color )
             frame.update()
         case 4:
             notify_process.configure(text="")
-            lb_error.configure(text = "¡El informe ha sido generado con éxito!", text_color = "green")
+            lb_error.configure(text = "¡El informe ha sido generado con éxito!", text_color = "green", font = ("inter", 20))
         case _:
-            lb_error.configure(text=f"Ha ocurrido un error. Vuelva a ejecutar la app ❌", text_color= "red", font = ("inter", 18))
-  
+            lb_error.configure(text=f"Ha ocurrido un error. Vuelva a ejecutar la app ❌", text_color= "red", font = ("inter", 20))
+            time.sleep(2)
+            lb_error.configure(text=f"Haz clic en el botón 'Generar informe'", text_color= "red", font = ("inter", 20))
+            
+            
+def clear_view(mode_clear):
+    match mode_clear:
+        case 0:
+            for widget in [status_process_1, status_process_2, status_process_3]:
+                widget.configure(text="")
+                frame.update()
+            time.sleep(3)
+            lb_error.configure(text="")
+            notify_process.configure(text= "¡Hola, soy el BOT ARMM!", font=("inter", 20, "bold"))
+            status_view(3, "normal", Exgob_Red, Exgob_white, Exgob_Red)
+            frame.update()
+        case 1:
+            for widget in [status_process_1, status_process_2, status_process_3]:
+                widget.configure(text="")
+                frame.update()
+            time.sleep(3)
+            lb_error.configure(text="")
+            notify_process.configure(text= "¡Hola, soy el BOT ARMM!", font=("inter", 20, "bold"))
+            status_view(3, "normal", Exgob_Red, Exgob_white, Exgob_Red)
+            frame.update()
+        
                   
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso
@@ -131,8 +156,8 @@ if __name__ == "__main__":
     lbImg.grid(columnspan = 2, row = 0, pady = 50, sticky = 's')
 
     ## Añadir un label
-    notify_process = ct.CTkLabel(frame, font=("inter", 16, "bold"), 
-                                  text="En ejecución...", 
+    notify_process = ct.CTkLabel(frame, font=("inter", 20, "bold"), 
+                                  text="¡Hola, soy el BOT ARMM!", 
                                   text_color=Exgob_Gray)
 
     notify_process.grid(columnspan=2, row=1, pady=5)
@@ -171,7 +196,7 @@ if __name__ == "__main__":
     lb_error = ct.CTkLabel(frame, font = ("inter", 12, "bold"), 
                                  text = f"", text_color = Exgob_Red, wraplength = 450)
     
-    lb_error.grid(columnspan = 2, row = 6)
+    lb_error.grid(columnspan = 2, row = 6, pady = 5)
 
     # footer de la app
     label4 = ct.CTkLabel(frame, 

@@ -13,17 +13,46 @@ import xlwings as xw
 import win32com.client as win32
 from pathlib import Path
 import threading
+import traceback
+
+
+
+
+def run_with_stop(target_func, stop_event):
+    try:
+        target_func(stop_event)
+    except Exception as e:
+        print(f"[ERROR] {target_func.__name__} falló: {e}")
+        traceback.print_exc()
+        stop_event.set()  # Señal de detención
+
+
+def multi_threads(first_func, second_func):
+    stop_event = threading.Event()
+
+    t1 = threading.Thread(target=run_with_stop, args=(first_func, stop_event))
+    t2 = threading.Thread(target=run_with_stop, args=(second_func, stop_event))
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+
+    print("Hilos terminados")
 
 
 
 def second_threads(function, flag_wait = False):
-  second_Thread = threading.Thread(target = function)
-  second_Thread.start()
-  if flag_wait:
-    second_Thread.join()
-    
-  
+  try:
+    second_Thread = threading.Thread(target = function)
+    second_Thread.start()
+    if flag_wait:
+        second_Thread.join()
+  except:
+    raise Exception("Error scrapy")
 
+    
 def classificator_by_reg(CR, arg):
   num_cr = CR.split(arg)
   num_cr = int(num_cr[1])

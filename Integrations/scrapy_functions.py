@@ -286,7 +286,11 @@ def download_eval_prov(driver):
             select = Select(select_period)
             select.select_by_index(0)
     driver.close()
+    driver.quit()
+    
         
+    
+    
     
     
 
