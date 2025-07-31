@@ -6,40 +6,16 @@ import ctypes
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import numpy as np
-from Frontend.Variables import dir_output_PDFs, path_report_format, Path_charts_NC, Path_charts_PTR
+from Frontend.Variables import *
 import os
 import re
 import xlwings as xw
 import win32com.client as win32
 from pathlib import Path
 import threading
-import traceback
+import shutil
 
 
-
-
-def run_with_stop(target_func, stop_event):
-    try:
-        target_func(stop_event)
-    except Exception as e:
-        print(f"[ERROR] {target_func.__name__} falló: {e}")
-        traceback.print_exc()
-        stop_event.set()  # Señal de detención
-
-
-def multi_threads(first_func, second_func):
-    stop_event = threading.Event()
-
-    t1 = threading.Thread(target=run_with_stop, args=(first_func, stop_event))
-    t2 = threading.Thread(target=run_with_stop, args=(second_func, stop_event))
-
-    t1.start()
-    t2.start()
-
-    t1.join()
-    t2.join()
-
-    print("Hilos terminados")
 
 
 
@@ -49,8 +25,8 @@ def second_threads(function, flag_wait = False):
     second_Thread.start()
     if flag_wait:
         second_Thread.join()
-  except:
-    raise Exception("Error scrapy")
+  except Exception as e:
+    raise Exception(f"Error scrapy {e}")
 
     
 def classificator_by_reg(CR, arg):
@@ -182,13 +158,42 @@ def get_download_reports():
   ]
 
   download_files = verify_donwload_reports(recent_files)
+  length_files = len(download_files)
   for index, file in enumerate(download_files):
     if str(file).find("(") != -1:
       file = normalizer_name_file(file)
-    print(f"{index}:{file}")
-      
-  
-
+    print(file)
+    if length_files == 7:
+      match index:
+        case 0:
+          shutil.move(file, Path(directory_social_programs)/f'{file.name}')
+        case 1|2:
+            shutil.move(file, Path(directory_risk)/f"{file.name}")
+        case 3:
+            shutil.move(file, Path(directory_ADP)/f"{file.name}")
+        case 4|5:
+          if index == 4:
+            shutil.move(file, Path(directory_sigemet)/"eval.xls")
+          else:
+            shutil.move(file, Path(directory_sigemet)/"indicadores.xls")
+        case 6:
+          shutil.move(file, Path(directory_ADP)/f"{file.name}")
+    else:
+        match index:
+          case 0:
+            shutil.move(file, Path(directory_social_programs)/f'{file.name}')
+          case 1:
+              shutil.move(file, Path(directory_risk)/f"{file.name}")
+          case 2:
+              shutil.move(file, Path(directory_ADP)/f"{file.name}")
+          case 3|4:
+            if index == 3:
+              shutil.move(file, Path(directory_sigemet)/"eval.xls")
+            else:
+              shutil.move(file, Path(directory_sigemet)/"indicadores.xls")
+          case 5:
+            shutil.move(file, Path(directory_ADP)/f"{file.name}")
+            
 
 def order_report_parts(data_list):
   """

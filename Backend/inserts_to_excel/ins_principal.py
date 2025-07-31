@@ -3,7 +3,7 @@ from Backend.inserts_to_excel.ins_panel import insert_data_panel
 from Backend.inserts_to_excel.ins_status_NC import insert_status_NC
 from Backend.inserts_to_excel.ins_status_reg import insert_data_reg
 from Backend.inserts_to_excel.ins_eval_internal import insert_data_prov
-from Backend.inserts_to_excel.ins_adp import insert_data_adp
+from Backend.inserts_to_excel.ins_adp import merge_adp
 from Backend.inserts_to_excel.ins_risk import insert_data_risk
 from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
@@ -16,6 +16,6 @@ def call_all_inserts():
     insert_status_NC()
     insert_data_reg()
     insert_data_prov()
-    insert_data_adp()
+    merge_adp()
     insert_data_risk()
     insert_data_anexo()

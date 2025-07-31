@@ -4,28 +4,41 @@ import customtkinter as ct
 from PIL import Image, ImageTk
 from Variables import *
 import time, threading
-import sys
-from pathlib import Path
+
 # # Agrega la raíz del proyecto al path
 # sys.path.append(str(Path(__file__).resolve().parent.parent))
 from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import clear_directories, modify_status, get_download_reports, second_threads
-from Integrations.integration_Sharepoint import get_instruments_files
-from Integrations.integration_Sigemet import get_reports_sigemet
+
+from Variables import dir_output_PDFs
 
 
 EVENT_END = threading.Event()
-animation_thread = None 
+animation_thread = None
 
+def test_askdirectory():
+    root = tk.Tk()
+    root.withdraw()  # Oculta la ventana principal
+    root.attributes("-topmost", True)  # Se asegura que esté al frente
+
+    folder = filedialog.askdirectory(title="Selecciona una carpeta")
+
+    if folder:
+        print("✅ Carpeta seleccionada:", folder)
+    else:
+        print("❌ No se seleccionó ninguna carpeta.")
+        
 
 def data_process():
+    from Integrations.integration_Sharepoint import get_instruments_files
+    from Integrations.integration_Sigemet import get_reports_sigemet
     try:
         status_view(3, "disabled", Exgob_GrayLigth, Exgob_disabled_red, Exgob_Gray)
         animation("Extrayendo reportes y planillas",'gray')
-        second_threads(get_instruments_files)
-        second_threads(get_reports_sigemet,flag_wait=True)
+        second_threads(get_reports_sigemet)
+        second_threads(get_instruments_files, flag_wait=True)
         get_download_reports()
         EVENT_END.is_set()
         status_view(0)
@@ -41,13 +54,14 @@ def data_process():
                 print_report_sheets(args)
             merge_parts_report(dir_output, index)
             clear_directories()
-            modify_status("Planes de tratamientos", status = False)
-            EVENT_END.is_set()
-            status_view(2)
-            EVENT_END.clear()
-            status_view(4)
-            # solicitar ubicación de guardado del informe
-            clear_view(1)
+        modify_status("Planes de tratamientos", status = False)
+        EVENT_END.is_set()
+        status_view(2)
+        EVENT_END.clear()
+        status_view(4)
+        # solicitar ubicación de guardado del informe
+        clear_view(1)
+        test_askdirectory()
     except Exception as e:
         print("Error:", e)
         EVENT_END.is_set()
@@ -61,6 +75,7 @@ def data_process():
 def btn():
     EVENT_END.clear()
     second_threads(data_process)
+    
     
     
 def animation(text, text_color):
@@ -130,6 +145,7 @@ def clear_view(mode_clear):
             status_view(3, "normal", Exgob_Red, Exgob_white, Exgob_Red)
             frame.update()
         
+    
                   
 if __name__ == "__main__":
     clear_dir_output() # limpiar todos los archivos generados durante su uso

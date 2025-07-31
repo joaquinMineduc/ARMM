@@ -1,5 +1,6 @@
 import xlwings as xw
 from Frontend.Variables import Path_last_report, path_last_anexo
+from xlwings.constants import BordersIndex, LineStyle
 
 def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
     with xw.App(visible = False) as app:
@@ -148,3 +149,25 @@ def insert_graphics(file_path, sheet_name, path_chart, chart_name):
         wb.save(Path_last_report)
         wb.close()
         
+        
+        
+def modify_border_left(file_path, sheet_name):
+    with xw.App(visible = False) as app:
+        wb = app.books.open(file_path)
+        if sheet_name in [sheet.name for sheet in wb.sheets]:
+            ws = wb.sheets[sheet_name]
+            used_range  = ws.used_range
+            # Iterar por filas y columnas del rango usado
+            # Suponiendo que estás trabajando dentro de una hoja activa y ya tienes `used_range`
+            for row in used_range.rows:
+                cell = row[10]  # Columna K es el índice 10 (0-based: A=0, B=1, ..., K=10)
+                
+                if cell.value or cell.value == 0:
+                    # Borde izquierdo solamente
+                    bordr_left = cell.api.Borders(BordersIndex.xlEdgeLeft)
+                    bordr_left.LineStyle = LineStyle.xlContinuous
+                    bordr_left.Weight = 2  # xlThin
+                    bordr_left.Color = 16777215  # Blanco (RGB)         
+            # Guardar los cambios
+            wb.save(file_path)
+            wb.close()      

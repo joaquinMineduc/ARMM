@@ -1,6 +1,8 @@
 import os
 import win32com.client as win32
 from  .helper_functions import identificator_type_strings, modfy_parts_reports, order_report_parts
+from inserts_to_excel.ins_adp import copy_adp
+from inserts_to_excel.ins_programs import rename_and_copy
 from PyPDF2 import PdfMerger
 
 def print_report_sheets(dir_document):
@@ -58,6 +60,8 @@ def print_report_sheets(dir_document):
             excel_app.Quit()
 
 def merge_parts_report(dir_output, loop):
+    rename_and_copy()
+    copy_adp()
     # Lista de archivos PDF que deseas concatenar
     list_report_parts = []
     dir_report_parts = os.path.join(dir_output, "report_parts")

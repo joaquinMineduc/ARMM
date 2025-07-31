@@ -1,27 +1,33 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Backend.inserts_to_excel.inserts_functions import modify_file
-from Frontend.Variables import Path_last_report
-from adp_functions import *
+from Frontend.Variables import directory_ADP, dir_output_PDFs
+from PyPDF2 import PdfMerger
+from pathlib import Path
+import shutil
 
 
-date_columns = ['B']
-date_acum_columns = ['I']
-services_columns = ['B','C','E','F','G','H','I','J']
-comment_columns = ['D','E']
-
-
-def insert_data_adp():
+def merge_adp():
+    merger = PdfMerger()
+    directory_out = Path(directory_ADP/"8.pdf")
+    pdfs = sorted(directory_ADP.glob("*.pdf"))
     
-    modify_file(Path_last_report, 'Convenios ADP', df_adp_data, services_columns, 6, 13)
-    modify_file(Path_last_report, 'Convenios ADP', df_adp_comments, comment_columns, 16, 22)
-    modify_file(Path_last_report, 'Convenios ADP', date_document, 'I', 2, 2)
-    modify_file(Path_last_report, 'Convenios ADP', date_subtitle, 'B', 3, 3)
-    
-    modify_file(Path_last_report, 'Convenios ADP_II', df_adp_data_II, services_columns, 6, 9)
-    modify_file(Path_last_report, 'Convenios ADP_II', df_adp_comments_II, comment_columns, 16, 19)
-    modify_file(Path_last_report, 'Convenios ADP_II', date_document, 'I', 2, 2)
-    modify_file(Path_last_report, 'Convenios ADP_II', date_subtitle, 'B', 3, 3)
-    
+    for pdf in pdfs:
+        print(f"📎 Añadiendo: {pdf.name}")
+        merger.append(str(pdf))
 
+    
+    # Guardar archivo unificado antes de eliminar
+    salida = Path(directory_out)
+    merger.write(str(salida))
+    merger.close()
+    print(f"✅ Archivo combinado guardado como: {salida.name}")
+
+    # Eliminar archivos originales
+    for pdf in pdfs:
+        print(f"🗑️ Eliminando original: {pdf.name}")
+        pdf.unlink()
+        
+
+    print("✅ Archivos originales eliminados.")
+    
+    
+def copy_adp():
+    shutil.copy(Path(directory_ADP)/"8.pdf", Path(dir_output_PDFs)/"8.pdf")
