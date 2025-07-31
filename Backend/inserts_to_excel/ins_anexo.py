@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from analisis_datos import df_informe, df_risk
-from Backend.inserts_to_excel.inserts_functions import modify_anexo, apply_borders, modify_border_left
+from Backend.inserts_to_excel.inserts_functions import *
 from Frontend.Variables import path_last_anexo, format_anexo
 from principal_functions import get_date
 
@@ -18,5 +18,11 @@ def insert_data_anexo():
     modify_anexo(path_last_anexo, 'anexo_risk', year_report, 'F', 3, 3)
     apply_borders(path_last_anexo, 'anexo_final')
     apply_borders(path_last_anexo, 'anexo_risk')
-    modify_border_left(path_last_anexo, 'anexo_final')
-    modify_border_left(path_last_anexo, 'anexo_risk')
+    insertar_files(path_last_anexo, 'anexo_final')
+    insertar_files(path_last_anexo, 'anexo_risk')
+    merge_files(path_last_anexo, 'anexo_final')
+    merge_files(path_last_anexo, 'anexo_risk')
+    apply_right_border_column_j(path_last_anexo, 'anexo_final')
+    apply_right_border_column_j(path_last_anexo, 'anexo_risk')
+ 
+   

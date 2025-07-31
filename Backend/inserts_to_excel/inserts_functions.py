@@ -2,6 +2,8 @@ import xlwings as xw
 from Frontend.Variables import Path_last_report, path_last_anexo
 from xlwings.constants import BordersIndex, LineStyle
 
+
+
 def modify_anexo(file_path, sheet_name, df, columns, start_row, end_row):
     with xw.App(visible = False) as app:
         wb = app.books.open(file_path)
@@ -150,24 +152,70 @@ def insert_graphics(file_path, sheet_name, path_chart, chart_name):
         wb.close()
         
         
-        
-def modify_border_left(file_path, sheet_name):
-    with xw.App(visible = False) as app:
+def apply_right_border_column_j(file_path, sheet_name):
+    with xw.App(visible=False) as app:
         wb = app.books.open(file_path)
         if sheet_name in [sheet.name for sheet in wb.sheets]:
             ws = wb.sheets[sheet_name]
-            used_range  = ws.used_range
-            # Iterar por filas y columnas del rango usado
-            # Suponiendo que estás trabajando dentro de una hoja activa y ya tienes `used_range`
+            used_range = ws.used_range
+
             for row in used_range.rows:
-                cell = row[10]  # Columna K es el índice 10 (0-based: A=0, B=1, ..., K=10)
-                
-                if cell.value or cell.value == 0:
-                    # Borde izquierdo solamente
-                    bordr_left = cell.api.Borders(BordersIndex.xlEdgeLeft)
-                    bordr_left.LineStyle = LineStyle.xlContinuous
-                    bordr_left.Weight = 2  # xlThin
-                    bordr_left.Color = 16777215  # Blanco (RGB)         
-            # Guardar los cambios
+                if len(row) > 9:  # Verificamos que exista la columna J en la fila
+                    cell = row[9]  # Columna J (índice 9)
+                    if cell.value or cell.value == 0:
+                        # Aplicar borde derecho (blanco)
+                        border_right = cell.api.Borders(BordersIndex.xlEdgeRight)
+                        border_right.LineStyle = LineStyle.xlContinuous
+                        border_right.Weight = 2  # xlThin
+                        border_right.Color = 16777215  # Blanco (RGB)
+
             wb.save(file_path)
-            wb.close()      
+            wb.close()
+
+
+def insertar_files(file_path, sheet_name):
+    with xw.App(visible=False) as app:
+        wb = app.books.open(file_path)
+
+        if sheet_name in [s.name for s in wb.sheets]:
+            ws = wb.sheets[sheet_name]
+
+            # Insertar desde la fila 12 hacia la 9 (en orden inverso para evitar desplazamientos)
+            filas_a_insertar = [14, 13, 12, 11, 10]  # insertará una fila antes de cada número
+            for fila in filas_a_insertar:
+                ws.api.Rows(fila).Insert()
+
+            wb.save(file_path)
+            wb.close()
+            print("✅ Filas insertadas entre la 9 y la 13.")
+        else:
+            print(f"❌ Hoja '{sheet_name}' no encontrada.")
+       
+       
+def merge_files(file_path, sheet_name):
+    with xw.App(visible=False) as app:
+        wb = app.books.open(file_path)
+
+        if sheet_name not in [s.name for s in wb.sheets]:
+            print(f"La hoja '{sheet_name}' no existe.")
+            wb.close()
+            return
+
+        ws = wb.sheets[sheet_name]
+
+        pares_filas = [(9, 10), (11, 12), (13, 14), (15, 16), (17, 18)]
+
+        for fila_inicio, fila_fin in pares_filas:
+            for col in range(1, 14):  # Columnas de A (1) a M (13)
+                rango = ws.range((fila_inicio, col), (fila_fin, col))
+                rango.merge()
+                
+        # Ajustar altura de filas 10, 12, 14, 16, 18
+        filas_ajustar_altura = [10, 12, 14, 16, 18]
+        for fila in filas_ajustar_altura:
+            ws.range(f"{fila}:{fila}").row_height = 160
+
+        wb.save()
+        wb.close()
+        print("Celdas combinadas correctamente.")
+        

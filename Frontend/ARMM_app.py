@@ -4,6 +4,7 @@ import customtkinter as ct
 from PIL import Image, ImageTk
 from Variables import *
 import time, threading
+import shutil   
 
 # # Agrega la raíz del proyecto al path
 # sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -11,8 +12,11 @@ from Utility_functions import clear_dir_output, clear_dir_report_parts
 from Backend.inserts_to_excel.ins_principal import call_all_inserts
 from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import clear_directories, modify_status, get_download_reports, second_threads
+from Backend.principal_functions import get_date
 
-from Variables import dir_output_PDFs
+from Variables import dir_output
+
+date_report = get_date()
 
 
 EVENT_END = threading.Event()
@@ -23,13 +27,16 @@ def test_askdirectory():
     root.withdraw()  # Oculta la ventana principal
     root.attributes("-topmost", True)  # Se asegura que esté al frente
 
-    folder = filedialog.askdirectory(title="Selecciona una carpeta")
-
-    if folder:
-        print("✅ Carpeta seleccionada:", folder)
-    else:
-        print("❌ No se seleccionó ninguna carpeta.")
+    folder = None
+    while not folder:
+        folder = filedialog.askdirectory(title="Selecciona una ubicación para guardar tus informes")
+        if not folder:
+            print("Debes seleccionar un directorio")
         
+    reports = sorted(dir_output.glob("*.pdf"))
+    for report in reports:
+        shutil.move(report, Path(folder)/f"{report.stem} - periodo{date_report}.pdf")
+    
 
 def data_process():
     from Integrations.integration_Sharepoint import get_instruments_files
@@ -73,8 +80,9 @@ def data_process():
         
 
 def btn():
-    EVENT_END.clear()
-    second_threads(data_process)
+    call_all_inserts()
+    # EVENT_END.clear()
+    # second_threads(data_process)
     
     
     

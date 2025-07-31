@@ -11,11 +11,11 @@ from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
 # Intentar mejorar con multihilo para optimizar performance
 def call_all_inserts():
-    ins_data_to_report()
-    insert_data_panel()
-    insert_status_NC()
-    insert_data_reg()
-    insert_data_prov()
-    merge_adp()
-    insert_data_risk()
+    # ins_data_to_report()
+    # insert_data_panel()
+    # insert_status_NC()
+    # insert_data_reg()
+    # insert_data_prov()
+    # merge_adp()
+    # insert_data_risk()
     insert_data_anexo()
