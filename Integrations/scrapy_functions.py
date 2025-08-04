@@ -39,19 +39,22 @@ def get_year():
 
 year = get_year().split("-")[0]
 
-# month = get_year().split("-")[1].capitalize()
-month = 'Junio'
+month = get_year().split("-")[1].capitalize()
+
 def validation_month():
     month = datetime.now().month
     year = datetime.now().year
     month = datetime(year, month, 1).strftime("%B").capitalize()
     return month
 
-# new_month = validation_month()
-new_month = 'Julio'
+new_month = validation_month()
+
 print(new_month)
 def select_browser_driver():
     options = Options()
+    options.add_argument("--headless")           # Ejecuta en segundo plano
+    options.add_argument("--disable-gpu")        # (opcional) mejora compatibilidad
+    options.add_argument("--window-size=1920x1080")  # (opcional) tamaño de ventana virtual
     options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
     browsers = ["chrome", "firefox", "edge"] 
     driver = None
