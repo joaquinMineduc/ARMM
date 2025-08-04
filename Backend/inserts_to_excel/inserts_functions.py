@@ -1,6 +1,6 @@
 import xlwings as xw
 from Frontend.Variables import Path_last_report, path_last_anexo
-from xlwings.constants import BordersIndex, LineStyle
+from xlwings.constants import BordersIndex, LineStyle, ColorIndex
 
 
 
@@ -102,22 +102,32 @@ def insert_date_document(date, column, row, ws):
     cell.value = date
     
      
-def apply_borders(file_path, sheet_name):
-     with xw.App(visible = False) as app:
+def aplicar_bordes_completos(file_path, sheet_name):
+    with xw.App(visible=False) as app:
         wb = app.books.open(file_path)
         if sheet_name in [sheet.name for sheet in wb.sheets]:
             ws = wb.sheets[sheet_name]
-            used_range  = ws.used_range
-            # Iterar por filas y columnas del rango usado
+            used_range = ws.used_range
+
             for row in used_range.rows:
                 for cell in row:
-                    if cell.value or cell.value == 0:  # Validar si la celda tiene valor (no es None ni vacío)
-                        # Aplicar bordes finos a la celda
-                        for border_id in range(7, 13):  # Borde izquierdo, derecho, superior, inferior, y diagonales
-                            cell.api.Borders(border_id).LineStyle = 1  # xlContinuous
-                            cell.api.Borders(border_id).Weight = 2    # xlThin                   
-            # Guardar los cambios
-            wb.save(file_path)
+                    # Verifica si tiene valor o si es cero
+                    if cell.value or cell.value == 0:
+                        if cell.merge_cells:
+                            merge_area = cell.merge_area
+                            # Solo aplicar una vez al área combinada
+                            if merge_area.row == cell.row and merge_area.column == cell.column:
+                                for border_id in range(7, 13):
+                                    border = merge_area.api.Borders(border_id)
+                                    border.LineStyle = LineStyle.xlContinuous
+                                    border.Weight = 2  # xlThin
+                        else:
+                            for border_id in range(7, 13):
+                                border = cell.api.Borders(border_id)
+                                border.LineStyle = LineStyle.xlContinuous
+                                border.Weight = 2
+
+            wb.save()
             wb.close()
             
 
@@ -160,16 +170,25 @@ def apply_right_border_column_j(file_path, sheet_name):
             used_range = ws.used_range
 
             for row in used_range.rows:
-                if len(row) > 9:  # Verificamos que exista la columna J en la fila
-                    cell = row[9]  # Columna J (índice 9)
-                    if cell.value or cell.value == 0:
-                        # Aplicar borde derecho (blanco)
-                        border_right = cell.api.Borders(BordersIndex.xlEdgeRight)
-                        border_right.LineStyle = LineStyle.xlContinuous
-                        border_right.Weight = 2  # xlThin
-                        border_right.Color = 16777215  # Blanco (RGB)
+                cell = row[10]  # Columna K (índice 10)
 
-            wb.save(file_path)
+                # Verifica si la celda tiene contenido o es cero
+                if cell.value or cell.value == 0:
+                    if cell.merge_cells:
+                        merge_area = cell.merge_area
+                        # Solo aplicar en la esquina superior izquierda del área combinada
+                        if merge_area.row == cell.row and merge_area.column == cell.column:
+                            border = merge_area.api.Borders(BordersIndex.xlEdgeLeft)
+                            border.LineStyle = LineStyle.xlContinuous
+                            border.Weight = 2  # xlThin
+                            border.Color = 16777215  # Blanco (RGB)
+                    else:
+                        border = cell.api.Borders(BordersIndex.xlEdgeLeft)
+                        border.LineStyle = LineStyle.xlContinuous
+                        border.Weight = 2
+                        border.Color = 16777215  # Blanco
+
+            wb.save()
             wb.close()
 
 
@@ -213,9 +232,44 @@ def merge_files(file_path, sheet_name):
         # Ajustar altura de filas 10, 12, 14, 16, 18
         filas_ajustar_altura = [10, 12, 14, 16, 18]
         for fila in filas_ajustar_altura:
-            ws.range(f"{fila}:{fila}").row_height = 160
+            ws.range(f"{fila}:{fila}").row_height = 180
 
         wb.save()
         wb.close()
         print("Celdas combinadas correctamente.")
-        
+
+
+
+
+def aplicar_borde_columna_k(file_path, sheet_name):
+    with xw.App(visible=False) as app:
+        wb = app.books.open(file_path)
+        if sheet_name in [sheet.name for sheet in wb.sheets]:
+            ws = wb.sheets[sheet_name]
+            col_k = 11
+            last_row = ws.range("K" + str(ws.cells.rows.count)).end("up").row
+
+            for row in range(1, last_row + 1):
+                cell = ws.cells(row, col_k)
+                if cell.value or cell.value == 0:
+                    target = cell.merge_area if cell.merge_cells else cell
+                    
+                    # ❌ Primero limpiar todos los bordes
+                    for i in range(1, 5):  # xlEdgeLeft = 1, xlEdgeTop = 2, xlEdgeBottom = 3, xlEdgeRight = 4
+                        target.api.Borders(i).LineStyle = LineStyle.xlLineStyleNone
+                    
+                    # ✅ Luego aplicar solo el borde izquierdo blanco
+                    border_left = target.api.Borders(BordersIndex.xlEdgeLeft)
+                    border_left.LineStyle = LineStyle.xlContinuous
+                    border_left.Weight = 2
+                    border_left.Color = 16777215
+
+                    # ✅ Aplicar borde inferior negro solo en la última fila
+                    if row == last_row:
+                        border_bottom = target.api.Borders(BordersIndex.xlEdgeBottom)
+                        border_bottom.LineStyle = LineStyle.xlContinuous
+                        border_bottom.Weight = 2
+                        border_bottom.ColorIndex = ColorIndex.xlColorIndexAutomatic
+
+            wb.save()
+            wb.close()

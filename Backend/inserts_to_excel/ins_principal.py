@@ -4,6 +4,7 @@ from Backend.inserts_to_excel.ins_status_NC import insert_status_NC
 from Backend.inserts_to_excel.ins_status_reg import insert_data_reg
 from Backend.inserts_to_excel.ins_eval_internal import insert_data_prov
 from Backend.inserts_to_excel.ins_adp import merge_adp
+from Backend.inserts_to_excel.ins_programs import rename_and_copy
 from Backend.inserts_to_excel.ins_risk import insert_data_risk
 from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
@@ -11,11 +12,12 @@ from Backend.inserts_to_excel.ins_anexo import insert_data_anexo
 
 # Intentar mejorar con multihilo para optimizar performance
 def call_all_inserts():
-    # ins_data_to_report()
-    # insert_data_panel()
-    # insert_status_NC()
-    # insert_data_reg()
-    # insert_data_prov()
-    # merge_adp()
-    # insert_data_risk()
+    ins_data_to_report()
+    insert_data_panel()
+    insert_status_NC()
+    insert_data_reg()
+    insert_data_prov()
+    rename_and_copy()
+    merge_adp()
+    insert_data_risk()
     insert_data_anexo()

@@ -16,13 +16,11 @@ def insert_data_anexo():
     modify_anexo(path_last_anexo, 'anexo_final', year_report, 'F', 3, 3)
     modify_anexo(path_last_anexo, 'anexo_risk', df_risk, columns, 5, 127)
     modify_anexo(path_last_anexo, 'anexo_risk', year_report, 'F', 3, 3)
-    apply_borders(path_last_anexo, 'anexo_final')
-    apply_borders(path_last_anexo, 'anexo_risk')
     insertar_files(path_last_anexo, 'anexo_final')
-    insertar_files(path_last_anexo, 'anexo_risk')
     merge_files(path_last_anexo, 'anexo_final')
-    merge_files(path_last_anexo, 'anexo_risk')
-    apply_right_border_column_j(path_last_anexo, 'anexo_final')
-    apply_right_border_column_j(path_last_anexo, 'anexo_risk')
+    aplicar_bordes_completos(path_last_anexo, 'anexo_final')
+    aplicar_bordes_completos(path_last_anexo, 'anexo_risk')
+    aplicar_borde_columna_k(path_last_anexo, 'anexo_final')
+
  
    

@@ -18,6 +18,31 @@ from Variables import dir_output
 
 date_report = get_date()
 
+def clear_documents():
+    total_eliminados = 0
+    extensiones_validas = ('.xlsx', '.pdf')
+
+    for dir in [directory_ADP, directory_social_programs, dir_output]:
+        if not os.path.isdir(dir):
+            print(f"⚠️ El directorio '{dir}' no existe. Se omite.")
+            continue  # Salta al siguiente directorio
+
+        eliminados = 0
+        for archivo in os.listdir(dir):
+            ruta_completa = (Path(dir) / archivo).resolve()
+            if ruta_completa.suffix.lower() in extensiones_validas:  # Insensible a mayúsculas
+                try:
+                    os.remove(ruta_completa)
+                    eliminados += 1
+                    print(f"🗑️  Archivo eliminado: {archivo}")
+                except Exception as e:
+                    print(f"❌ No se pudo eliminar {archivo}: {e}")
+
+        print(f"📂 En '{dir}': {eliminados} archivos eliminados.\n")
+        total_eliminados += eliminados
+
+    print(f"✅ Total general de archivos eliminados: {total_eliminados}")
+
 
 EVENT_END = threading.Event()
 animation_thread = None
@@ -44,9 +69,9 @@ def data_process():
     try:
         status_view(3, "disabled", Exgob_GrayLigth, Exgob_disabled_red, Exgob_Gray)
         animation("Extrayendo reportes y planillas",'gray')
-        second_threads(get_reports_sigemet)
-        second_threads(get_instruments_files, flag_wait=True)
-        get_download_reports()
+        # second_threads(get_reports_sigemet)
+        # second_threads(get_instruments_files, flag_wait=True)
+        # get_download_reports()
         EVENT_END.is_set()
         status_view(0)
         EVENT_END.clear() 
@@ -67,8 +92,12 @@ def data_process():
         EVENT_END.clear()
         status_view(4)
         # solicitar ubicación de guardado del informe
-        clear_view(1)
         test_askdirectory()
+        EVENT_END.is_set()
+        EVENT_END.clear()
+        clear_view(1)
+        time.sleep(1.5)
+        app.destroy()
     except Exception as e:
         print("Error:", e)
         EVENT_END.is_set()
@@ -80,9 +109,10 @@ def data_process():
         
 
 def btn():
-    call_all_inserts()
-    # EVENT_END.clear()
-    # second_threads(data_process)
+    # clear_documents()
+    EVENT_END.clear()
+    second_threads(data_process)
+    
     
     
     
@@ -121,11 +151,11 @@ def status_view(widget, state_btn = None, background_color = None, fg_color = No
             status_process_3.configure(text=f"Informe mensual generado: OK ✅", text_color= "green", font = ("inter", 20))
             frame.update()
         case 3:
-            btn_create_report.configure(state=state_btn, fg_color = background_color, text_color=fg_color, border_color = border_color )
+            btn_create_report.configure(state=state_btn, fg_color = background_color, text_color=fg_color, border_color = border_color,  command = btn )
             frame.update()
         case 4:
             notify_process.configure(text="")
-            lb_error.configure(text = "¡El informe ha sido generado con éxito!", text_color = "green", font = ("inter", 20))
+            lb_error.configure(text = "¡El informe ha sido generado con éxito!", text_color = "green", font = ("inter", 20))      
         case _:
             lb_error.configure(text=f"Ha ocurrido un error. Vuelva a ejecutar la app ❌", text_color= "red", font = ("inter", 20))
             time.sleep(2)

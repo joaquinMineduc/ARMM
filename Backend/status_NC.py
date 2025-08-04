@@ -16,5 +16,3 @@ for index, CR in enumerate(CR_2):
         else:
           df_status_NC = pd.concat([df_status_NC, df_status])
                 
-
-print(df_status)

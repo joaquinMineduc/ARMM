@@ -39,15 +39,16 @@ def get_year():
 
 year = get_year().split("-")[0]
 
-month = get_year().split("-")[1].capitalize()
-
+# month = get_year().split("-")[1].capitalize()
+month = 'Junio'
 def validation_month():
     month = datetime.now().month
     year = datetime.now().year
     month = datetime(year, month, 1).strftime("%B").capitalize()
     return month
 
-new_month = validation_month()
+# new_month = validation_month()
+new_month = 'Julio'
 print(new_month)
 def select_browser_driver():
     options = Options()
@@ -109,7 +110,7 @@ def back_directory_base(driver, rep):
     driver.refresh()
     
     
-def access_to_directories(driver, index = None):
+def access_to_directories(driver, index = False):
     time.sleep(3)
     driver.find_element(By.XPATH, "//span[@role='button' and @data-id='heroField'"+
         f" and @data-selection-invoke='true' and contains(text(), '{year}')]").click()
@@ -162,7 +163,7 @@ def access_directory_SP(driver, directory):
                 time.sleep(3)
                 driver.find_element(By.XPATH, f"//span[@role='button' and @data-id='heroField'"+
                     f" and @data-selection-invoke='true' and contains(text(), 'Monitoreo PTR')]").click()
-                access_to_directories(driver, new_month)
+                access_to_directories(driver, True)
                 back_directory_base(driver, 4)
                
         case 3:

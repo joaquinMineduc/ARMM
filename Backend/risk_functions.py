@@ -44,7 +44,7 @@ df_grap = create_dataframe("APP/Backend/Input/Adm_risk/Monitoreo - Gestión de r
 
 df_grap = drop_unless_columns(df_grap, None, None, 0)
 
-print(month_validation)
+
 if month_validation in ['ABRIL','JULIO','OCTUBRE']:
     match month_validation:
         case 'ABRIL':
@@ -68,6 +68,5 @@ if month_validation in ['ABRIL','JULIO','OCTUBRE']:
     df_alerts = drop_unless_columns(df_alerts, columns=[0, 1, 3])
     df_alerts.dropna(inplace = True)
 
-    print(df_plan_tratamiento)
-    print(df_alerts)
+
     

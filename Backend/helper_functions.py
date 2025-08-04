@@ -182,10 +182,11 @@ def get_download_reports():
         match index:
           case 0:
             shutil.move(file, Path(directory_social_programs)/f'{file.name}')
-          case 1:
-              shutil.move(file, Path(directory_risk)/f"{file.name}")
-          case 2:
-              shutil.move(file, Path(directory_ADP)/f"{file.name}")
+          case 1|2:
+              if index == 1:
+                shutil.move(file, Path(directory_risk)/f"{file.name}")
+              else:
+                shutil.move(file, Path(directory_ADP)/f"{file.name}")
           case 3|4:
             if index == 3:
               shutil.move(file, Path(directory_sigemet)/"eval.xls")
