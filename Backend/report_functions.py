@@ -3,6 +3,8 @@ import numpy as np
 import math as mat
 from datetime import datetime
 import locale
+from Frontend.Variables import dir_output
+from pathlib import Path
 from static_data import *
 
 
@@ -470,7 +472,7 @@ def create_informe_BI(df, mes = None):
 # Función crear informe mensual
 def create_informe_mensual(df_informe):
     mes = get_period_format()
-    df_informe.to_excel(f"informe_{mes}.xlsx", index = False)
+    df_informe.to_excel(Path(dir_output)/f"informe_{mes}.xlsx", index = False)
     
 
 

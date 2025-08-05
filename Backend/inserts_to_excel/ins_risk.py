@@ -7,6 +7,7 @@ from risk_functions import *
 
 
 
+global DATE_REPORT 
 DATE_REPORT = get_date()
 
 columns = ['B','C','D']
@@ -17,7 +18,18 @@ columns_graph = ['C','D','E']
 columns_eval_ptr = ['H', 'I','J', 'K', 'L']
 
 
+
 def insert_data_risk():
+    STATUS_PTR = False
+    month_validation = get_month()
+    df_risk_tools = create_df_tools()
+    df_monitoring = create_df_monitoring()
+    df_matriz = create_df_matriz()
+    df_risk = create_df_risk()
+    df_grap = create_df_grap()
+    df_plan_tratamiento = create_df_tratamiento()
+    df_alerts = create_df_alerts()
+    
     modify_file(Path_last_report, 'Gestión de riesgos', DATE_REPORT,'B', 4, 4)
 
     modify_file(Path_last_report, 'Gestión de riesgos', df_risk_tools, columns, 8, 15)
@@ -29,6 +41,20 @@ def insert_data_risk():
     modify_file(Path_last_report, 'Gestión de riesgos', df_risk, risk_columns, 29, 37)
 
     modify_file(Path_last_report, 'data_riesgos', df_grap, columns_graph, 15, 39)
+    
+    if month_validation in ['ABRIL','JULIO','OCTUBRE']:
+        match month_validation:
+            case 'ABRIL':
+                    date_text = 'Primer Trimestre -'
+            case 'JULIO':
+                    date_text = 'Segundo Trimestre -'
+            case 'OCTUBRE':
+                    date_text = 'Tercer Trimestre -'
+        STATUS_PTR = True
+        DATE_PTR = get_date(format2=True, text= date_text)
+        df_eval_NC_ptr = eval_ptr()
+        modify_status("Planes de tratamientos", status = True)
+
      
     if STATUS_PTR:
         configuration = {'title':f'Nivel de Cumplimiento - Estrategias para Señales de Alerta {datetime.now().today().year -1}',

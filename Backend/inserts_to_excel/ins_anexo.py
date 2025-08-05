@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from analisis_datos import df_informe, df_risk
+from analisis_datos import create_df_anexo, create_df_anexo_risk
 from Backend.inserts_to_excel.inserts_functions import *
 from Frontend.Variables import path_last_anexo, format_anexo
 from principal_functions import get_date
@@ -12,6 +12,8 @@ print(year_report)
 columns = ['A','B','C','D','E','F','G','H','I','J','K','L','M']
 
 def insert_data_anexo():
+    df_informe = create_df_anexo()
+    df_risk = create_df_anexo_risk()
     modify_anexo(format_anexo, 'anexo_final', df_informe, columns, 5, 127)
     modify_anexo(path_last_anexo, 'anexo_final', year_report, 'F', 3, 3)
     modify_anexo(path_last_anexo, 'anexo_risk', df_risk, columns, 5, 127)

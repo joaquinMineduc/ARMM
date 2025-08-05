@@ -69,9 +69,9 @@ def data_process():
     try:
         status_view(3, "disabled", Exgob_GrayLigth, Exgob_disabled_red, Exgob_Gray)
         animation("Extrayendo reportes y planillas",'gray')
-        second_threads(get_reports_sigemet)
-        second_threads(get_instruments_files, flag_wait=True)
-        get_download_reports()
+        # second_threads(get_reports_sigemet)
+        # second_threads(get_instruments_files, flag_wait=True)
+        # get_download_reports()
         EVENT_END.is_set()
         status_view(0)
         EVENT_END.clear() 
@@ -109,13 +109,9 @@ def data_process():
         
 
 def btn():
-    from Integrations.integration_Sharepoint import get_instruments_files
-    from Integrations.integration_Sigemet import get_reports_sigemet
-    clear_documents()
-    # EVENT_END.clear()
-    second_threads(get_reports_sigemet)
-    second_threads(get_instruments_files, flag_wait=True)
-    # second_threads(data_process)
+    # clear_documents()
+    EVENT_END.clear()
+    second_threads(data_process)
     
     
     

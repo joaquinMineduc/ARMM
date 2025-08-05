@@ -48,8 +48,6 @@ def validation_month():
     return month
 
 new_month = validation_month()
-
-print(new_month)
 def select_browser_driver():
     options = Options()
     options.add_argument("--headless")           # Ejecuta en segundo plano
