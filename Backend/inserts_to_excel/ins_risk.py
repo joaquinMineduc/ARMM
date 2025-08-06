@@ -7,7 +7,6 @@ from risk_functions import *
 
 
 
-global DATE_REPORT 
 DATE_REPORT = get_date()
 
 columns = ['B','C','D']
@@ -27,8 +26,6 @@ def insert_data_risk():
     df_matriz = create_df_matriz()
     df_risk = create_df_risk()
     df_grap = create_df_grap()
-    df_plan_tratamiento = create_df_tratamiento()
-    df_alerts = create_df_alerts()
     
     modify_file(Path_last_report, 'Gestión de riesgos', DATE_REPORT,'B', 4, 4)
 
@@ -53,7 +50,6 @@ def insert_data_risk():
         STATUS_PTR = True
         DATE_PTR = get_date(format2=True, text= date_text)
         df_eval_NC_ptr = eval_ptr()
-        modify_status("Planes de tratamientos", status = True)
 
      
     if STATUS_PTR:
@@ -69,6 +65,8 @@ def insert_data_risk():
             'colors':['#00B050','#0070C0','#C00000'], 'rotation': 0,'size': [6, 3], 
             'label_size': 20, 'dt_size': 35, 'leyenda': True, 'simple_df':False, 'categories': True}
         
+        df_plan_tratamiento = create_df_tratamiento()
+        df_alerts = create_df_alerts()
         df_chart_modify = adaptater_df_chart(df_plan_tratamiento)
         print(df_chart_modify)
         create_bar_chart(df_chart_modify, 'ptr_chart', configuration_b)

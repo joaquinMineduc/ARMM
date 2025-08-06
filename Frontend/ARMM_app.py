@@ -5,7 +5,6 @@ from PIL import Image, ImageTk
 from Variables import *
 import time, threading
 import shutil   
-
 # # Agrega la raíz del proyecto al path
 # sys.path.append(str(Path(__file__).resolve().parent.parent))
 from Utility_functions import clear_dir_output, clear_dir_report_parts
@@ -14,15 +13,14 @@ from Backend.create_report import print_report_sheets, merge_parts_report
 from Backend.helper_functions import clear_directories, modify_status, get_download_reports, second_threads
 from Backend.principal_functions import get_date
 
-from Variables import dir_output
 
 date_report = get_date()
 
 def clear_documents():
     total_eliminados = 0
-    extensiones_validas = ('.xlsx', '.pdf')
+    extensiones_validas = ('.xlsx', '.pdf','.xls')
 
-    for dir in [directory_ADP, directory_social_programs, dir_output]:
+    for dir in [directory_ADP, directory_social_programs, dir_output, directory_sigemet, directory_risk]:
         if not os.path.isdir(dir):
             print(f"⚠️ El directorio '{dir}' no existe. Se omite.")
             continue  # Salta al siguiente directorio
@@ -69,9 +67,9 @@ def data_process():
     try:
         status_view(3, "disabled", Exgob_GrayLigth, Exgob_disabled_red, Exgob_Gray)
         animation("Extrayendo reportes y planillas",'gray')
-        # second_threads(get_reports_sigemet)
-        # second_threads(get_instruments_files, flag_wait=True)
-        # get_download_reports()
+        second_threads(get_reports_sigemet)
+        second_threads(get_instruments_files, flag_wait=True)
+        get_download_reports()
         EVENT_END.is_set()
         status_view(0)
         EVENT_END.clear() 
@@ -109,7 +107,7 @@ def data_process():
         
 
 def btn():
-    # clear_documents()
+    clear_documents()
     EVENT_END.clear()
     second_threads(data_process)
     

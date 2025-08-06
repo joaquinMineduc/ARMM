@@ -200,7 +200,7 @@ def insertar_files(file_path, sheet_name):
             ws = wb.sheets[sheet_name]
 
             # Insertar desde la fila 12 hacia la 9 (en orden inverso para evitar desplazamientos)
-            filas_a_insertar = [14, 13, 12, 11, 10]  # insertará una fila antes de cada número
+            filas_a_insertar = [15, 14, 13, 12, 11, 10]  # insertará una fila antes de cada número
             for fila in filas_a_insertar:
                 ws.api.Rows(fila).Insert()
 
@@ -222,7 +222,7 @@ def merge_files(file_path, sheet_name):
 
         ws = wb.sheets[sheet_name]
 
-        pares_filas = [(9, 10), (11, 12), (13, 14), (15, 16), (17, 18)]
+        pares_filas = [(9, 10), (11, 12), (13, 14), (15, 16), (17, 18), (19, 20)]
 
         for fila_inicio, fila_fin in pares_filas:
             for col in range(1, 14):  # Columnas de A (1) a M (13)
@@ -230,9 +230,9 @@ def merge_files(file_path, sheet_name):
                 rango.merge()
                 
         # Ajustar altura de filas 10, 12, 14, 16, 18
-        filas_ajustar_altura = [10, 12, 14, 16, 18]
+        filas_ajustar_altura = [10, 12, 14, 16, 18, 20]
         for fila in filas_ajustar_altura:
-            ws.range(f"{fila}:{fila}").row_height = 180
+            ws.range(f"{fila}:{fila}").row_height = 210
 
         wb.save()
         wb.close()

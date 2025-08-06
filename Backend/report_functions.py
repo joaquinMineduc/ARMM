@@ -466,13 +466,13 @@ def create_informe_BI(df, mes = None):
         mes = get_period_format()
     else:
         mes = get_period_format(mes)
-    df.to_excel(f"datosBI_{mes}.xlsx", index = False)
+    df.to_excel(Path(dir_output)/f"datosBI_{mes}.xlsx", index = False)
 
 
-# Función crear informe mensual
-def create_informe_mensual(df_informe):
-    mes = get_period_format()
-    df_informe.to_excel(Path(dir_output)/f"informe_{mes}.xlsx", index = False)
+# # Función crear informe mensual
+# def create_informe_mensual(df_informe):
+#     mes = get_period_format()
+#     df_informe.to_excel(Path(dir_output)/f"informe_{mes}.xlsx", index = False)
     
 
 

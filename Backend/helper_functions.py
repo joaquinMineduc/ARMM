@@ -14,7 +14,8 @@ import win32com.client as win32
 from pathlib import Path
 import threading
 import shutil
-
+import win32com.client as win32
+import pythoncom
 
 
 
@@ -154,7 +155,7 @@ def get_download_reports():
 
   recent_files = [
     f for f in download_path.iterdir()
-    if f.is_file() and (now - f.stat().st_mtime) < 190
+    if f.is_file() and (now - f.stat().st_mtime) < 120
   ]
 
   download_files = verify_donwload_reports(recent_files)
@@ -228,26 +229,45 @@ def adaptater_df_chart(df):
   return df
 
 # modifica el estatus de visible cuando requiere realizar el reporte de indicadores PTR
-def modify_status(sheet, status = False):
-  location = path_report_format 
-    
-  init_excel = win32.gencache.EnsureDispatch('Excel.Application')
-    
-  init_excel.Visible = False # Para que la app de Excel no se inicialice en segundo plano, es decir, sin modo ventana
-    
-  constants = win32.constants
-    
-  wb = init_excel.Workbooks.Open(str(location))
-  sheet = wb.Sheets(sheet)
-    
-  if status:
-    sheet.Visible = constants.xlSheetVisible
-  else:
-    sheet.Visible = constants.xlSheetHidden
-    
-  wb.Save()
-  wb.Close()
-  init_excel.Quit()
+def modify_status(sheet_name, status=False):
+    # 🔧 Inicializa COM explícitamente
+    pythoncom.CoInitialize()
+
+    location = path_report_format  # Asegúrate que esta ruta sea correcta
+    print(f"Modificando visibilidad de la hoja: {sheet_name}")
+    print(f"Ruta del archivo: {location}")
+
+    try:
+        excel = win32.gencache.EnsureDispatch('Excel.Application')
+        excel.Visible = False
+
+        wb = excel.Workbooks.Open(str(location))
+
+        # Verifica si la hoja existe
+        sheet_names = [s.Name for s in wb.Sheets]
+        print(f"Hojas disponibles: {sheet_names}")
+        if sheet_name not in sheet_names:
+            raise ValueError(f"La hoja '{sheet_name}' no existe en el libro.")
+
+        sheet = wb.Sheets(sheet_name)
+
+        if status:
+            sheet.Visible = win32.constants.xlSheetVisible
+        else:
+            sheet.Visible = win32.constants.xlSheetHidden
+
+        wb.Save()
+        print(f"Visibilidad de la hoja '{sheet_name}' modificada correctamente.")
+    except Exception as e:
+        print(f"Error modificando la visibilidad de la hoja: {e}")
+    finally:
+        try:
+            wb.Close(SaveChanges=True)
+            excel.Quit()
+        except:
+            pass
+        # 🔧 Libera COM explícitamente
+        pythoncom.CoUninitialize()
     
   
 def create_chart_panel(chart_name, categories, low_risk, medium_risk, high_risk, configuration):

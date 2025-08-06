@@ -42,7 +42,6 @@ def clear_df_data_analisis():
    # Se ramifica el data frame para filtrar todos los ponderados
    df = drop_unless_columns(df, None, None, None)
    df = order_df(df)
-   create_informe_mensual(df)
    create_informe_BI(df)
    return df
    

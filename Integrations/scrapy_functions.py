@@ -41,6 +41,7 @@ year = get_year().split("-")[0]
 
 month = get_year().split("-")[1].capitalize()
 
+
 def validation_month():
     month = datetime.now().month
     year = datetime.now().year
@@ -48,6 +49,8 @@ def validation_month():
     return month
 
 new_month = validation_month()
+
+
 def select_browser_driver():
     options = Options()
     options.add_argument("--headless")           # Ejecuta en segundo plano
